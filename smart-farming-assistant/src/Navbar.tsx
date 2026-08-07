@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import logo from './assets/logo.png'
+import { useWeather, getWeatherIcon } from './hooks/useWeather'
 
 const navLinks = [
   { label: 'Home', to: '/' },
@@ -15,6 +16,32 @@ const navLinks = [
   { label: 'About', to: '/about' },
   { label: 'Contact', to: '/contact' },
 ]
+
+function WeatherWidget() {
+  const { weather, loading } = useWeather()
+
+  if (loading) return (
+    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#F1F8E9] rounded-xl text-xs text-gray-400 animate-pulse">
+      <span>🌡️</span><span>Loading...</span>
+    </div>
+  )
+
+  if (!weather) return null
+
+  return (
+    <Link to="/weather" className="flex items-center gap-2 px-3 py-1.5 bg-[#F1F8E9] hover:bg-[#E8F5E9] rounded-xl transition-colors duration-200 group">
+      <span className="text-lg leading-none">{getWeatherIcon(weather.weathercode)}</span>
+      <div className="flex flex-col leading-tight">
+        <span className="text-sm font-semibold text-[#2E7D32]">{weather.temp}°C</span>
+        <span className="text-[10px] text-gray-500 truncate max-w-[90px]">{weather.city}</span>
+      </div>
+      <div className="flex flex-col leading-tight text-[10px] text-gray-400 border-l border-gray-200 pl-2">
+        <span>💧 {weather.humidity}%</span>
+        <span>💨 {weather.windspeed} km/h</span>
+      </div>
+    </Link>
+  )
+}
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -80,6 +107,7 @@ export default function Navbar() {
 
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-3">
+            <WeatherWidget />
             <Link
               to="/contact"
               className="px-5 py-2 text-sm font-semibold text-white bg-[#2E7D32] rounded-xl shadow-sm hover:bg-[#1B5E20] hover:shadow-md active:scale-95 transition-all duration-200"
