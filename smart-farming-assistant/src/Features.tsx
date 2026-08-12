@@ -80,6 +80,8 @@ const features = [
   },
 ]
 
+const brandLabelColor = '#2E7D32'
+
 const containerVariants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.1 } },
@@ -161,46 +163,58 @@ export default function Features() {
               <motion.div
                 key={f.title}
                 variants={cardVariants}
-                whileHover={{ y: -8, transition: { duration: 0.22, ease: 'easeOut' } }}
-                className="group relative flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-2xl hover:shadow-gray-200/60 hover:border-gray-200 transition-shadow duration-300 overflow-hidden"
+                whileHover={{ y: -6, transition: { duration: 0.22, ease: 'easeOut' } }}
+                className="group relative flex flex-col h-full bg-white rounded-2xl border border-gray-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] hover:border-gray-200 transition-all duration-300 overflow-hidden"
               >
                 {/* Gradient icon area */}
-                <div className={`relative bg-gradient-to-br ${f.gradient} px-7 pt-8 pb-6`}>
-                  {/* Decorative circle */}
+                <div className={`relative bg-gradient-to-br ${f.gradient} px-7 pt-8 pb-6 overflow-hidden`}>
+                  {/* Blurred decorative blob — replaces plain solid circle */}
                   <div
-                    className="absolute top-4 right-4 w-16 h-16 rounded-full opacity-20"
+                    className="absolute -top-4 -right-4 w-24 h-24 rounded-full blur-2xl opacity-30 pointer-events-none"
+                    style={{ background: `radial-gradient(circle, ${f.accent}, transparent 70%)` }}
+                  />
+                  <div
+                    className="absolute bottom-0 right-8 w-14 h-14 rounded-full blur-xl opacity-20 pointer-events-none"
                     style={{ background: f.accent }}
                   />
+                  {/* Icon box — consistent size, stroke, shadow */}
                   <motion.div
-                    whileHover={{ rotate: [0, -8, 8, 0], transition: { duration: 0.4 } }}
-                    className="relative w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm"
+                    whileHover={{ rotate: [0, -6, 6, 0], transition: { duration: 0.35 } }}
+                    className="relative w-[52px] h-[52px] rounded-2xl flex items-center justify-center shadow-sm"
                     style={{ background: f.light }}
                   >
-                    <Icon size={26} style={{ color: f.accent }} />
+                    <Icon size={24} strokeWidth={1.5} style={{ color: f.accent }} />
                   </motion.div>
-                  <p
-                    className="mt-4 text-xs font-semibold uppercase tracking-widest"
-                    style={{ color: f.accent }}
-                  >
-                    {f.tagline}
-                  </p>
+                  {/* Tagline — consistent style: colored left border pill */}
+                  <div className="mt-4 flex items-center gap-2">
+                    <span
+                      className="inline-block w-1 h-3.5 rounded-full opacity-80"
+                      style={{ background: brandLabelColor }}
+                    />
+                    <p
+                      className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#2E7D32] opacity-90"
+                      style={{ color: brandLabelColor }}
+                    >
+                      {f.tagline}
+                    </p>
+                  </div>
                 </div>
 
                 {/* Card body */}
-                <div className="flex flex-col flex-1 px-7 py-6 gap-4">
-                  <h3 className="text-lg font-bold text-[#1F2937] leading-snug group-hover:text-[#2E7D32] transition-colors duration-200">
+                <div className="flex flex-col flex-1 px-7 py-7 gap-5">
+                  <h3 className="text-lg sm:text-xl font-bold text-[#111827] leading-7 group-hover:text-[#2E7D32] transition-colors duration-200">
                     {f.title}
                   </h3>
 
-                  <p className="text-sm text-gray-400 leading-relaxed flex-1">
+                  <p className="text-base text-gray-500 leading-7 flex-1">
                     {f.description}
                   </p>
 
                   {/* Bullets */}
-                  <ul className="flex flex-col gap-2">
+                  <ul className="flex flex-col gap-2.5">
                     {f.bullets.map((b) => (
-                      <li key={b} className="flex items-center gap-2.5 text-sm text-gray-600">
-                        <CheckCircle2 size={14} style={{ color: f.accent }} className="shrink-0" />
+                      <li key={b} className="flex items-center gap-2.5 text-sm leading-6 text-gray-600">
+                        <CheckCircle2 size={14} strokeWidth={1.5} style={{ color: f.accent }} className="shrink-0" />
                         {b}
                       </li>
                     ))}
@@ -218,7 +232,7 @@ export default function Features() {
                       animate={{ x: 0 }}
                       whileHover={{ x: 3 }}
                     >
-                      <ArrowRight size={14} className="transition-transform duration-200 group-hover/link:translate-x-1" />
+                      <ArrowRight size={14} strokeWidth={1.5} className="transition-transform duration-200 group-hover/link:translate-x-1" />
                     </motion.span>
                   </Link>
                 </div>
@@ -226,7 +240,7 @@ export default function Features() {
                 {/* Bottom accent line — grows on hover */}
                 <div
                   className="h-0.5 w-0 group-hover:w-full transition-all duration-500 ease-out"
-                  style={{ background: `linear-gradient(90deg, ${f.accent}, ${f.accent}55)` }}
+                  style={{ background: `linear-gradient(90deg, ${f.accent}, ${f.accent}44)` }}
                 />
               </motion.div>
             )
