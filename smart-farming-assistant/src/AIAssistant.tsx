@@ -24,11 +24,24 @@ export default function AIAssistant() {
   const [messages, setMessages] = useState<Message[]>([WELCOME])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
-  const bottomRef = useRef<HTMLDivElement>(null)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
+  const isNearBottomRef = useRef(true)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
+  const handleScroll = () => {
+    const container = messagesContainerRef.current
+    if (!container) return
+    const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 100
+    isNearBottomRef.current = isNearBottom
+  }
+
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (isNearBottomRef.current && messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: 'smooth'
+      })
+    }
   }, [messages, loading])
 
   const sendMessage = async (text?: string) => {
@@ -40,6 +53,7 @@ export default function AIAssistant() {
     setMessages(updatedMessages)
     setInput('')
     setLoading(true)
+    isNearBottomRef.current = true // Force auto-scroll on new user message
 
     // Build history excluding the welcome message
     const history = updatedMessages
@@ -73,13 +87,14 @@ export default function AIAssistant() {
   const resetChat = () => {
     setMessages([WELCOME])
     setInput('')
+    isNearBottomRef.current = true
   }
 
   const showSuggestions = messages.length === 1
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#F1F8E9] to-white">
-      <div className="max-w-3xl mx-auto px-4 py-8 flex flex-col h-screen">
+    <div className="h-[calc(100dvh-68px)] bg-gradient-to-b from-[#F1F8E9] to-white overflow-hidden">
+      <div className="max-w-3xl w-full mx-auto px-4 py-4 flex flex-col h-full">
 
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
@@ -104,7 +119,11 @@ export default function AIAssistant() {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto rounded-2xl bg-white border border-gray-100 shadow-sm p-4 flex flex-col gap-3">
+        <div 
+          ref={messagesContainerRef}
+          onScroll={handleScroll}
+          className="flex-1 overflow-y-auto rounded-2xl bg-white border border-gray-100 shadow-sm p-4 flex flex-col gap-3"
+        >
           <AnimatePresence initial={false}>
             {messages.map((msg, i) => (
               <motion.div
@@ -176,8 +195,6 @@ export default function AIAssistant() {
               </div>
             </motion.div>
           )}
-
-          <div ref={bottomRef} />
         </div>
 
         {/* Input */}
