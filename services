@@ -1,0 +1,7 @@
+git checkout HEAD -- backend/.env.example
+git add backend/.env.example
+git commit --amend --no-edit
+git rebase --continue
+git push origin main --force
+
+:wq
