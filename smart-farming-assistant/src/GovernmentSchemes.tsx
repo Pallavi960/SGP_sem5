@@ -12,6 +12,7 @@ import {
   searchSchemes,
 } from './services/GovernmentSchemeService'
 import type { GovernmentScheme } from './services/GovernmentSchemeService'
+// using static data with official links — no backend needed
 
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
@@ -392,13 +393,16 @@ function SchemeCard({ scheme, index }: { scheme: any; index: number }) {
 
       {/* Footer */}
       <div className="px-6 pb-5">
-        <motion.button
+        <motion.a
+          href={scheme.officialLink}
+          target="_blank"
+          rel="noopener noreferrer"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.97 }}
           className="w-full flex items-center justify-center gap-2 py-2.5 bg-[#E8F5E9] text-[#2E7D32] text-sm font-semibold rounded-xl hover:bg-[#2E7D32] hover:text-white transition-all duration-200"
         >
-          Learn More <ChevronRight size={15} />
-        </motion.button>
+          Visit Official Site <ChevronRight size={15} />
+        </motion.a>
       </div>
     </motion.div>
   )

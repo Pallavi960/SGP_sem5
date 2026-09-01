@@ -1,0 +1,279 @@
+diff --git a/backend/package-lock.json b/backend/package-lock.json
+new file mode 100644
+index 0000000..dfb18f1
+--- /dev/null
++++ b/backend/package-lock.json
+@@ -0,0 +1,6 @@
++{
++  "name": "backend",
++  "lockfileVersion": 3,
++  "requires": true,
++  "packages": {}
++}
+diff --git a/smart-farming-assistant/src/GovernmentSchemes.tsx b/smart-farming-assistant/src/GovernmentSchemes.tsx
+index ffd1d2e..cfaae6f 100644
+--- a/smart-farming-assistant/src/GovernmentSchemes.tsx
++++ b/smart-farming-assistant/src/GovernmentSchemes.tsx
+@@ -12,6 +12,7 @@ import {
+   searchSchemes,
+ } from './services/GovernmentSchemeService'
+ import type { GovernmentScheme } from './services/GovernmentSchemeService'
++// using static data with official links — no backend needed
+ 
+ const fadeUp = {
+   hidden: { opacity: 0, y: 28 },
+@@ -392,13 +393,16 @@ function SchemeCard({ scheme, index }: { scheme: any; index: number }) {
+ 
+       {/* Footer */}
+       <div className="px-6 pb-5">
+-        <motion.button
++        <motion.a
++          href={scheme.officialLink}
++          target="_blank"
++          rel="noopener noreferrer"
+           whileHover={{ scale: 1.02 }}
+           whileTap={{ scale: 0.97 }}
+           className="w-full flex items-center justify-center gap-2 py-2.5 bg-[#E8F5E9] text-[#2E7D32] text-sm font-semibold rounded-xl hover:bg-[#2E7D32] hover:text-white transition-all duration-200"
+         >
+-          Learn More <ChevronRight size={15} />
+-        </motion.button>
++          Visit Official Site <ChevronRight size={15} />
++        </motion.a>
+       </div>
+     </motion.div>
+   )
+diff --git a/smart-farming-assistant/src/services/GovernmentSchemeService.d.ts b/smart-farming-assistant/src/services/GovernmentSchemeService.d.ts
+deleted file mode 100644
+index 161c644..0000000
+--- a/smart-farming-assistant/src/services/GovernmentSchemeService.d.ts
++++ /dev/null
+@@ -1,18 +0,0 @@
+-export interface GovernmentScheme {
+-  id?: number | string
+-  title?: string
+-  name?: string
+-  description?: string
+-  benefits?: string
+-  eligibility?: string
+-  category?: string
+-  state?: string
+-  status?: string
+-  [key: string]: any
+-}
+-
+-export declare function getAllSchemes(): Promise<GovernmentScheme[]>
+-export declare function getSchemeById(id: number | string): Promise<GovernmentScheme>
+-export declare function searchSchemes(query: string): Promise<GovernmentScheme[]>
+-export declare function getSchemesByCategory(category: string): Promise<GovernmentScheme[]>
+-export declare function getSchemesByState(state: string): Promise<GovernmentScheme[]>
+diff --git a/smart-farming-assistant/src/services/GovernmentSchemeService.js b/smart-farming-assistant/src/services/GovernmentSchemeService.js
+deleted file mode 100644
+index eb205f3..0000000
+--- a/smart-farming-assistant/src/services/GovernmentSchemeService.js
++++ /dev/null
+@@ -1,33 +0,0 @@
+-import axios from 'axios'
+-
+-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
+-
+-const api = axios.create({
+-  baseURL: API_BASE_URL,
+-  headers: { 'Content-Type': 'application/json' },
+-})
+-
+-export const getAllSchemes = async () => {
+-  const response = await api.get('/api/schemes')
+-  return response.data
+-}
+-
+-export const getSchemeById = async (id) => {
+-  const response = await api.get(`/api/schemes/${id}`)
+-  return response.data
+-}
+-
+-export const searchSchemes = async (query) => {
+-  const response = await api.get('/api/schemes/search', { params: { query } })
+-  return response.data
+-}
+-
+-export const getSchemesByCategory = async (category) => {
+-  const response = await api.get(`/api/schemes/category/${encodeURIComponent(category)}`)
+-  return response.data
+-}
+-
+-export const getSchemesByState = async (state) => {
+-  const response = await api.get(`/api/schemes/state/${encodeURIComponent(state)}`)
+-  return response.data
+-}
+diff --git a/smart-farming-assistant/src/services/GovernmentSchemeService.ts b/smart-farming-assistant/src/services/GovernmentSchemeService.ts
+new file mode 100644
+index 0000000..d2bacbb
+--- /dev/null
++++ b/smart-farming-assistant/src/services/GovernmentSchemeService.ts
+@@ -0,0 +1,166 @@
++export interface GovernmentScheme {
++  id: string
++  title: string
++  description: string
++  benefits: string
++  eligibility: string
++  category: string
++  state: string
++  status: string
++  officialLink: string
++}
++
++const SCHEMES: GovernmentScheme[] = [
++  {
++    id: '1',
++    title: 'PM-KISAN (Pradhan Mantri Kisan Samman Nidhi)',
++    description: 'Direct income support of ₹6,000/year to all landholding farmer families in three equal installments.',
++    benefits: '₹6,000/year directly to bank account',
++    eligibility: 'All landholding farmer families',
++    category: 'Financial Support',
++    state: 'All India',
++    status: 'Active',
++    officialLink: 'https://pmkisan.gov.in',
++  },
++  {
++    id: '2',
++    title: 'PMFBY (Pradhan Mantri Fasal Bima Yojana)',
++    description: 'Crop insurance scheme protecting farmers against natural disasters, pests, and bad weather.',
++    benefits: 'Full crop loss compensation at low premium',
++    eligibility: 'All farmers growing notified crops',
++    category: 'Crop Insurance',
++    state: 'All India',
++    status: 'Active',
++    officialLink: 'https://pmfby.gov.in',
++  },
++  {
++    id: '3',
++    title: 'Kisan Credit Card (KCC)',
++    description: 'Provides short-term credit to farmers for seeds, fertilizers, pesticides, and allied activities.',
++    benefits: 'Credit up to ₹3 lakh at 4% interest',
++    eligibility: 'All farmers, sharecroppers, tenant farmers',
++    category: 'Agricultural Loans',
++    state: 'All India',
++    status: 'Active',
++    officialLink: 'https://www.nabard.org/content1.aspx?id=572',
++  },
++  {
++    id: '4',
++    title: 'PM-KUSUM (Solar Pump Scheme)',
++    description: 'Financial assistance to install solar water pumps and solar power plants on farm land.',
++    benefits: '60% subsidy on solar pump installation',
++    eligibility: 'Individual farmers with agricultural land',
++    category: 'Subsidies',
++    state: 'All India',
++    status: 'Active',
++    officialLink: 'https://mnre.gov.in/solar/schemes',
++  },
++  {
++    id: '5',
++    title: 'SMAM (Sub-Mission on Agricultural Mechanisation)',
++    description: 'Subsidies to purchase farm machinery like tractors, harvesters, and other modern equipment.',
++    benefits: 'Up to 80% subsidy on farm equipment',
++    eligibility: 'Small & marginal farmers',
++    category: 'Subsidies',
++    state: 'All India',
++    status: 'Active',
++    officialLink: 'https://agrimachinery.nic.in',
++  },
++  {
++    id: '6',
++    title: 'Soil Health Card Scheme',
++    description: 'Free soil testing and nutrient recommendations to help farmers use the right fertilizers.',
++    benefits: 'Free soil health card with crop-wise recommendations',
++    eligibility: 'All farmers',
++    category: 'Financial Support',
++    state: 'All India',
++    status: 'Active',
++    officialLink: 'https://soilhealth.dac.gov.in',
++  },
++  {
++    id: '7',
++    title: 'e-NAM (National Agriculture Market)',
++    description: 'Online trading platform connecting local farm markets for better price discovery.',
++    benefits: 'Better price, transparent trading, digital payments',
++    eligibility: 'Registered farmers with produce',
++    category: 'Financial Support',
++    state: 'All India',
++    status: 'Active',
++    officialLink: 'https://enam.gov.in',
++  },
++  {
++    id: '8',
++    title: 'PM Kisan MaanDhan Yojana (PM-KMY)',
++    description: 'Pension scheme providing ₹3,000/month after age 60 to small and marginal farmers.',
++    benefits: '₹3,000/month pension after 60 years',
++    eligibility: 'Small & marginal farmers aged 18–40',
++    category: 'Financial Support',
++    state: 'All India',
++    status: 'Active',
++    officialLink: 'https://maandhan.in/shramyogi',
++  },
++  {
++    id: '9',
++    title: 'PMKSY (Pradhan Mantri Krishi Sinchayee Yojana)',
++    description: 'Ensures water availability to every farm through micro-irrigation and watershed development.',
++    benefits: 'Subsidy on drip & sprinkler irrigation systems',
++    eligibility: 'All farmers with agricultural land',
++    category: 'Subsidies',
++    state: 'All India',
++    status: 'Active',
++    officialLink: 'https://pmksy.gov.in',
++  },
++  {
++    id: '10',
++    title: 'Gujarat Wire Fencing Scheme',
++    description: 'Financial support to build protective wire fences around fields to protect crops from wild animals.',
++    benefits: 'Up to ₹30,000 subsidy for fencing',
++    eligibility: 'Farmers in Gujarat with agricultural land',
++    category: 'Subsidies',
++    state: 'Maharashtra',
++    status: 'Active',
++    officialLink: 'https://agri.gujarat.gov.in',
++  },
++  {
++    id: '11',
++    title: 'Kisan Parivahan Yojana (Gujarat)',
++    description: 'Financial aid to purchase small transport vehicles and tractor trailers for moving farm produce.',
++    benefits: 'Subsidy on transport vehicle purchase',
++    eligibility: 'Farmers in Gujarat',
++    category: 'Subsidies',
++    state: 'Maharashtra',
++    status: 'Active',
++    officialLink: 'https://agri.gujarat.gov.in',
++  },
++  {
++    id: '12',
++    title: 'National Food Security Mission (NFSM)',
++    description: 'Increases production of rice, wheat, pulses, and coarse cereals through area expansion and productivity enhancement.',
++    benefits: 'Free seeds, training, and technical support',
++    eligibility: 'Farmers in identified districts',
++    category: 'Financial Support',
++    state: 'All India',
++    status: 'Active',
++    officialLink: 'https://nfsm.gov.in',
++  },
++]
++
++export const getAllSchemes = async (): Promise<GovernmentScheme[]> => SCHEMES
++
++export const getSchemeById = async (id: string): Promise<GovernmentScheme | undefined> =>
++  SCHEMES.find(s => s.id === id)
++
++export const searchSchemes = async (query: string): Promise<GovernmentScheme[]> => {
++  const q = query.toLowerCase()
++  return SCHEMES.filter(s =>
++    s.title.toLowerCase().includes(q) ||
++    s.description.toLowerCase().includes(q) ||
++    s.category.toLowerCase().includes(q)
++  )
++}
++
++export const getSchemesByCategory = async (category: string): Promise<GovernmentScheme[]> =>
++  SCHEMES.filter(s => s.category === category)
++
++export const getSchemesByState = async (state: string): Promise<GovernmentScheme[]> =>
++  SCHEMES.filter(s => s.state === state || s.state === 'All India')
