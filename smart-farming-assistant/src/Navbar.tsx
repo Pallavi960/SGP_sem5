@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X, Globe, ChevronDown } from 'lucide-react'
+import { Menu, X, Globe, ChevronDown, User, LogOut } from 'lucide-react'
 import logo from './assets/logo.png'
 import { useWeather, getWeatherIcon } from './hooks/useWeather'
+import { useAuth } from './context/AuthContext'
 
-const navLinks = [
+const baseNavLinks = [
   { label: 'Home',               to: '/' },
   { label: 'AI Assistant',       to: '/ai-assistant' },
   { label: 'Disease Detection',  to: '/disease-detection' },
@@ -14,7 +15,7 @@ const navLinks = [
   { label: 'About Us',           to: '/about' },
 ]
 
-const languages = ['English', 'हिंदी', 'મરાઠી', 'ગુજરાતી']
+const languages = ['English', 'हिंदी', 'मराठी', 'ગુજરાતી']
 
 /* ─── Weather Widget ─────────────────────────────────────────── */
 function WeatherWidget() {
@@ -100,6 +101,13 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const location = useLocation()
+  const { user, userPhone, userName, signOut } = useAuth()
+
+  const displayName = userName || userPhone || 'My Account'
+
+  const navLinks = user
+    ? [{ label: 'Dashboard', to: '/dashboard' }, ...baseNavLinks]
+    : baseNavLinks
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
@@ -146,7 +154,7 @@ export default function Navbar() {
           </Link>
 
           {/* ── CENTER: Nav links (hidden below xl) ── */}
-          <div className="hidden xl:flex items-center gap-[18px] justify-center xl:col-start-2">
+          <div className="hidden xl:flex items-center gap-[14px] justify-center xl:col-start-2">
             {navLinks.map((link) => (
               <Link
                 key={link.to}
@@ -166,12 +174,34 @@ export default function Navbar() {
           <div className="hidden xl:flex items-center gap-[12px] xl:col-start-3 justify-end shrink-0">
             <WeatherWidget />
             <LanguageSelector />
-            <Link
-              to="/contact"
-              className="inline-flex items-center justify-center px-[20px] py-[10px] h-[40px] text-[14px] font-semibold text-white bg-[#087f3e] rounded-[9px] hover:bg-[#066832] hover:shadow-md hover:-translate-y-[1px] active:translate-y-0 transition-all duration-200 whitespace-nowrap"
-            >
-              Login
-            </Link>
+
+            {user ? (
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/dashboard"
+                  className="flex items-center gap-1.5 px-3 py-1.5 h-[40px] bg-[#E8F5E9] hover:bg-[#C8E6C9] border border-[#A5D6A7] rounded-[9px] text-xs font-semibold text-[#087f3e] transition-all"
+                  title="Go to Dashboard"
+                >
+                  <User size={15} />
+                  <span className="max-w-[120px] truncate font-medium">{displayName}</span>
+                </Link>
+                <button
+                  onClick={() => signOut()}
+                  className="flex items-center justify-center w-[40px] h-[40px] text-gray-500 hover:text-red-600 hover:bg-red-50 border border-gray-200 hover:border-red-200 rounded-[9px] transition-all"
+                  title="Log Out"
+                  aria-label="Log Out"
+                >
+                  <LogOut size={16} />
+                </button>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="inline-flex items-center justify-center px-[20px] py-[10px] h-[40px] text-[14px] font-semibold text-white bg-[#087f3e] rounded-[9px] hover:bg-[#066832] hover:shadow-md hover:-translate-y-[1px] active:translate-y-0 transition-all duration-200 whitespace-nowrap"
+              >
+                Login
+              </Link>
+            )}
           </div>
 
           {/* ── Hamburger (below xl) ── */}
@@ -210,12 +240,34 @@ export default function Navbar() {
                 <WeatherWidget />
                 <LanguageSelector />
               </div>
-              <Link
-                to="/contact"
-                className="block text-center px-4 py-2.5 text-[14px] font-semibold text-white bg-[#087f3e] rounded-[9px] hover:bg-[#066832] transition-colors duration-150"
-              >
-                Login
-              </Link>
+
+              {user ? (
+                <div className="flex flex-col gap-2 pt-1">
+                  <div className="flex items-center justify-between p-2.5 bg-[#E8F5E9] rounded-[9px] border border-[#A5D6A7]">
+                    <div className="flex items-center gap-2">
+                      <User size={16} className="text-[#087f3e]" />
+                      <span className="text-xs font-semibold text-gray-800">{displayName}</span>
+                    </div>
+                    <Link to="/dashboard" className="text-xs font-bold text-[#087f3e] hover:underline">
+                      Dashboard
+                    </Link>
+                  </div>
+                  <button
+                    onClick={() => signOut()}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-[14px] font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-[9px] transition-colors"
+                  >
+                    <LogOut size={16} />
+                    <span>Log Out</span>
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  to="/login"
+                  className="block text-center px-4 py-2.5 text-[14px] font-semibold text-white bg-[#087f3e] rounded-[9px] hover:bg-[#066832] transition-colors duration-150"
+                >
+                  Login
+                </Link>
+              )}
             </div>
           </div>
         </div>
