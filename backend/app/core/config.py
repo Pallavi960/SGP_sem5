@@ -2,9 +2,9 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    SUPABASE_URL: str
-    SUPABASE_KEY: str
-    AI_API_KEY: str
+    COHERE_API_KEY: str
+    SUPABASE_URL: str = ""
+    SUPABASE_KEY: str = ""
 
     class Config:
         env_file = ".env"

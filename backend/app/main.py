@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routes.schemes import router as schemes_router
-from .routes.ai import router as ai_router
+from app.routes.ai import router as ai_router
 
 app = FastAPI(
     title="SGP Smart Farming Assistant API",
@@ -9,7 +8,6 @@ app = FastAPI(
     description="Backend API for the AI-Based Smart Farming Assistant",
 )
 
-# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://localhost:3000"],
@@ -18,9 +16,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include API routers
-app.include_router(schemes_router, prefix="/api/schemes")
-app.include_router(ai_router, prefix="/api/ai")
+app.include_router(ai_router, prefix="/api/ai", tags=["AI Assistant"])
 
 
 @app.get("/health")
