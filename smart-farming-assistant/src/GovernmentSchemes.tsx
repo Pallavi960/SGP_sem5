@@ -71,7 +71,7 @@ export default function GovernmentSchemes() {
 
   const filtered = useMemo(() => {
     return schemes.filter((s) => {
-      const title = String(s.title || s.name || '')
+      const title = String(s.title || (s as any).name || '')
       const description = String(s.description || '')
       const category = String(s.category || '')
       const state = String(s.state || '')

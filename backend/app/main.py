@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes.ai import router as ai_router
+from app.routes.disease import router as disease_router
 
 app = FastAPI(
     title="SGP Smart Farming Assistant API",
@@ -17,6 +18,7 @@ app.add_middleware(
 )
 
 app.include_router(ai_router, prefix="/api/ai", tags=["AI Assistant"])
+app.include_router(disease_router, prefix="/api/disease", tags=["Disease Detection"])
 
 
 @app.get("/health")

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import axios from 'axios'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Send, Sprout, User, Loader2, RotateCcw } from 'lucide-react'
@@ -21,12 +22,21 @@ const SUGGESTIONS = [
 ]
 
 export default function AIAssistant() {
+  const location = useLocation()
   const [messages, setMessages] = useState<Message[]>([WELCOME])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const isNearBottomRef = useRef(true)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  useEffect(() => {
+    const initialQuery = (location.state as { initialQuery?: string })?.initialQuery
+    if (initialQuery) {
+      setInput(initialQuery)
+      textareaRef.current?.focus()
+    }
+  }, [location.state])
 
   const handleScroll = () => {
     const container = messagesContainerRef.current
