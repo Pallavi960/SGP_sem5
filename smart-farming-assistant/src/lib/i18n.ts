@@ -14,6 +14,7 @@ export interface Translations {
   nav_dashboard: string
   nav_log_out: string
   nav_prediction: string
+  nav_how_to_use: string
 
   // Floating AI Assistant
   ai_welcome: string
@@ -44,6 +45,7 @@ const translations: Record<LangCode, Translations> = {
     nav_dashboard: 'Dashboard',
     nav_log_out: 'Log Out',
     nav_prediction: 'Prediction',
+    nav_how_to_use: 'How to Use',
 
     ai_welcome:
       "Namaste! 🌱 I'm Krishi Mitra, your AI farming assistant.\n\nAsk me anything about crops, pests, soil, fertilizer dosage, weather, or government schemes.",
@@ -76,6 +78,7 @@ const translations: Record<LangCode, Translations> = {
     nav_dashboard: 'डैशबोर्ड',
     nav_log_out: 'लॉग आउट',
     nav_prediction: 'पूर्वानुमान',
+    nav_how_to_use: 'कैसे उपयोग करें',
 
     ai_welcome:
       'नमस्ते! 🌱 मैं कृषि मित्र हूँ, आपका AI खेती सहायक।\n\nफसल, कीट, मिट्टी, खाद, मौसम या सरकारी योजनाओं से जुड़ा कोई भी सवाल पूछें।',
@@ -109,6 +112,7 @@ const translations: Record<LangCode, Translations> = {
     nav_dashboard: 'डॅशबोर्ड',
     nav_log_out: 'लॉग आउट',
     nav_prediction: 'अंदाज',
+    nav_how_to_use: 'कसे वापरावे',
 
     ai_welcome:
       'नमस्कार! 🌱 मी कृषी मित्र आहे, तुमचा AI शेती सहाय्यक।\n\nपीक, कीड, माती, खत, हवामान किंवा शासकीय योजनांबद्दल काहीही विचारा।',

@@ -17,6 +17,7 @@ import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import Prediction from './Prediction'
+import HowToUse from './HowToUse'
 
 export default function App() {
   return (
@@ -35,6 +36,7 @@ export default function App() {
             <Route path="fertilizer-advisor" element={<FertilizerAdvisor />} />
             <Route path="prediction" element={<Prediction />} />
             <Route path="about" element={<About />} />
+            <Route path="how-to-use" element={<HowToUse />} />
             <Route path="contact" element={<Contact />} />
             <Route path="government-schemes" element={<GovernmentSchemes />} />
             <Route path="login" element={<Login />} />

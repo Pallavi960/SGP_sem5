@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import {
-  Home, Microscope, Sprout, CloudSun, BookOpen, Info,
-  LayoutDashboard, User, LogOut, CalendarRange, FlaskConical, ScanLine,
+  Home, Microscope, Sprout, CloudSun, BookOpen,
+  LayoutDashboard, User, LogOut, CalendarRange, FlaskConical, ScanLine, BookOpenCheck,
 } from 'lucide-react'
 import logo from './assets/logo.png'
 import { useAuth } from './context/AuthContext'
@@ -19,7 +19,7 @@ const NAV_LINKS_BASE = [
   { key: 'nav_fertilizer_advisor'  as const, to: '/fertilizer-advisor',  icon: FlaskConical },
   { key: 'nav_prediction'          as const, to: '/prediction',          icon: ScanLine },
   { key: 'nav_govt_schemes'        as const, to: '/government-schemes',  icon: BookOpen },
-  { key: 'nav_about_us'            as const, to: '/about',               icon: Info },
+  { key: 'nav_how_to_use'          as const, to: '/how-to-use',          icon: BookOpenCheck },
 ]
 
 function getNavLinks(lang: LangCode) {
@@ -39,7 +39,7 @@ const GROUPS = [
   },
   {
     label: 'Information',
-    keys: ['/government-schemes', '/about'],
+    keys: ['/government-schemes', '/how-to-use'],
   },
 ]
 

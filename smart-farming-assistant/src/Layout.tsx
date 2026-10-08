@@ -3,6 +3,7 @@ import Navbar from './Navbar'
 import Sidebar from './Sidebar'
 import Footer from './Footer'
 import FloatingAIAssistant from './components/FloatingAIAssistant'
+import FloatingHowToUse from './components/FloatingHowToUse'
 
 export default function Layout() {
   return (
@@ -21,6 +22,9 @@ export default function Layout() {
 
       {/* Global Floating AI Assistant (Krishi Mitra) */}
       <FloatingAIAssistant />
+
+      {/* Global Floating How to Use helper */}
+      <FloatingHowToUse />
     </div>
   )
 }

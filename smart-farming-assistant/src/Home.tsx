@@ -1,6 +1,10 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { ArrowRight, ChevronDown, Bot, Microscope, Sprout, CloudSun, TrendingUp, BookOpen, Wheat, CheckCircle2 } from 'lucide-react'
+import {
+  ArrowRight, ChevronDown, Bot, Microscope, Sprout, CloudSun,
+  TrendingUp, BookOpen, Wheat, CheckCircle2,
+  FlaskConical, CalendarRange, Users, Target, Lightbulb, ShieldCheck,
+} from 'lucide-react'
 import FarmingIllustration from './FarmingIllustration'
 import DashboardPreview from './DashboardPreview'
 import WhySmartFarming from './WhySmartFarming'
@@ -83,6 +87,16 @@ const features = [
   { icon: BookOpen, label: 'Govt. Schemes', to: '/government-schemes' },
 ]
 
+const ABOUT_FEATURES = [
+  { icon: Microscope,    label: 'Disease Detection',    route: '/disease-detection',   desc: 'Upload a crop photo to identify diseases and get treatment advice instantly.' },
+  { icon: Sprout,        label: 'Crop Recommendation',  route: '/crop-recommendation',  desc: 'Get crop suggestions matched to your soil, season, and location.' },
+  { icon: CloudSun,      label: 'Weather Forecast',     route: '/weather',              desc: 'Check real-time weather conditions before going to the field.' },
+  { icon: FlaskConical,  label: 'Fertilizer Advisor',   route: '/fertilizer-advisor',   desc: 'Enter your soil details and get the right fertilizer guidance.' },
+  { icon: CalendarRange, label: 'Farm Planner',         route: '/farm-planner',         desc: 'Plan and track every farm activity from sowing to harvest.' },
+  { icon: BookOpen,      label: 'Govt. Schemes',        route: '/government-schemes',   desc: 'Explore government schemes and agricultural support available for farmers.' },
+  { icon: Bot,           label: 'AI Assistant',         route: '/ai-assistant',         desc: 'Ask any farming question in your language and get practical guidance.' },
+]
+
 export default function Home() {
   return (
     <div className="bg-white overflow-x-hidden">
@@ -156,12 +170,12 @@ export default function Home() {
                   </Link>
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                  <Link
-                    to="/about"
+                  <a
+                    href="#about"
                     className="inline-flex items-center gap-2 px-7 py-3.5 bg-white text-[#2E7D32] text-sm font-semibold rounded-xl border-2 border-[#A5D6A7] hover:bg-[#E8F5E9] hover:border-[#2E7D32] transition-all duration-200"
                   >
                     Learn More
-                  </Link>
+                  </a>
                 </motion.div>
               </motion.div>
 
@@ -256,6 +270,130 @@ export default function Home() {
           </div>
         </div>
       </section>
+      {/* ── About SmartFarm AI ── */}
+      <section id="about" className="bg-white py-20 border-t border-gray-100">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+
+          {/* ── What is SmartFarm AI ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.55 }}
+            className="grid lg:grid-cols-2 gap-10 items-center"
+          >
+            <div className="space-y-4">
+              <span className="inline-block text-xs font-bold text-[#15803D] uppercase tracking-[0.18em]">About SmartFarm AI</span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 leading-tight">
+                What is SmartFarm AI?
+              </h2>
+              <p className="text-base text-gray-600 leading-relaxed">
+                SmartFarm AI is an AI-powered digital assistant built for Indian farmers. It brings together
+                crop health detection, weather forecasts, fertilizer advice, farm planning, and government
+                scheme information into one simple, easy-to-use platform.
+              </p>
+              <p className="text-base text-gray-600 leading-relaxed">
+                Whether you are a smallholder farmer or managing a large farm, SmartFarm AI gives you the
+                right information at the right time — in your own language.
+              </p>
+            </div>
+
+            {/* Problem → Solution */}
+            <div className="space-y-3">
+              {[
+                { icon: Target,    color: 'text-red-600',   bg: 'bg-red-50',   border: 'border-red-100',   label: 'The Problem', text: 'Farmers make critical decisions without access to expert advice, real-time weather data, or crop health information.' },
+                { icon: Lightbulb, color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-100', label: 'The Solution', text: 'SmartFarm AI brings AI-powered guidance directly to every farmer\'s phone — simple, free, and available anytime.' },
+                { icon: ShieldCheck, color: 'text-green-700', bg: 'bg-green-50', border: 'border-green-100', label: 'The Result', text: 'Better crop health, reduced losses, smarter resource use, and more informed farming decisions every season.' },
+              ].map((item) => {
+                const Icon = item.icon
+                return (
+                  <div key={item.label} className={`flex gap-3 p-4 rounded-xl border ${item.bg} ${item.border}`}>
+                    <div className={`shrink-0 mt-0.5 ${item.color}`}><Icon size={18} strokeWidth={2} /></div>
+                    <div>
+                      <p className={`text-xs font-bold uppercase tracking-wide ${item.color} mb-0.5`}>{item.label}</p>
+                      <p className="text-sm text-gray-700 leading-relaxed">{item.text}</p>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </motion.div>
+
+          {/* ── Features overview ── */}
+          <div>
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="text-center mb-10"
+            >
+              <span className="inline-block text-xs font-bold text-[#15803D] uppercase tracking-[0.18em] mb-2">Features</span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Everything your farm needs</h2>
+              <p className="text-base text-gray-500 mt-2 max-w-xl mx-auto">
+                SmartFarm AI combines seven powerful tools into one simple platform.
+              </p>
+            </motion.div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {ABOUT_FEATURES.map((f, i) => {
+                const Icon = f.icon
+                return (
+                  <motion.div
+                    key={f.label}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: i * 0.06 }}
+                  >
+                    <Link
+                      to={f.route}
+                      className="flex items-start gap-4 p-5 bg-white rounded-2xl border border-gray-200 hover:border-[#A5D6A7] hover:shadow-md transition-all duration-200 group h-full"
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-[#E8F5E9] flex items-center justify-center shrink-0 group-hover:bg-[#2E7D32] transition-colors duration-200">
+                        <Icon size={18} className="text-[#2E7D32] group-hover:text-white transition-colors duration-200" strokeWidth={1.8} />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-[13.5px] font-bold text-gray-900 group-hover:text-[#2E7D32] transition-colors leading-snug">{f.label}</p>
+                        <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{f.desc}</p>
+                      </div>
+                    </Link>
+                  </motion.div>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* ── Who built this ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="bg-[#f7faf5] border border-green-100 rounded-2xl p-8 flex flex-col sm:flex-row items-start sm:items-center gap-6"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-[#E8F5E9] border border-[#c8e6c9] flex items-center justify-center shrink-0">
+              <Users size={22} className="text-[#15803D]" strokeWidth={1.8} />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-[15px] font-bold text-gray-900 mb-1">Built for Indian Farmers</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                SmartFarm AI is a student project (SGP — Smart Farming Group Project) developed to help
+                Indian farmers access AI-powered agricultural guidance. The platform supports multiple
+                languages, works on mobile and desktop, and is designed to be simple enough for every farmer.
+              </p>
+            </div>
+            <Link
+              to="/how-to-use"
+              className="shrink-0 inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#15803D] hover:bg-[#166534] text-white text-sm font-semibold transition-colors"
+            >
+              Get Started <ArrowRight size={14} />
+            </Link>
+          </motion.div>
+
+        </div>
+      </section>
+
       {/* ── How to Use ── */}
       <section className="bg-white py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

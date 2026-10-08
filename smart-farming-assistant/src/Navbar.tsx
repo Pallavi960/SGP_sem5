@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X, Globe, ChevronDown, User, LogOut } from 'lucide-react'
+import { Menu, X, Globe, ChevronDown, User, LogOut, HelpCircle, ArrowRight } from 'lucide-react'
 import logo from './assets/logo.png'
 import { useWeather, getWeatherIcon } from './hooks/useWeather'
 import { useAuth } from './context/AuthContext'
@@ -102,6 +102,132 @@ function LanguageSelector() {
   )
 }
 
+/* ─── Quick Help Panel ───────────────────────────────────────── */
+const HELP_STEPS = [
+  { emoji: '🌱', title: 'Choose Your Crop',       desc: 'Select your crop to get advice for your farming needs.',          route: '/crop-recommendation' },
+  { emoji: '📍', title: 'Set Your Location',       desc: 'Choose your location for useful local information.',              route: '/weather' },
+  { emoji: '🌦️', title: 'Check the Weather',       desc: 'Check weather conditions before important farm work.',           route: '/weather' },
+  { emoji: '🩺', title: 'Check Crop Health',        desc: 'Upload a crop photo to check for possible diseases.',            route: '/disease-detection' },
+  { emoji: '🧪', title: 'Check Fertilizer',         desc: 'Get fertilizer guidance based on your soil and crop.',          route: '/fertilizer-advisor' },
+  { emoji: '📅', title: 'Plan Your Farm Work',      desc: 'See what needs to be done and when on your farm.',              route: '/farm-planner' },
+  { emoji: '🏛️', title: 'Find Govt. Schemes',       desc: 'Explore government support and schemes for farmers.',           route: '/government-schemes' },
+  { emoji: '🤖', title: 'Ask SmartFarm AI',         desc: 'Ask any farming question and get simple guidance.',             route: '/ai-assistant' },
+  { emoji: '✅', title: 'Take Action',              desc: "Use what you've learned to make better farm decisions.",         route: null },
+]
+
+function HelpPanel() {
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    if (!open) return
+    const handler = (e: MouseEvent) => {
+      if (!(e.target as Element).closest('[data-help-panel]')) setOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [open])
+
+  return (
+    <div className="relative" data-help-panel="">
+      {/* Trigger button */}
+      <button
+        onClick={() => setOpen((p) => !p)}
+        className={`flex items-center gap-1.5 px-[10px] py-[9px] text-[13px] font-medium rounded-[8px] transition-all duration-150 select-none ${
+          open
+            ? 'text-[#087f3e] bg-[#f0faf2]'
+            : 'text-[#4b5563] hover:text-gray-900 hover:bg-[#f5f7f5]'
+        }`}
+        aria-label="How to Use"
+        aria-expanded={open}
+      >
+        <HelpCircle size={14} className={open ? 'text-[#087f3e]' : 'text-gray-400'} strokeWidth={2} />
+        <span className="whitespace-nowrap hidden sm:inline">How to Use</span>
+      </button>
+
+      {/* Panel */}
+      {open && (
+        <div
+          className="absolute right-0 top-[calc(100%+8px)] w-[300px] sm:w-[320px] bg-white border border-gray-200 rounded-2xl shadow-xl z-50 overflow-hidden"
+          role="dialog"
+          aria-label="How to Use SmartFarm AI"
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-[#f7faf5]">
+            <div className="flex items-center gap-2">
+              <span className="text-base">🌾</span>
+              <span className="text-[13px] font-bold text-gray-900">How to Use SmartFarm AI</span>
+            </div>
+            <button
+              onClick={() => setOpen(false)}
+              className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              aria-label="Close help panel"
+            >
+              <X size={14} />
+            </button>
+          </div>
+
+          {/* Steps list */}
+          <div className="overflow-y-auto max-h-[70vh] px-3 py-2">
+            <p className="text-[11.5px] text-gray-400 px-1 pt-1 pb-2">Follow these simple steps:</p>
+
+            {HELP_STEPS.map((step, i) => (
+              <div key={i}>
+                {step.route ? (
+                  <Link
+                    to={step.route}
+                    onClick={() => setOpen(false)}
+                    className="flex items-start gap-2.5 px-2 py-2.5 rounded-xl hover:bg-[#f0faf2] group transition-colors"
+                  >
+                    <span className="text-[15px] shrink-0 mt-0.5">{step.emoji}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1">
+                        <span className="text-[12.5px] font-semibold text-gray-800 group-hover:text-[#087f3e] transition-colors leading-tight">
+                          {i + 1}. {step.title}
+                        </span>
+                        <ArrowRight size={10} className="text-gray-300 group-hover:text-[#087f3e] shrink-0 transition-colors" />
+                      </div>
+                      <p className="text-[11.5px] text-gray-500 leading-snug mt-0.5">{step.desc}</p>
+                    </div>
+                  </Link>
+                ) : (
+                  <div className="flex items-start gap-2.5 px-2 py-2.5 rounded-xl">
+                    <span className="text-[15px] shrink-0 mt-0.5">{step.emoji}</span>
+                    <div className="flex-1 min-w-0">
+                      <span className="text-[12.5px] font-semibold text-gray-800 leading-tight">
+                        {i + 1}. {step.title}
+                      </span>
+                      <p className="text-[11.5px] text-gray-500 leading-snug mt-0.5">{step.desc}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Connector dot between steps */}
+                {i < HELP_STEPS.length - 1 && (
+                  <div className="flex justify-start pl-[18px] py-0.5" aria-hidden="true">
+                    <div className="w-px h-3 bg-gray-100" />
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {/* Full guide link */}
+            <div className="px-2 pt-2 pb-3 mt-1 border-t border-gray-100">
+              <Link
+                to="/how-to-use"
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl bg-[#f0faf2] hover:bg-[#d4edda] text-[12px] font-semibold text-[#087f3e] transition-colors"
+              >
+                View Full Guide
+                <ArrowRight size={12} />
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 /* ─── Navbar ─────────────────────────────────────────────────── */
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -157,6 +283,11 @@ export default function Navbar() {
           <div className="w-px h-5 bg-gray-200 mx-0.5 shrink-0" />
 
           <LanguageSelector />
+
+          {/* Divider */}
+          <div className="w-px h-5 bg-gray-200 mx-0.5 shrink-0" />
+
+          <HelpPanel />
 
           {/* Divider */}
           <div className="w-px h-5 bg-gray-200 mx-0.5 shrink-0" />
@@ -243,6 +374,15 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
+
+            {/* How to Use — quick access */}
+            <Link
+              to="/how-to-use"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[14px] font-medium text-[#087f3e] bg-[#f0faf2] border border-[#c8e6c9] transition-colors duration-150"
+            >
+              <HelpCircle size={15} strokeWidth={1.8} />
+              How to Use
+            </Link>
 
             <div className="mt-2 pt-3 border-t border-gray-100 flex flex-col gap-2.5">
               <div className="flex items-center justify-between gap-3">
