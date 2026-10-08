@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { ArrowRight, ChevronDown, Bot, Microscope, Sprout, CloudSun, TrendingUp, BookOpen } from 'lucide-react'
+import { ArrowRight, ChevronDown, Bot, Microscope, Sprout, CloudSun, TrendingUp, BookOpen, Wheat, CheckCircle2 } from 'lucide-react'
 import FarmingIllustration from './FarmingIllustration'
 import DashboardPreview from './DashboardPreview'
 import WhySmartFarming from './WhySmartFarming'
@@ -19,6 +19,59 @@ const stats = [
   { value: '95%', label: 'Accuracy Rate' },
   { value: '50+', label: 'Crop Varieties' },
   { value: '24/7', label: 'AI Support' },
+]
+
+const HOW_TO_STEPS = [
+  {
+    step: 1,
+    icon: Wheat,
+    title: 'Select Your Crop',
+    desc: 'Choose your crop from the Crop Recommendation page.',
+    color: 'text-green-700',
+    bg: 'bg-green-50',
+    border: 'border-green-200',
+    dot: 'bg-green-500',
+  },
+  {
+    step: 2,
+    icon: CloudSun,
+    title: 'Check Your Weather',
+    desc: 'See current weather conditions for your farm location.',
+    color: 'text-sky-700',
+    bg: 'bg-sky-50',
+    border: 'border-sky-200',
+    dot: 'bg-sky-500',
+  },
+  {
+    step: 3,
+    icon: Sprout,
+    title: 'Get Recommendations',
+    desc: 'Receive crop and fertilizer advice tailored to your field.',
+    color: 'text-emerald-700',
+    bg: 'bg-emerald-50',
+    border: 'border-emerald-200',
+    dot: 'bg-emerald-500',
+  },
+  {
+    step: 4,
+    icon: Bot,
+    title: 'Plan Farm Tasks',
+    desc: 'Use the Farm Planner to create your farming schedule.',
+    color: 'text-amber-700',
+    bg: 'bg-amber-50',
+    border: 'border-amber-200',
+    dot: 'bg-amber-500',
+  },
+  {
+    step: 5,
+    icon: CheckCircle2,
+    title: 'Track Your Tasks',
+    desc: 'Mark tasks done as you complete them day by day.',
+    color: 'text-teal-700',
+    bg: 'bg-teal-50',
+    border: 'border-teal-200',
+    dot: 'bg-teal-500',
+  },
 ]
 
 const features = [
@@ -203,6 +256,91 @@ export default function Home() {
           </div>
         </div>
       </section>
+      {/* ── How to Use ── */}
+      <section className="bg-white py-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+          {/* Heading */}
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-14"
+          >
+            <span className="inline-block text-xs font-bold text-[#15803D] uppercase tracking-[0.18em] mb-3">
+              Getting Started
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 leading-tight">
+              How to Use SmartFarm AI
+            </h2>
+            <p className="text-base text-gray-500 mt-3 max-w-xl mx-auto">
+              Your simple farming assistant — follow these five steps to get the most out of every feature.
+            </p>
+          </motion.div>
+
+          {/* Steps */}
+          <div className="relative flex flex-col gap-0">
+
+            {/* Connecting line behind the steps */}
+            <div
+              className="absolute left-[27px] top-10 bottom-10 w-px bg-gray-100 hidden sm:block"
+              aria-hidden="true"
+            />
+
+            {HOW_TO_STEPS.map((s, i) => {
+              const Icon = s.icon
+              return (
+                <motion.div
+                  key={s.step}
+                  initial={{ opacity: 0, x: -18 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: '-40px' }}
+                  transition={{ duration: 0.45, delay: i * 0.09 }}
+                  className="relative flex items-start gap-5 py-5"
+                >
+                  {/* Step number + icon circle */}
+                  <div className={`relative z-10 w-14 h-14 shrink-0 rounded-2xl border-2 ${s.border} ${s.bg} flex flex-col items-center justify-center gap-0.5`}>
+                    <Icon size={20} className={s.color} strokeWidth={1.8} />
+                    <span className={`text-[10px] font-bold ${s.color}`}>{s.step}</span>
+                  </div>
+
+                  {/* Text */}
+                  <div className="flex-1 pt-1 min-w-0">
+                    <h3 className="text-[15px] font-bold text-gray-900 leading-snug">{s.title}</h3>
+                    <p className="text-sm text-gray-500 mt-0.5 leading-relaxed">{s.desc}</p>
+                  </div>
+
+                  {/* Connector dot (desktop only) */}
+                  {i < HOW_TO_STEPS.length - 1 && (
+                    <span
+                      className={`absolute left-[26px] -bottom-1 w-2 h-2 rounded-full ${s.dot} hidden sm:block z-10`}
+                      aria-hidden="true"
+                    />
+                  )}
+                </motion.div>
+              )
+            })}
+          </div>
+
+          {/* CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.45, delay: 0.3 }}
+            className="mt-10 flex justify-center"
+          >
+            <Link
+              to="/crop-recommendation"
+              className="inline-flex items-center gap-2 px-7 py-3.5 bg-[#15803D] hover:bg-[#166534] text-white text-sm font-semibold rounded-xl shadow-md shadow-green-900/15 transition-colors"
+            >
+              Get Started <ArrowRight size={15} />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
     </div>
   )
 }

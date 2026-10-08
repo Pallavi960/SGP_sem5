@@ -18,3 +18,8 @@ dist/
 # OS
 .DS_Store
 Thumbs.db
+
+# ML — training data and large model weights (not committed to git)
+data/
+backend/app/models/
+train_potato_model.py

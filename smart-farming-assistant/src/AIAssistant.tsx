@@ -71,7 +71,7 @@ export default function AIAssistant() {
       .map((m) => ({ role: m.role, text: m.text }))
 
     try {
-      const res = await axios.post('http://localhost:8000/api/ai/chat', {
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000'}/api/ai/chat`, {
         message: trimmed,
         history,
       })

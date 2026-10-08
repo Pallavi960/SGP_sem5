@@ -4,18 +4,22 @@ import { Menu, X, Globe, ChevronDown, User, LogOut } from 'lucide-react'
 import logo from './assets/logo.png'
 import { useWeather, getWeatherIcon } from './hooks/useWeather'
 import { useAuth } from './context/AuthContext'
+import { useLanguage } from './context/LanguageContext'
+import { t, LANG_OPTIONS } from './lib/i18n'
+import type { LangCode } from './context/LanguageContext'
 
-const baseNavLinks = [
-  { label: 'Home',               to: '/' },
-  { label: 'AI Assistant',       to: '/ai-assistant' },
-  { label: 'Disease Detection',  to: '/disease-detection' },
-  { label: 'Crop Recommendation',to: '/crop-recommendation' },
-  { label: 'Weather',            to: '/weather' },
-  { label: 'Govt. Schemes',      to: '/government-schemes' },
-  { label: 'About Us',           to: '/about' },
-]
-
-const languages = ['English', 'हिंदी', 'मराठी', 'ગુજરાતી']
+function getNavLinks(lang: LangCode) {
+  return [
+    { label: t(lang, 'nav_home'),                to: '/' },
+    { label: t(lang, 'nav_disease_detection'),   to: '/disease-detection' },
+    { label: t(lang, 'nav_crop_recommendation'), to: '/crop-recommendation' },
+    { label: t(lang, 'nav_weather'),             to: '/weather' },
+    { label: t(lang, 'nav_farm_planner'),        to: '/farm-planner' },
+    { label: t(lang, 'nav_fertilizer_advisor'),  to: '/fertilizer-advisor' },
+    { label: t(lang, 'nav_govt_schemes'),        to: '/government-schemes' },
+    { label: t(lang, 'nav_about_us'),            to: '/about' },
+  ]
+}
 
 /* ─── Weather Widget ─────────────────────────────────────────── */
 function WeatherWidget() {
@@ -50,8 +54,8 @@ function WeatherWidget() {
 
 /* ─── Language Selector ──────────────────────────────────────── */
 function LanguageSelector() {
-  const [open, setOpen]       = useState(false)
-  const [selected, setSelected] = useState('English')
+  const [open, setOpen] = useState(false)
+  const { lang, setLang } = useLanguage()
 
   useEffect(() => {
     const close = (e: MouseEvent) => {
@@ -61,6 +65,8 @@ function LanguageSelector() {
     return () => document.removeEventListener('mousedown', close)
   }, [])
 
+  const selected = LANG_OPTIONS.find((o) => o.code === lang) ?? LANG_OPTIONS[0]
+
   return (
     <div className="relative" data-lang-selector="">
       <button
@@ -68,7 +74,7 @@ function LanguageSelector() {
         className="flex items-center gap-1.5 px-[10px] py-[9px] text-[13px] font-medium text-[#4b5563] hover:text-gray-900 hover:bg-[#f5f7f5] rounded-[8px] transition-all duration-200 select-none"
       >
         <Globe size={14} className="text-gray-400 shrink-0" />
-        <span className="whitespace-nowrap">{selected}</span>
+        <span className="whitespace-nowrap">{selected.flag} {selected.label}</span>
         <ChevronDown
           size={12}
           className={`text-gray-400 shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
@@ -76,18 +82,18 @@ function LanguageSelector() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-[calc(100%+6px)] w-36 bg-white border border-gray-200 rounded-xl shadow-lg py-1.5 z-50">
-          {languages.map((lang) => (
+        <div className="absolute right-0 top-[calc(100%+6px)] w-40 bg-white border border-gray-200 rounded-xl shadow-lg py-1.5 z-50">
+          {LANG_OPTIONS.map((opt) => (
             <button
-              key={lang}
-              onClick={() => { setSelected(lang); setOpen(false) }}
+              key={opt.code}
+              onClick={() => { setLang(opt.code); setOpen(false) }}
               className={`w-full text-left px-4 py-2 text-[13px] transition-colors duration-100 rounded-none first:rounded-t-xl last:rounded-b-xl ${
-                selected === lang
+                lang === opt.code
                   ? 'text-[#087f3e] bg-[#087f3e]/10 font-semibold'
                   : 'text-gray-600 hover:bg-gray-50'
               }`}
             >
-              {lang}
+              {opt.flag} {opt.label}
             </button>
           ))}
         </div>
@@ -102,11 +108,13 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const location = useLocation()
   const { user, userPhone, userName, signOut } = useAuth()
+  const { lang } = useLanguage()
 
   const displayName = userName || userPhone || 'My Account'
 
+  const baseNavLinks = getNavLinks(lang)
   const navLinks = user
-    ? [{ label: 'Dashboard', to: '/dashboard' }, ...baseNavLinks]
+    ? [{ label: t(lang, 'nav_dashboard'), to: '/dashboard' }, ...baseNavLinks]
     : baseNavLinks
 
   useEffect(() => {
@@ -122,21 +130,75 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`sticky top-0 z-50 bg-[#ffffff] border-b border-[#e5e7eb] transition-all duration-200 w-full ${
+      className={`sticky top-0 z-50 bg-[#ffffff] transition-all duration-200 w-full xl:border-b-0 border-b border-[#e5e7eb] ${
         scrolled
           ? 'shadow-[0_2px_12px_rgba(0,0,0,0.05)]'
           : 'shadow-none'
       }`}
     >
-      {/* ── Main bar ── */}
-      <div className="w-full px-[32px]">
-        {/* On desktop (xl), grid with 3 columns. On mobile, flex between. */}
-        <div className="flex justify-between items-center xl:grid xl:grid-cols-[auto_1fr_auto] h-[64px] sm:h-[68px]">
-          
-          {/* ── LEFT: Brand ── */}
+      {/* ── Desktop top bar (xl+): utilities only — sidebar handles nav ── */}
+      <div className="hidden xl:flex items-center justify-between h-[52px] px-6 w-full border-b border-[#f0f0f0] bg-white">
+        {/* Left: breadcrumb — current page label */}
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] font-semibold text-[#9ca3af] uppercase tracking-[0.08em] select-none">
+            SmartFarm AI
+          </span>
+          <span className="text-[#d1d5db] text-[11px] select-none">/</span>
+          <span className="text-[13px] font-semibold text-[#374151] select-none">
+            {navLinks.find((l) => isActive(l.to))?.label ?? 'Home'}
+          </span>
+        </div>
+
+        {/* Right: weather + language + auth */}
+        <div className="flex items-center gap-2.5">
+          <WeatherWidget />
+
+          {/* Divider */}
+          <div className="w-px h-5 bg-gray-200 mx-0.5 shrink-0" />
+
+          <LanguageSelector />
+
+          {/* Divider */}
+          <div className="w-px h-5 bg-gray-200 mx-0.5 shrink-0" />
+
+          {user ? (
+            <div className="flex items-center gap-1.5">
+              <Link
+                to="/dashboard"
+                className="flex items-center gap-2 px-3 h-[34px] bg-[#f0faf2] hover:bg-[#d4edda] border border-[#c8e6c9] rounded-[8px] text-[12.5px] font-semibold text-[#087f3e] transition-all duration-150"
+                title="Go to Dashboard"
+              >
+                <User size={13} strokeWidth={2.2} />
+                <span className="max-w-[110px] truncate">{displayName}</span>
+              </Link>
+              <button
+                onClick={() => signOut()}
+                className="flex items-center justify-center w-[34px] h-[34px] text-gray-400 hover:text-red-500 hover:bg-red-50 border border-gray-200 hover:border-red-200 rounded-[8px] transition-all duration-150"
+                title="Log Out"
+                aria-label="Log Out"
+              >
+                <LogOut size={14} />
+              </button>
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              className="inline-flex items-center justify-center px-4 h-[34px] text-[12.5px] font-semibold text-white bg-[#087f3e] rounded-[8px] hover:bg-[#066832] transition-all duration-150 whitespace-nowrap"
+            >
+              Sign In
+            </Link>
+          )}
+        </div>
+      </div>
+
+      {/* ── Mobile / Tablet bar (below xl): unchanged ── */}
+      <div className="xl:hidden w-full px-[32px]">
+        <div className="flex justify-between items-center h-[64px] sm:h-[68px]">
+
+          {/* Brand */}
           <Link
             to="/"
-            className="flex items-center gap-[10px] shrink-0 group xl:col-start-1"
+            className="flex items-center gap-[10px] shrink-0 group"
           >
             <img
               src={logo}
@@ -153,61 +215,10 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* ── CENTER: Nav links (hidden below xl) ── */}
-          <div className="hidden xl:flex items-center gap-[14px] justify-center xl:col-start-2">
-            {navLinks.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={`relative text-[14px] font-medium whitespace-nowrap transition-all duration-200 ${
-                  isActive(link.to)
-                    ? 'px-[14px] py-[9px] text-[#19853b] bg-[#f0faf2] border border-[#b8e5c1] rounded-[9px]'
-                    : 'px-[6px] py-[8px] text-[#374151] hover:text-[#19853b] hover:bg-[rgba(25,133,59,0.06)] rounded-[7px] border border-transparent'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-
-          {/* ── RIGHT: Actions (hidden below xl) ── */}
-          <div className="hidden xl:flex items-center gap-[12px] xl:col-start-3 justify-end shrink-0">
-            <WeatherWidget />
-            <LanguageSelector />
-
-            {user ? (
-              <div className="flex items-center gap-2">
-                <Link
-                  to="/dashboard"
-                  className="flex items-center gap-1.5 px-3 py-1.5 h-[40px] bg-[#E8F5E9] hover:bg-[#C8E6C9] border border-[#A5D6A7] rounded-[9px] text-xs font-semibold text-[#087f3e] transition-all"
-                  title="Go to Dashboard"
-                >
-                  <User size={15} />
-                  <span className="max-w-[120px] truncate font-medium">{displayName}</span>
-                </Link>
-                <button
-                  onClick={() => signOut()}
-                  className="flex items-center justify-center w-[40px] h-[40px] text-gray-500 hover:text-red-600 hover:bg-red-50 border border-gray-200 hover:border-red-200 rounded-[9px] transition-all"
-                  title="Log Out"
-                  aria-label="Log Out"
-                >
-                  <LogOut size={16} />
-                </button>
-              </div>
-            ) : (
-              <Link
-                to="/login"
-                className="inline-flex items-center justify-center px-[20px] py-[10px] h-[40px] text-[14px] font-semibold text-white bg-[#087f3e] rounded-[9px] hover:bg-[#066832] hover:shadow-md hover:-translate-y-[1px] active:translate-y-0 transition-all duration-200 whitespace-nowrap"
-              >
-                Login
-              </Link>
-            )}
-          </div>
-
-          {/* ── Hamburger (below xl) ── */}
+          {/* Hamburger */}
           <button
             onClick={() => setMenuOpen((p) => !p)}
-            className="xl:hidden ml-auto p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors duration-150"
+            className="ml-auto p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors duration-150"
             aria-label="Toggle menu"
           >
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
@@ -215,11 +226,10 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* ── Mobile / Tablet drawer ── */}
+      {/* ── Mobile drawer: unchanged ── */}
       {menuOpen && (
         <div className="xl:hidden border-t border-gray-100 bg-white">
           <div className="w-full px-[32px] py-3 flex flex-col gap-1">
-            {/* Nav links */}
             {navLinks.map((link) => (
               <Link
                 key={link.to}
@@ -234,7 +244,6 @@ export default function Navbar() {
               </Link>
             ))}
 
-            {/* Bottom utility row */}
             <div className="mt-2 pt-3 border-t border-gray-100 flex flex-col gap-2.5">
               <div className="flex items-center justify-between gap-3">
                 <WeatherWidget />

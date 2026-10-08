@@ -42,38 +42,42 @@ export default function Weather() {
   const [hourly, setHourly] = useState<HourlyPoint[]>([])
   const [daily, setDaily] = useState<DailyPoint[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!navigator.geolocation) { setError(true); setLoading(false); return }
+    if (!navigator.geolocation) { setError('denied'); setLoading(false); return }
 
     navigator.geolocation.getCurrentPosition(
       async ({ coords }) => {
         try {
           const { latitude: lat, longitude: lon } = coords
 
-          const [weatherRes, geoRes] = await Promise.all([
-            fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,windspeed_10m,precipitation,weathercode&hourly=temperature_2m,weathercode&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto&forecast_days=7`),
-            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
-          ])
-
+          // Fetch weather and geocoding independently so one failure doesn't block the other
+          const weatherRes = await fetch(
+            `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,windspeed_10m,precipitation,weathercode&hourly=temperature_2m,weathercode&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto&forecast_days=7`
+          )
           const wj = await weatherRes.json()
-          const gj = await geoRes.json()
 
-          const city =
-            gj.address?.city || gj.address?.town ||
-            gj.address?.village || gj.address?.county || 'Your Location'
+          let city = 'Your Location'
+          try {
+            const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
+            const gj = await geoRes.json()
+            const rawCity = gj.address?.city || gj.address?.town || gj.address?.village || gj.address?.county || ''
+            const state = gj.address?.state ?? ''
+            if (rawCity) city = state ? `${rawCity}, ${state}` : rawCity
+          } catch {
+            // geocoding failed — use coordinates as fallback
+            city = `${lat.toFixed(2)}°N, ${lon.toFixed(2)}°E`
+          }
 
-          const state = gj.address?.state ?? ''
           const c = wj.current
-
           setCurrent({
             temp: Math.round(c.temperature_2m),
             humidity: c.relative_humidity_2m,
             windspeed: Math.round(c.windspeed_10m),
             precipitation: c.precipitation,
             weathercode: c.weathercode,
-            city: state ? `${city}, ${state}` : city,
+            city,
           })
 
           // next 24 hourly points from now
@@ -102,12 +106,12 @@ export default function Weather() {
           })
           setDaily(dailyPoints)
         } catch {
-          setError(true)
+          setError('fetch')
         } finally {
           setLoading(false)
         }
       },
-      () => { setError(true); setLoading(false) }
+      () => { setError('denied'); setLoading(false) }
     )
   }, [])
 
@@ -118,11 +122,19 @@ export default function Weather() {
     </div>
   )
 
-  if (error || !current) return (
+  if (error === 'denied' || (!loading && !current)) return (
     <div className="flex flex-col items-center justify-center py-32 gap-3">
       <div className="text-5xl">📍</div>
       <p className="text-gray-600 font-medium">Location access denied</p>
       <p className="text-gray-400 text-sm">Please allow location permission to see weather</p>
+    </div>
+  )
+
+  if (error === 'fetch') return (
+    <div className="flex flex-col items-center justify-center py-32 gap-3">
+      <div className="text-5xl">🌐</div>
+      <p className="text-gray-600 font-medium">Unable to fetch weather data</p>
+      <p className="text-gray-400 text-sm">Check your internet connection and try again</p>
     </div>
   )
 
@@ -137,18 +149,18 @@ export default function Weather() {
 
       {/* Current Weather Card */}
       <div className="bg-gradient-to-br from-[#2E7D32] to-[#66BB6A] rounded-2xl p-6 text-white shadow-lg">
-        <p className="text-sm opacity-80 mb-1">📍 {current.city}</p>
+        <p className="text-sm opacity-80 mb-1">📍 {current!.city}</p>
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-7xl font-thin">{current.temp}°C</div>
-            <div className="text-lg mt-1 opacity-90">{WMO_LABEL[current.weathercode] ?? 'Unknown'}</div>
+            <div className="text-7xl font-thin">{current!.temp}°C</div>
+            <div className="text-lg mt-1 opacity-90">{WMO_LABEL[current!.weathercode] ?? 'Unknown'}</div>
           </div>
-          <div className="text-8xl">{getWeatherIcon(current.weathercode)}</div>
+          <div className="text-8xl">{getWeatherIcon(current!.weathercode)}</div>
         </div>
         <div className="flex gap-6 mt-5 text-sm opacity-90">
-          <span>💧 Humidity: {current.humidity}%</span>
-          <span>💨 Wind: {current.windspeed} km/h</span>
-          <span>🌧️ Precipitation: {current.precipitation} mm</span>
+          <span>💧 Humidity: {current!.humidity}%</span>
+          <span>💨 Wind: {current!.windspeed} km/h</span>
+          <span>🌧️ Precipitation: {current!.precipitation} mm</span>
         </div>
       </div>
 

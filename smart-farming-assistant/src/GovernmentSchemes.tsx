@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   Search, Filter, Shield, Banknote, Tractor, Leaf,
@@ -87,83 +87,6 @@ export default function GovernmentSchemes() {
   return (
     <div className="bg-white overflow-x-hidden">
 
-      {/* ── Hero ── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#E8F5E9] via-white to-[#F1F8E9] py-20 lg:py-28">
-        {/* Ambient blobs */}
-        <motion.div
-          animate={{ scale: [1, 1.1, 1], opacity: [0.4, 0.65, 0.4] }}
-          transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full bg-[#C8E6C9] blur-3xl pointer-events-none"
-        />
-        <motion.div
-          animate={{ scale: [1, 1.07, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
-          className="absolute -bottom-20 -right-20 w-[400px] h-[400px] rounded-full bg-[#DCEDC8] blur-3xl pointer-events-none"
-        />
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-
-            {/* Left */}
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={{ visible: { transition: { staggerChildren: 0.12 } } }}
-              className="flex flex-col gap-6"
-            >
-              <motion.div variants={fadeUp} className="self-start">
-                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#A5D6A7] text-[#2E7D32] text-sm font-medium shadow-sm">
-                  <span className="w-2 h-2 rounded-full bg-[#4CAF50] animate-pulse" />
-                  Government of India Initiatives
-                </span>
-              </motion.div>
-
-              <motion.h1
-                variants={fadeUp}
-                className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#1F2937] leading-[1.1] tracking-tight"
-              >
-                Government{' '}
-                <span className="relative inline-block">
-                  <span className="relative z-10 text-[#2E7D32]">Schemes</span>
-                  <motion.span
-                    initial={{ scaleX: 0 }}
-                    animate={{ scaleX: 1 }}
-                    transition={{ duration: 0.9, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                    className="absolute bottom-1 left-0 right-0 h-3 bg-[#C8E6C9] -z-0 origin-left rounded-sm"
-                  />
-                </span>{' '}
-                for Farmers
-              </motion.h1>
-
-              <motion.p variants={fadeUp} className="text-lg text-gray-500 leading-relaxed max-w-lg">
-                Explore government schemes, subsidies, crop insurance, and{' '}
-                <span className="text-[#2E7D32] font-semibold">financial support</span>{' '}
-                available for farmers across India.
-              </motion.p>
-
-              <motion.div variants={fadeUp} className="flex flex-wrap gap-6 pt-2">
-                {[['50+', 'Active Schemes'], ['₹6K+', 'Direct Benefits'], ['100%', 'Free Access']].map(([val, lbl]) => (
-                  <div key={lbl} className="flex flex-col">
-                    <span className="text-2xl font-extrabold text-[#2E7D32]">{val}</span>
-                    <span className="text-xs text-gray-400 font-medium">{lbl}</span>
-                  </div>
-                ))}
-              </motion.div>
-            </motion.div>
-
-            {/* Right — SVG Illustration */}
-            <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-              className="flex justify-center"
-            >
-              <SchemesIllustration />
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
       {/* ── Search & Filters ── */}
       <section className="sticky top-[68px] z-30 bg-white border-b border-gray-100 shadow-sm py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -195,8 +118,7 @@ export default function GovernmentSchemes() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
+            animate="visible"
             variants={{ visible: { transition: { staggerChildren: 0.09 } } }}
             className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
           >
@@ -417,78 +339,5 @@ function InfoRow({ icon, label, value, muted = false }: { icon: React.ReactNode;
         <span className={`text-xs font-semibold ${muted ? 'text-gray-400' : 'text-[#1F2937]'}`}>{value}</span>
       </div>
     </div>
-  )
-}
-
-function SchemesIllustration() {
-  return (
-    <svg viewBox="0 0 480 400" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full max-w-md">
-      {/* Background circle */}
-      <circle cx="240" cy="200" r="180" fill="#E8F5E9" />
-      <circle cx="240" cy="200" r="140" fill="#F1F8E9" />
-
-      {/* Ground */}
-      <ellipse cx="240" cy="320" rx="160" ry="18" fill="#C8E6C9" />
-
-      {/* Building / Government Office */}
-      <rect x="140" y="180" width="200" height="130" rx="4" fill="#A5D6A7" />
-      <rect x="150" y="190" width="180" height="120" rx="3" fill="white" />
-      {/* Columns */}
-      <rect x="165" y="210" width="14" height="100" rx="3" fill="#E8F5E9" />
-      <rect x="195" y="210" width="14" height="100" rx="3" fill="#E8F5E9" />
-      <rect x="271" y="210" width="14" height="100" rx="3" fill="#E8F5E9" />
-      <rect x="301" y="210" width="14" height="100" rx="3" fill="#E8F5E9" />
-      {/* Door */}
-      <rect x="218" y="260" width="44" height="50" rx="4" fill="#2E7D32" />
-      <circle cx="256" cy="286" r="3" fill="#A5D6A7" />
-      {/* Windows */}
-      <rect x="168" y="230" width="28" height="22" rx="3" fill="#B2DFDB" />
-      <rect x="284" y="230" width="28" height="22" rx="3" fill="#B2DFDB" />
-      {/* Roof */}
-      <polygon points="130,185 240,130 350,185" fill="#2E7D32" />
-      <polygon points="145,185 240,138 335,185" fill="#388E3C" />
-      {/* Flag pole */}
-      <rect x="238" y="100" width="4" height="38" fill="#1B5E20" />
-      <rect x="242" y="100" width="22" height="14" rx="2" fill="#FF8F00" />
-
-      {/* Floating cards */}
-      {/* Card 1 */}
-      <motion.g style={{ transformOrigin: '90px 160px' }}>
-        <rect x="50" y="130" width="100" height="60" rx="10" fill="white" stroke="#A5D6A7" strokeWidth="1.5" />
-        <rect x="60" y="142" width="40" height="6" rx="3" fill="#C8E6C9" />
-        <rect x="60" y="154" width="60" height="4" rx="2" fill="#E8F5E9" />
-        <rect x="60" y="163" width="50" height="4" rx="2" fill="#E8F5E9" />
-        <circle cx="128" cy="145" r="8" fill="#E8F5E9" />
-        <rect x="124" y="143" width="8" height="4" rx="1" fill="#2E7D32" />
-      </motion.g>
-
-      {/* Card 2 */}
-      <rect x="330" y="120" width="110" height="65" rx="10" fill="white" stroke="#A5D6A7" strokeWidth="1.5" />
-      <rect x="342" y="133" width="45" height="6" rx="3" fill="#C8E6C9" />
-      <rect x="342" y="145" width="65" height="4" rx="2" fill="#E8F5E9" />
-      <rect x="342" y="154" width="55" height="4" rx="2" fill="#E8F5E9" />
-      <circle cx="428" cy="136" r="8" fill="#FFF9C4" />
-      <rect x="424" y="134" width="8" height="4" rx="1" fill="#F9A825" />
-
-      {/* Rupee coins */}
-      <circle cx="100" cy="290" r="16" fill="#FFF9C4" stroke="#F9A825" strokeWidth="1.5" />
-      <text x="100" y="295" textAnchor="middle" fontSize="13" fill="#F9A825" fontWeight="bold">₹</text>
-      <circle cx="380" cy="280" r="14" fill="#FFF9C4" stroke="#F9A825" strokeWidth="1.5" />
-      <text x="380" y="285" textAnchor="middle" fontSize="12" fill="#F9A825" fontWeight="bold">₹</text>
-
-      {/* Wheat stalks */}
-      <line x1="80" y1="320" x2="80" y2="270" stroke="#8BC34A" strokeWidth="2.5" strokeLinecap="round" />
-      <ellipse cx="80" cy="265" rx="5" ry="10" fill="#AED581" />
-      <line x1="95" y1="320" x2="95" y2="278" stroke="#8BC34A" strokeWidth="2.5" strokeLinecap="round" />
-      <ellipse cx="95" cy="273" rx="5" ry="10" fill="#AED581" />
-      <line x1="390" y1="320" x2="390" y2="272" stroke="#8BC34A" strokeWidth="2.5" strokeLinecap="round" />
-      <ellipse cx="390" cy="267" rx="5" ry="10" fill="#AED581" />
-      <line x1="405" y1="320" x2="405" y2="280" stroke="#8BC34A" strokeWidth="2.5" strokeLinecap="round" />
-      <ellipse cx="405" cy="275" rx="5" ry="10" fill="#AED581" />
-
-      {/* Checkmark badge */}
-      <circle cx="240" cy="165" r="14" fill="#2E7D32" />
-      <polyline points="233,165 238,171 248,158" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-    </svg>
   )
 }

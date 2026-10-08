@@ -10,7 +10,7 @@ import {
 import axios from 'axios'
 
 // Backend endpoint
-const API_BASE = 'http://localhost:8000/api/disease'
+const API_BASE = `${import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000'}/api/disease`
 
 export interface Top3Prediction {
   class_name: string
