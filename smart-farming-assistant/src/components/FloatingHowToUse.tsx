@@ -1,25 +1,70 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { X, ArrowRight, BookOpenCheck } from 'lucide-react'
+import { useLanguage } from '../context/LanguageContext'
 
-// ── Step data ─────────────────────────────────────────────────────────────────
-const STEPS = [
-  { emoji: '🌱', title: 'Choose Your Crop',        desc: 'Select your crop to get advice for your farming needs.',           route: '/crop-recommendation' },
-  { emoji: '📍', title: 'Set Your Location',        desc: 'Choose your location for more useful local information.',          route: '/weather' },
-  { emoji: '🌦️', title: 'Check the Weather',        desc: 'Check weather conditions before important farm work.',            route: '/weather' },
-  { emoji: '🩺', title: 'Check Crop Health',         desc: 'Upload a crop photo to check for possible diseases.',             route: '/disease-detection' },
-  { emoji: '🧪', title: 'Check Fertilizer',          desc: 'Get fertilizer guidance based on your soil and crop.',           route: '/fertilizer-advisor' },
-  { emoji: '📅', title: 'Plan Farm Work',            desc: 'See what needs to be done and when on your farm.',               route: '/farm-planner' },
-  { emoji: '🏛️', title: 'Find Govt. Schemes',        desc: 'Explore government support and schemes for farmers.',            route: '/government-schemes' },
-  { emoji: '🤖', title: 'Ask SmartFarm AI',          desc: 'Ask any farming question and get simple guidance.',              route: '/ai-assistant' },
-  { emoji: '✅', title: 'Take Action',               desc: "Use what you've learned to make better farm decisions.",          route: null },
-]
-
-// ── Component ─────────────────────────────────────────────────────────────────
 export default function FloatingHowToUse() {
+  const { lang } = useLanguage()
   const [open, setOpen]               = useState(false)
   const [showTooltip, setShowTooltip] = useState(false)
   const wrapperRef                    = useRef<HTMLDivElement>(null)
+
+  const steps = [
+    {
+      emoji: '🌱',
+      title: lang === 'hi' ? 'अपनी फसल चुनें' : lang === 'mr' ? 'आपले पीक निवडा' : 'Choose Your Crop',
+      desc: lang === 'hi' ? 'अपनी आवश्यकताओं के अनुसार कृषि सलाह प्राप्त करें।' : lang === 'mr' ? 'शेतीच्या गरजांसाठी योग्य सल्ला मिळवा.' : 'Select your crop to get advice for your farming needs.',
+      route: '/crop-recommendation'
+    },
+    {
+      emoji: '📍',
+      title: lang === 'hi' ? 'स्थान निर्धारित करें' : lang === 'mr' ? 'स्थान निश्चित करा' : 'Set Your Location',
+      desc: lang === 'hi' ? 'स्थानीय जानकारी के लिए अपना स्थान चुनें।' : lang === 'mr' ? 'स्थानिक माहितीसाठी आपले स्थान निवडा.' : 'Choose your location for more useful local information.',
+      route: '/weather'
+    },
+    {
+      emoji: '🌦️',
+      title: lang === 'hi' ? 'मौसम जांचें' : lang === 'mr' ? 'हवामान तपासा' : 'Check the Weather',
+      desc: lang === 'hi' ? 'महत्वपूर्ण कृषि कार्यों से पहले मौसम देखें।' : lang === 'mr' ? 'महत्त्वाच्या कामांपूर्वी हवामान तपासा.' : 'Check weather conditions before important farm work.',
+      route: '/weather'
+    },
+    {
+      emoji: '🩺',
+      title: lang === 'hi' ? 'रोग पहचानें' : lang === 'mr' ? 'रोग ओळखा' : 'Check Crop Health',
+      desc: lang === 'hi' ? 'संभावित रोगों की जांच हेतु पत्ती की फोटो अपलोड करें।' : lang === 'mr' ? 'संभाव्य रोगांच्या तपासणीसाठी पानाचा फोटो अपलोड करा.' : 'Upload a crop photo to check for possible diseases.',
+      route: '/disease-detection'
+    },
+    {
+      emoji: '🧪',
+      title: lang === 'hi' ? 'खाद सलाह' : lang === 'mr' ? 'खत सल्ला' : 'Check Fertilizer',
+      desc: lang === 'hi' ? 'मिट्टी और फसल के अनुसार सही खाद की मात्रा जानें।' : lang === 'mr' ? 'माती व पिकाच्या आधारे योग्य खत प्रमाण जाणून घ्या.' : 'Get fertilizer guidance based on your soil and crop.',
+      route: '/fertilizer-advisor'
+    },
+    {
+      emoji: '📅',
+      title: lang === 'hi' ? 'खेती योजना' : lang === 'mr' ? 'शेती नियोजन' : 'Plan Farm Work',
+      desc: lang === 'hi' ? 'देखें कि आपके खेत में कब क्या काम करना है।' : lang === 'mr' ? 'आपल्या शेतात कधी काय काम करायचे ते पहा.' : 'See what needs to be done and when on your farm.',
+      route: '/farm-planner'
+    },
+    {
+      emoji: '🏛️',
+      title: lang === 'hi' ? 'सरकारी योजनाएं' : lang === 'mr' ? 'सरकारी योजना' : 'Find Govt. Schemes',
+      desc: lang === 'hi' ? 'किसानों के लिए उपलब्ध सरकारी लाभ और सहायता खोजें।' : lang === 'mr' ? 'शेतकऱ्यांसाठी शासकीय लाभ व योजना शोधा.' : 'Explore government support and schemes for farmers.',
+      route: '/government-schemes'
+    },
+    {
+      emoji: '🤖',
+      title: lang === 'hi' ? 'एआई से पूछें' : lang === 'mr' ? 'एआयला विचारा' : 'Ask SmartFarm AI',
+      desc: lang === 'hi' ? 'खेती का कोई भी सवाल पूछें और समाधान पाएं।' : lang === 'mr' ? 'शेतीचा कोणताही प्रश्न विचारा आणि मार्गदर्शन मिळवा.' : 'Ask any farming question and get simple guidance.',
+      route: '/ai-assistant'
+    },
+    {
+      emoji: '✅',
+      title: lang === 'hi' ? 'कदम उठाएं' : lang === 'mr' ? 'कृती करा' : 'Take Action',
+      desc: lang === 'hi' ? 'सीखे गए ज्ञान से बेहतर कृषि निर्णय लें।' : lang === 'mr' ? 'मिळालेल्या माहितीवरून योग्य शेती निर्णय घ्या.' : "Use what you've learned to make better farm decisions.",
+      route: null
+    },
+  ]
 
   // Close on outside click
   useEffect(() => {
@@ -47,7 +92,7 @@ export default function FloatingHowToUse() {
         {/* Tooltip */}
         {showTooltip && !open && (
           <div className="absolute right-14 bg-gray-900 text-white text-[11px] font-semibold py-1.5 px-2.5 rounded-lg shadow-lg whitespace-nowrap pointer-events-none select-none">
-            How to Use
+            {lang === 'hi' ? 'कैसे उपयोग करें' : lang === 'mr' ? 'कसे वापरावे' : 'How to Use'}
             <span className="absolute top-1/2 -right-1 -translate-y-1/2 border-4 border-transparent border-l-gray-900" />
           </div>
         )}
@@ -85,7 +130,9 @@ export default function FloatingHowToUse() {
           <div className="flex items-center justify-between px-4 py-3 bg-[#f7faf5] border-b border-gray-100">
             <div className="flex items-center gap-2">
               <span className="text-base leading-none">🌾</span>
-              <span className="text-[13px] font-bold text-gray-900">How to Use SmartFarm AI</span>
+              <span className="text-[13px] font-bold text-gray-900">
+                {lang === 'hi' ? 'SmartFarm AI कैसे उपयोग करें' : lang === 'mr' ? 'SmartFarm AI कसे वापरावे' : 'How to Use SmartFarm AI'}
+              </span>
             </div>
             <button
               onClick={() => setOpen(false)}
@@ -98,12 +145,18 @@ export default function FloatingHowToUse() {
 
           {/* Subtitle */}
           <div className="px-4 pt-3 pb-1">
-            <p className="text-[11.5px] text-gray-400">Follow these simple steps to get the most from SmartFarm AI.</p>
+            <p className="text-[11.5px] text-gray-400">
+              {lang === 'hi'
+                ? 'SmartFarm AI का सर्वोत्तम लाभ उठाने के लिए इन चरणों का पालन करें।'
+                : lang === 'mr'
+                ? 'SmartFarm AI चा पूर्ण लाभ घेण्यासाठी या सोप्या पायऱ्यांचे अनुसरण करा.'
+                : 'Follow these simple steps to get the most from SmartFarm AI.'}
+            </p>
           </div>
 
           {/* Steps — scrollable */}
           <div className="overflow-y-auto max-h-[min(68vh,420px)] px-3 pb-2">
-            {STEPS.map((step, i) => (
+            {steps.map((step, i) => (
               <div key={i}>
                 {step.route ? (
                   <Link
@@ -135,7 +188,7 @@ export default function FloatingHowToUse() {
                 )}
 
                 {/* Connector line between steps */}
-                {i < STEPS.length - 1 && (
+                {i < steps.length - 1 && (
                   <div className="pl-[18px] py-0.5" aria-hidden="true">
                     <div className="w-px h-2.5 bg-gray-100" />
                   </div>
@@ -151,7 +204,7 @@ export default function FloatingHowToUse() {
               onClick={() => setOpen(false)}
               className="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl bg-white hover:bg-[#EAF7EC] border border-gray-200 hover:border-[#c8e6c9] text-[12px] font-semibold text-[#15803D] transition-colors"
             >
-              View Full Guide
+              {lang === 'hi' ? 'पूरी मार्गदर्शिका देखें' : lang === 'mr' ? 'संपूर्ण मार्गदर्शिका पहा' : 'View Full Guide'}
               <ArrowRight size={12} />
             </Link>
           </div>

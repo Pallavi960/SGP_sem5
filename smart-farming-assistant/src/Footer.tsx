@@ -1,20 +1,7 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Leaf, Mail, Phone, MapPin, Github, Twitter, Linkedin, ArrowUpRight } from 'lucide-react'
-
-const quickLinks = [
-  { label: 'Home', to: '/' },
-  { label: 'Features', to: '/features' },
-  { label: 'AI Assistant', to: '/ai-assistant' },
-  { label: 'Disease Detection', to: '/disease-detection' },
-  { label: 'Crop Recommendation', to: '/crop-recommendation' },
-  { label: 'Weather', to: '/weather' },
-]
-
-const moreLinks = [
-  { label: 'About', to: '/about' },
-  { label: 'Contact', to: '/contact' },
-]
+import { useLanguage } from './context/LanguageContext'
 
 const socials = [
   { icon: Github, href: '#', label: 'GitHub' },
@@ -32,6 +19,22 @@ const fadeUp = {
 }
 
 export default function Footer() {
+  const { lang } = useLanguage()
+
+  const quickLinks = [
+    { label: lang === 'hi' ? 'होम' : lang === 'mr' ? 'मुख्य पृष्ठ' : 'Home', to: '/' },
+    { label: lang === 'hi' ? 'सुविधाएं' : lang === 'mr' ? 'वैशिष्ट्ये' : 'Features', to: '/features' },
+    { label: lang === 'hi' ? 'एआई सहायक' : lang === 'mr' ? 'एआय सहाय्यक' : 'AI Assistant', to: '/ai-assistant' },
+    { label: lang === 'hi' ? 'रोग पहचान' : lang === 'mr' ? 'रोग ओळख' : 'Disease Detection', to: '/disease-detection' },
+    { label: lang === 'hi' ? 'फसल अनुशंसा' : lang === 'mr' ? 'पीक शिफारस' : 'Crop Recommendation', to: '/crop-recommendation' },
+    { label: lang === 'hi' ? 'मौसम' : lang === 'mr' ? 'हवामान' : 'Weather', to: '/weather' },
+  ]
+
+  const moreLinks = [
+    { label: lang === 'hi' ? 'उपयोग कैसे करें' : lang === 'mr' ? 'कसे वापरावे' : 'How to Use', to: '/how-to-use' },
+    { label: lang === 'hi' ? 'सरकारी योजनाएं' : lang === 'mr' ? 'सरकारी योजना' : 'Govt. Schemes', to: '/government-schemes' },
+  ]
+
   return (
     <footer className="bg-[#1F2937] text-gray-300">
       {/* Top CTA strip */}
@@ -44,14 +47,18 @@ export default function Footer() {
       >
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
           <div>
-            <h3 className="text-xl sm:text-2xl font-bold text-white">Start farming smarter today.</h3>
-            <p className="text-green-100 text-sm mt-1">Free to use. No credit card required.</p>
+            <h3 className="text-xl sm:text-2xl font-bold text-white">
+              {lang === 'hi' ? 'आज ही स्मार्ट खेती शुरू करें।' : lang === 'mr' ? 'आजच स्मार्ट शेती सुरू करा.' : 'Start farming smarter today.'}
+            </h3>
+            <p className="text-green-100 text-sm mt-1">
+              {lang === 'hi' ? 'उपयोग के लिए निःशुल्क। क्रेडिट कार्ड की आवश्यकता नहीं।' : lang === 'mr' ? 'वापरण्यासाठी पूर्णपणे मोफत. क्रेडिट कार्डची गरज नाही.' : 'Free to use. No credit card required.'}
+            </p>
           </div>
           <Link
-            to="/contact"
+            to="/how-to-use"
             className="shrink-0 inline-flex items-center gap-2 px-7 py-3 bg-white text-[#2E7D32] text-sm font-bold rounded-xl hover:bg-[#E8F5E9] active:scale-95 transition-all duration-200 shadow-lg"
           >
-            Get Started Free <ArrowUpRight size={15} />
+            {lang === 'hi' ? 'निःशुल्क शुरुआत करें' : lang === 'mr' ? 'मोफत सुरुवात करा' : 'Get Started Free'} <ArrowUpRight size={15} />
           </Link>
         </div>
       </motion.div>
@@ -72,11 +79,15 @@ export default function Footer() {
                 <Leaf size={17} className="text-white" />
               </div>
               <span className="text-xl font-bold text-white tracking-tight">
-                S<span className="text-[#4CAF50]">G</span>P
+                SmartFarm AI
               </span>
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed max-w-xs">
-              AI-powered smart farming assistant helping farmers make data-driven decisions every season.
+              {lang === 'hi'
+                ? 'एआई-संचालित स्मार्ट कृषि सहायक जो हर मौसम में किसानों को डेटा-आधारित निर्णय लेने में मदद करता है।'
+                : lang === 'mr'
+                ? 'एआय-आधारित स्मार्ट शेती सहाय्यक जो प्रत्येक हंगामात शेतकऱ्यांना माहितीपूर्ण निर्णय घेण्यास मदत करतो.'
+                : 'AI-powered smart farming assistant helping farmers make data-driven decisions every season.'}
             </p>
             <div className="flex items-center gap-3 mt-1">
               {socials.map(({ icon: Icon, href, label }) => (
@@ -97,7 +108,9 @@ export default function Footer() {
 
           {/* Quick Links */}
           <motion.div variants={fadeUp}>
-            <p className="text-sm font-semibold text-white uppercase tracking-widest mb-5">Quick Links</p>
+            <p className="text-sm font-semibold text-white uppercase tracking-widest mb-5">
+              {lang === 'hi' ? 'त्वरित लिंक' : lang === 'mr' ? 'महत्त्वाचे दुवे' : 'Quick Links'}
+            </p>
             <ul className="flex flex-col gap-2.5">
               {quickLinks.map((l) => (
                 <li key={l.to}>
@@ -115,7 +128,9 @@ export default function Footer() {
 
           {/* More */}
           <motion.div variants={fadeUp}>
-            <p className="text-sm font-semibold text-white uppercase tracking-widest mb-5">Company</p>
+            <p className="text-sm font-semibold text-white uppercase tracking-widest mb-5">
+              {lang === 'hi' ? 'अधिक जानकारी' : lang === 'mr' ? 'अधिक माहिती' : 'Resources'}
+            </p>
             <ul className="flex flex-col gap-2.5">
               {moreLinks.map((l) => (
                 <li key={l.to}>
@@ -133,12 +148,14 @@ export default function Footer() {
 
           {/* Contact */}
           <motion.div variants={fadeUp}>
-            <p className="text-sm font-semibold text-white uppercase tracking-widest mb-5">Contact</p>
+            <p className="text-sm font-semibold text-white uppercase tracking-widest mb-5">
+              {lang === 'hi' ? 'संपर्क' : lang === 'mr' ? 'संपर्क' : 'Contact'}
+            </p>
             <ul className="flex flex-col gap-3.5">
               {[
-                { icon: Mail, text: 'contact@sgp.ai' },
-                { icon: Phone, text: '+91 00000 00000' },
-                { icon: MapPin, text: 'Pune, Maharashtra, India' },
+                { icon: Mail, text: 'contact@smartfarm.ai' },
+                { icon: Phone, text: '+91 91726 59010' },
+                { icon: MapPin, text: lang === 'hi' ? 'पुणे, महाराष्ट्र, भारत' : lang === 'mr' ? 'पुणे, महाराष्ट्र, भारत' : 'Pune, Maharashtra, India' },
               ].map(({ icon: Icon, text }) => (
                 <li key={text} className="flex items-start gap-3 text-sm text-gray-400">
                   <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center shrink-0 mt-0.5">
@@ -155,10 +172,16 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-white/5 px-4 sm:px-6 lg:px-8 py-5">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
-          <span>© {new Date().getFullYear()} SGP — Smart Farming Assistant. All rights reserved.</span>
+          <span>
+            © {new Date().getFullYear()} SmartFarm AI — {lang === 'hi' ? 'स्मार्ट कृषि सहायक। सर्वाधिकार सुरक्षित।' : lang === 'mr' ? 'स्मार्ट कृषी सहाय्यक. सर्व हक्क राखीव.' : 'Smart Farming Assistant. All rights reserved.'}
+          </span>
           <div className="flex items-center gap-4">
-            <span className="hover:text-gray-300 cursor-pointer transition-colors duration-200">Privacy Policy</span>
-            <span className="hover:text-gray-300 cursor-pointer transition-colors duration-200">Terms of Service</span>
+            <span className="hover:text-gray-300 cursor-pointer transition-colors duration-200">
+              {lang === 'hi' ? 'गोपनीयता नीति' : lang === 'mr' ? 'गोपनीयता धोरण' : 'Privacy Policy'}
+            </span>
+            <span className="hover:text-gray-300 cursor-pointer transition-colors duration-200">
+              {lang === 'hi' ? 'सेवा की शर्तें' : lang === 'mr' ? 'सेवा अटी' : 'Terms of Service'}
+            </span>
           </div>
         </div>
       </div>

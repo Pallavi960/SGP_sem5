@@ -3,32 +3,48 @@ import { useLocation } from 'react-router-dom'
 import axios from 'axios'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Send, Sprout, User, Loader2, RotateCcw } from 'lucide-react'
+import { useLanguage } from './context/LanguageContext'
+import { t } from './lib/i18n'
 
 interface Message {
   role: 'user' | 'assistant'
   text: string
 }
 
-const WELCOME: Message = {
-  role: 'assistant',
-  text: "Namaste! 🌱 I'm Krishi Mitra, your AI farming assistant.\n\nAsk me anything about crops, diseases, soil, weather, government schemes, or mandi prices — in Hindi, Marathi, or English.",
-}
-
-const SUGGESTIONS = [
-  'Which crop should I grow this Kharif season?',
-  'My tomato leaves have yellow spots. What to do?',
-  'What is PM-KISAN scheme?',
-  'How much water does wheat need?',
-]
-
 export default function AIAssistant() {
+  const { lang } = useLanguage()
   const location = useLocation()
-  const [messages, setMessages] = useState<Message[]>([WELCOME])
+
+  const welcomeText =
+    lang === 'hi'
+      ? 'नमस्ते! 🌱 मैं कृषि मित्र हूँ, आपका एआई कृषि सहायक।\n\nमुझसे फसलों, बीमारियों, खाद, मौसम, सरकारी योजनाओं या मंडी भाव के बारे में कुछ भी पूछें — हिंदी, मराठी या अंग्रेजी में।'
+      : lang === 'mr'
+      ? 'नमस्कार! 🌱 मी कृषी मित्र आहे, तुमचा एआय शेती सहाय्यक.\n\nमला पिके, रोग, खते, हवामान, शासकीय योजना किंवा बाजारभावाविषयी काहीही विचारा — मराठी, हिंदी किंवा इंग्रजीत.'
+      : "Namaste! 🌱 I'm Krishi Mitra, your AI farming assistant.\n\nAsk me anything about crops, diseases, soil, weather, government schemes, or mandi prices — in Hindi, Marathi, or English."
+
+  const suggestions = [
+    lang === 'hi' ? 'इस खरीफ मौसम में कौन सी फसल बोनी चाहिए?' : lang === 'mr' ? 'या खरीप हंगामात कोणते पीक घ्यावे?' : 'Which crop should I grow this Kharif season?',
+    lang === 'hi' ? 'मेरे टमाटर के पत्तों पर पीले धब्बे हैं। क्या करें?' : lang === 'mr' ? 'माझ्या टोमॅटोच्या पानांवर पिवळे ठिपके आहेत. काय करावे?' : 'My tomato leaves have yellow spots. What to do?',
+    lang === 'hi' ? 'प्रधानमंत्री किसान सम्मान निधि योजना क्या है?' : lang === 'mr' ? 'पीएम-किसान सन्मान निधी योजना काय आहे?' : 'What is PM-KISAN scheme?',
+    lang === 'hi' ? 'गेहूं की फसल को कितने पानी की आवश्यकता होती है?' : lang === 'mr' ? 'गव्हाच्या पिकाला किती पाणी लागते?' : 'How much water does wheat need?',
+  ]
+
+  const [messages, setMessages] = useState<Message[]>([{ role: 'assistant', text: welcomeText }])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const isNearBottomRef = useRef(true)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // When language changes, update welcome message if it's the only one
+  const prevLangRef = useRef(lang)
+  useEffect(() => {
+    if (prevLangRef.current !== lang) {
+      prevLangRef.current = lang
+      setMessages([{ role: 'assistant', text: welcomeText }])
+      setInput('')
+    }
+  }, [lang, welcomeText])
 
   useEffect(() => {
     const initialQuery = (location.state as { initialQuery?: string })?.initialQuery
@@ -63,23 +79,34 @@ export default function AIAssistant() {
     setMessages(updatedMessages)
     setInput('')
     setLoading(true)
-    isNearBottomRef.current = true // Force auto-scroll on new user message
+    isNearBottomRef.current = true
 
     // Build history excluding the welcome message
     const history = updatedMessages
-      .slice(1, -1) // exclude welcome + current message
+      .slice(1, -1)
       .map((m) => ({ role: m.role, text: m.text }))
+
+    const langInstruction = t(lang, 'ai_system_lang_instruction')
+    const messageWithLang = `[${langInstruction}]\n\n${trimmed}`
 
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000'}/api/ai/chat`, {
-        message: trimmed,
+        message: messageWithLang,
         history,
       })
       setMessages((prev) => [...prev, { role: 'assistant', text: res.data.reply }])
     } catch {
       setMessages((prev) => [
         ...prev,
-        { role: 'assistant', text: 'Sorry, I could not connect to the server. Please try again.' },
+        {
+          role: 'assistant',
+          text:
+            lang === 'hi'
+              ? 'माफ करें, सर्वर से संपर्क नहीं हो पाया। कृपया पुनः प्रयास करें।'
+              : lang === 'mr'
+              ? 'माफ करा, सर्व्हरशी संपर्क होऊ शकला नाही. कृपया पुन्हा प्रयत्न करा.'
+              : 'Sorry, I could not connect to the server. Please try again.',
+        },
       ])
     } finally {
       setLoading(false)
@@ -95,7 +122,7 @@ export default function AIAssistant() {
   }
 
   const resetChat = () => {
-    setMessages([WELCOME])
+    setMessages([{ role: 'assistant', text: welcomeText }])
     setInput('')
     isNearBottomRef.current = true
   }
@@ -116,7 +143,9 @@ export default function AIAssistant() {
               <h1 className="text-lg font-bold text-[#1F2937]">Krishi Mitra</h1>
               <div className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-[#4CAF50] animate-pulse" />
-                <span className="text-xs text-gray-400">AI Farming Assistant</span>
+                <span className="text-xs text-gray-400">
+                  {lang === 'hi' ? 'एआई कृषि सहायक' : lang === 'mr' ? 'एआय शेती सहाय्यक' : 'AI Farming Assistant'}
+                </span>
               </div>
             </div>
           </div>
@@ -124,7 +153,7 @@ export default function AIAssistant() {
             onClick={resetChat}
             className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-[#2E7D32] px-3 py-1.5 rounded-lg hover:bg-[#E8F5E9] transition-all duration-200"
           >
-            <RotateCcw size={13} /> New Chat
+            <RotateCcw size={13} /> {lang === 'hi' ? 'नई चैट' : lang === 'mr' ? 'नवीन संभाषण' : 'New Chat'}
           </button>
         </div>
 
@@ -178,7 +207,9 @@ export default function AIAssistant() {
               </div>
               <div className="bg-[#F9FBF9] border border-gray-100 px-4 py-3 rounded-2xl rounded-bl-none shadow-sm flex items-center gap-1.5">
                 <Loader2 size={14} className="text-[#2E7D32] animate-spin" />
-                <span className="text-sm text-gray-400">Krishi Mitra is thinking...</span>
+                <span className="text-sm text-gray-400">
+                  {lang === 'hi' ? 'कृषि मित्र सोच रहा है...' : lang === 'mr' ? 'कृषी मित्र विचार करत आहे...' : 'Krishi Mitra is thinking...'}
+                </span>
               </div>
             </motion.div>
           )}
@@ -191,9 +222,11 @@ export default function AIAssistant() {
               transition={{ delay: 0.3 }}
               className="mt-2"
             >
-              <p className="text-xs text-gray-400 mb-2 ml-9">Try asking:</p>
+              <p className="text-xs text-gray-400 mb-2 ml-9">
+                {lang === 'hi' ? 'पूछ कर देखें:' : lang === 'mr' ? 'विचारून पहा:' : 'Try asking:'}
+              </p>
               <div className="flex flex-wrap gap-2 ml-9">
-                {SUGGESTIONS.map((s) => (
+                {suggestions.map((s) => (
                   <button
                     key={s}
                     onClick={() => sendMessage(s)}
@@ -215,7 +248,13 @@ export default function AIAssistant() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Ask about crops, diseases, weather, schemes..."
+            placeholder={
+              lang === 'hi'
+                ? 'फसल, रोग, मौसम, योजनाओं के बारे में पूछें...'
+                : lang === 'mr'
+                ? 'पिके, रोग, हवामान, योजनांबद्दल विचारा...'
+                : 'Ask about crops, diseases, weather, schemes...'
+            }
             className="flex-1 resize-none border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#4CAF50] focus:border-transparent shadow-sm"
             style={{ maxHeight: 120 }}
           />
@@ -229,8 +268,12 @@ export default function AIAssistant() {
             <Send size={18} />
           </motion.button>
         </div>
-        <p className="text-center text-[10px] text-gray-300 mt-2">
-          Krishi Mitra can make mistakes. Verify important advice with your local KVK.
+        <p className="text-center text-[10px] text-gray-400 mt-2">
+          {lang === 'hi'
+            ? 'कृषि मित्र से त्रुटियां हो सकती हैं। महत्वपूर्ण सलाह अपने स्थानीय केवीके (KVK) से सत्यापित करें।'
+            : lang === 'mr'
+            ? 'कृषी मित्राकडून त्रुटी होऊ शकतात. महत्त्वाच्या सल्ल्याची स्थानिक कृषी विज्ञान केंद्राकडून खात्री करा.'
+            : 'Krishi Mitra can make mistakes. Verify important advice with your local KVK.'}
         </p>
       </div>
     </div>
