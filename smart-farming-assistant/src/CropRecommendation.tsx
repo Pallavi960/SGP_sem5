@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
-  MapPin, Droplets, Mountain, Calendar, TrendingUp, DollarSign, 
+  MapPin, Droplets, Mountain, Calendar, TrendingUp, 
   ChevronRight, ChevronLeft, Loader2, CheckCircle2, Info,
   Sprout, Clock, Sparkles, BarChart3, AlertCircle, RotateCcw
 } from 'lucide-react'
@@ -42,6 +42,19 @@ export default function CropRecommendation() {
   }
 
   const nextStep = () => {
+    // Validate required fields before advancing
+    if (step === 1) {
+      if (!formData.state || !formData.district.trim()) {
+        setError('Please enter your state and district')
+        return
+      }
+      if (formData.farmSize <= 0) {
+        setError('Please enter a valid farm size')
+        return
+      }
+      setError(null)
+    }
+    
     if (step === 4) {
       handleSubmit()
     } else {
@@ -79,11 +92,33 @@ export default function CropRecommendation() {
     const otherIndices = layout.map((_, i) => i).filter(i => i !== index)
     const totalOthers = otherIndices.reduce((sum, i) => sum + layout[i].areaPercentage, 0)
     
-    otherIndices.forEach(i => {
-      const proportion = totalOthers > 0 ? layout[i].areaPercentage / totalOthers : 1 / otherIndices.length
-      layout[i].areaPercentage = Math.max(0, layout[i].areaPercentage - (diff * proportion))
-      layout[i].area = (layout[i].areaPercentage / 100) * formData.farmSize
-    })
+    if (totalOthers === 0) {
+      // If other crops are at 0, split remaining equally
+      const remaining = 100 - newPercentage
+      const perCrop = remaining / otherIndices.length
+      otherIndices.forEach(i => {
+        layout[i].areaPercentage = perCrop
+        layout[i].area = (perCrop / 100) * formData.farmSize
+      })
+    } else {
+      // Distribute proportionally
+      otherIndices.forEach(i => {
+        const proportion = layout[i].areaPercentage / totalOthers
+        const newVal = Math.max(5, layout[i].areaPercentage - (diff * proportion))
+        layout[i].areaPercentage = newVal
+        layout[i].area = (newVal / 100) * formData.farmSize
+      })
+    }
+    
+    // Normalize to ensure sum = 100
+    const sum = layout.reduce((acc, s) => acc + s.areaPercentage, 0)
+    if (Math.abs(sum - 100) > 0.1) {
+      const correction = (100 - sum) / layout.length
+      layout.forEach(s => {
+        s.areaPercentage += correction
+        s.area = (s.areaPercentage / 100) * formData.farmSize
+      })
+    }
     
     setAdjustedLayout(layout)
   }
@@ -192,6 +227,13 @@ export default function CropRecommendation() {
                   />
                 </div>
               </div>
+
+              {error && step === 1 && (
+                <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-red-800">{error}</p>
+                </div>
+              )}
 
               <button
                 onClick={nextStep}
