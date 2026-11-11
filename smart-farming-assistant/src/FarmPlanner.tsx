@@ -9,6 +9,7 @@ import {
   CROP_TEMPLATES, INDIAN_STATES, computeActivityDate, generateCustomPlan,
   type FarmActivity, type CropTemplate,
 } from './services/farmPlannerService'
+import { useLanguage } from './context/LanguageContext'
 
 // ─── Stage icon map (unchanged) ────────────────────────────────────────────
 const STAGE_ICONS: Record<string, any> = {
@@ -42,6 +43,7 @@ const STAGE_LABEL: Record<string, string> = {
 
 // ─── Component ─────────────────────────────────────────────────────────────
 export default function FarmPlanner() {
+  const { lang } = useLanguage()
   // ── All state variables preserved exactly ──────────────────────────────
   const [selectedCropId, setSelectedCropId] = useState<string>('wheat')
   const [customCropName, setCustomCropName] = useState<string>('')
@@ -167,10 +169,10 @@ export default function FarmPlanner() {
 
   // ── Filter button config ────────────────────────────────────────────────
   const filterButtons = [
-    { key: 'all'       as const, label: `All (${totalCount})` },
-    { key: 'upcoming7' as const, label: 'Next 7 Days' },
-    { key: 'pending'   as const, label: `Pending (${totalCount - completedCount})` },
-    { key: 'completed' as const, label: `Completed (${completedCount})` },
+    { key: 'all'       as const, label: lang === 'hi' ? `सभी (${totalCount})` : lang === 'mr' ? `सर्व (${totalCount})` : `All (${totalCount})` },
+    { key: 'upcoming7' as const, label: lang === 'hi' ? 'अगले 7 दिन' : lang === 'mr' ? 'पुढील ७ दिवस' : 'Next 7 Days' },
+    { key: 'pending'   as const, label: lang === 'hi' ? `शेष (${totalCount - completedCount})` : lang === 'mr' ? `शिल्लक (${totalCount - completedCount})` : `Pending (${totalCount - completedCount})` },
+    { key: 'completed' as const, label: lang === 'hi' ? `पूर्ण (${completedCount})` : lang === 'mr' ? `पूर्ण (${completedCount})` : `Completed (${completedCount})` },
   ]
 
   // ───────────────────────────────────────────────────────────────────────
@@ -185,21 +187,25 @@ export default function FarmPlanner() {
         ════════════════════════════════════════════════════ */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">🌾 Farm Planner</h1>
-            <p className="text-base text-gray-500 mt-1">Plan your farm activities easily.</p>
+            <h1 className="text-3xl font-bold text-gray-900">
+              {lang === 'hi' ? '🌾 कृषि योजनाकार' : lang === 'mr' ? '🌾 शेती नियोजक' : '🌾 Farm Planner'}
+            </h1>
+            <p className="text-base text-gray-500 mt-1">
+              {lang === 'hi' ? 'अपनी कृषि गतिविधियों की आसान योजना बनाएं।' : lang === 'mr' ? 'आपल्या शेतीकामांचे सहज नियोजन करा.' : 'Plan your farm activities easily.'}
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => window.print()}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 text-sm font-semibold text-gray-600 bg-white hover:bg-gray-50 transition-colors"
             >
-              <Printer size={15} /> Print
+              <Printer size={15} /> {lang === 'hi' ? 'प्रिंट' : lang === 'mr' ? 'प्रिंट' : 'Print'}
             </button>
             <button
               onClick={handleResetPlan}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 text-sm font-semibold text-gray-600 bg-white hover:text-red-600 hover:bg-red-50 hover:border-red-300 transition-colors"
             >
-              <RotateCcw size={15} /> Reset
+              <RotateCcw size={15} /> {lang === 'hi' ? 'रीसेट' : lang === 'mr' ? 'रीसेट' : 'Reset'}
             </button>
           </div>
         </div>
@@ -208,12 +214,16 @@ export default function FarmPlanner() {
             SET UP YOUR FARM PLAN
         ════════════════════════════════════════════════════ */}
         <div className="bg-white rounded-2xl border border-gray-200 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-5">Set Up Your Farm Plan</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-5">
+            {lang === 'hi' ? 'अपनी कृषि योजना तैयार करें' : lang === 'mr' ? 'आपले शेती नियोजन तयार करा' : 'Set Up Your Farm Plan'}
+          </h2>
 
           <div className="grid sm:grid-cols-2 gap-4">
             {/* Crop */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Crop</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                {lang === 'hi' ? 'फसल' : lang === 'mr' ? 'पीक' : 'Crop'}
+              </label>
               <select
                 value={selectedCropId}
                 onChange={(e) => {
@@ -229,13 +239,17 @@ export default function FarmPlanner() {
                 {CROP_TEMPLATES.map((crop) => (
                   <option key={crop.id} value={crop.id}>{crop.name}</option>
                 ))}
-                <option value="custom">➕ Other / Custom Crop</option>
+                <option value="custom">
+                  {lang === 'hi' ? '➕ अन्य / कस्टम फसल' : lang === 'mr' ? '➕ इतर / स्वतःचे पीक' : '➕ Other / Custom Crop'}
+                </option>
               </select>
             </div>
 
             {/* Region */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Region</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                {lang === 'hi' ? 'राज्य / क्षेत्र' : lang === 'mr' ? 'राज्य / विभाग' : 'Region'}
+              </label>
               <div className="relative">
                 <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                 <select
@@ -250,7 +264,9 @@ export default function FarmPlanner() {
 
             {/* Season */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Season</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                {lang === 'hi' ? 'मौसम' : lang === 'mr' ? 'हंगाम' : 'Season'}
+              </label>
               <div className="grid grid-cols-3 gap-2">
                 {(['Kharif', 'Rabi', 'Zaid'] as const).map((s) => (
                   <button
@@ -261,9 +277,9 @@ export default function FarmPlanner() {
                         : 'bg-white text-gray-600 border-gray-300 hover:bg-green-50 hover:border-green-400'
                     }`}
                   >
-                    {s}
+                    {s === 'Kharif' ? (lang === 'hi' ? 'खरीफ' : lang === 'mr' ? 'खरीप' : 'Kharif') : s === 'Rabi' ? (lang === 'hi' ? 'रबी' : lang === 'mr' ? 'रब्बी' : 'Rabi') : (lang === 'hi' ? 'जायद' : lang === 'mr' ? 'उन्हाळी' : 'Zaid')}
                     <span className="block text-xs font-normal mt-0.5 opacity-75">
-                      {s === 'Kharif' ? 'Monsoon' : s === 'Rabi' ? 'Winter' : 'Summer'}
+                      {s === 'Kharif' ? (lang === 'hi' ? 'मानसून' : lang === 'mr' ? 'पावसाळी' : 'Monsoon') : s === 'Rabi' ? (lang === 'hi' ? 'सर्दी' : lang === 'mr' ? 'हिवाळी' : 'Winter') : (lang === 'hi' ? 'गर्मी' : lang === 'mr' ? 'उन्हाळा' : 'Summer')}
                     </span>
                   </button>
                 ))}
@@ -272,7 +288,9 @@ export default function FarmPlanner() {
 
             {/* Sowing Date */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Sowing Date</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                {lang === 'hi' ? 'बुवाई की तारीख' : lang === 'mr' ? 'पेरणीची तारीख' : 'Sowing Date'}
+              </label>
               <div className="relative">
                 <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                 <input
@@ -291,12 +309,14 @@ export default function FarmPlanner() {
               animate={{ opacity: 1, height: 'auto' }}
               className="mt-4"
             >
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Crop Name</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                {lang === 'hi' ? 'फसल का नाम' : lang === 'mr' ? 'पिकाचे नाव' : 'Crop Name'}
+              </label>
               <input
                 type="text"
                 value={customCropName}
                 onChange={(e) => setCustomCropName(e.target.value)}
-                placeholder="e.g., Watermelon, Sunflower"
+                placeholder={lang === 'hi' ? 'उदा. तरबूज, सूरजमुखी' : lang === 'mr' ? 'उदा. कलिंगड, सूर्यफूल' : 'e.g., Watermelon, Sunflower'}
                 className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400"
               />
             </motion.div>
@@ -307,7 +327,7 @@ export default function FarmPlanner() {
             onClick={() => handleGeneratePlan()}
             className="mt-5 w-full sm:w-auto px-8 py-3 rounded-xl bg-green-600 hover:bg-green-700 text-white text-base font-bold transition-colors"
           >
-            Create Plan
+            {lang === 'hi' ? 'योजना बनाएं' : lang === 'mr' ? 'नियोजन तयार करा' : 'Create Plan'}
           </button>
         </div>
 
@@ -318,16 +338,20 @@ export default function FarmPlanner() {
           <div className="bg-green-700 rounded-2xl px-6 py-5 text-white">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <p className="text-green-200 text-sm font-medium mb-0.5">Current Plan</p>
+                <p className="text-green-200 text-sm font-medium mb-0.5">
+                  {lang === 'hi' ? 'सक्रिय योजना' : lang === 'mr' ? 'सध्याचे नियोजन' : 'Current Plan'}
+                </p>
                 <h2 className="text-2xl font-bold">{currentPlanMeta.cropName}</h2>
                 <p className="text-green-200 text-sm mt-1">
-                  📍 {currentPlanMeta.location} &nbsp;·&nbsp; {currentPlanMeta.season} Season &nbsp;·&nbsp; ~{currentPlanMeta.durationDays} days
+                  📍 {currentPlanMeta.location} &nbsp;·&nbsp; {currentPlanMeta.season} {lang === 'hi' ? 'सीजन' : lang === 'mr' ? 'हंगाम' : 'Season'} &nbsp;·&nbsp; ~{currentPlanMeta.durationDays} {lang === 'hi' ? 'दिन' : lang === 'mr' ? 'दिवस' : 'days'}
                 </p>
               </div>
               {/* Progress */}
               <div className="bg-white/15 rounded-xl px-5 py-4 min-w-[160px]">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-semibold text-green-100">Progress</span>
+                  <span className="text-sm font-semibold text-green-100">
+                    {lang === 'hi' ? 'प्रगति' : lang === 'mr' ? 'प्रगती' : 'Progress'}
+                  </span>
                   <span className="text-lg font-bold">{progressPercent}%</span>
                 </div>
                 <div className="w-full bg-white/20 h-3 rounded-full overflow-hidden">
@@ -336,7 +360,9 @@ export default function FarmPlanner() {
                     style={{ width: `${progressPercent}%` }}
                   />
                 </div>
-                <p className="text-green-200 text-xs mt-2">{completedCount} of {totalCount} tasks done</p>
+                <p className="text-green-200 text-xs mt-2">
+                  {lang === 'hi' ? `${completedCount} / ${totalCount} कार्य पूरे हुए` : lang === 'mr' ? `${completedCount} / ${totalCount} कामे पूर्ण` : `${completedCount} of ${totalCount} tasks done`}
+                </p>
               </div>
             </div>
           </div>
@@ -347,7 +373,9 @@ export default function FarmPlanner() {
         ════════════════════════════════════════════════════ */}
         {nextActivity && nextDateInfo && (
           <div className="bg-white rounded-2xl border-2 border-green-400 p-5">
-            <p className="text-xs font-bold text-green-700 uppercase tracking-widest mb-3">Your Next Task</p>
+            <p className="text-xs font-bold text-green-700 uppercase tracking-widest mb-3">
+              {lang === 'hi' ? 'आपका अगला कार्य' : lang === 'mr' ? 'तुमचे पुढील काम' : 'Your Next Task'}
+            </p>
             <div className="flex flex-col sm:flex-row sm:items-start gap-4">
               <div className="flex-1">
                 <p className="text-xs font-semibold text-gray-500 uppercase mb-1">
@@ -358,7 +386,9 @@ export default function FarmPlanner() {
                 <p className="text-sm text-gray-600 mt-2 leading-relaxed">{nextActivity.description}</p>
                 {nextActivity.recommendation && (
                   <div className="mt-3 p-3 bg-green-50 rounded-xl border border-green-200">
-                    <p className="text-xs font-bold text-green-700 mb-0.5">💡 Tip</p>
+                    <p className="text-xs font-bold text-green-700 mb-0.5">
+                      💡 {lang === 'hi' ? 'सलाह' : lang === 'mr' ? 'सल्ला' : 'Tip'}
+                    </p>
                     <p className="text-sm text-gray-700 leading-relaxed">{nextActivity.recommendation}</p>
                   </div>
                 )}
@@ -367,7 +397,7 @@ export default function FarmPlanner() {
                 onClick={() => toggleActivityComplete(nextActivity.id)}
                 className="shrink-0 px-6 py-3 bg-green-600 hover:bg-green-700 text-white text-base font-bold rounded-xl transition-colors"
               >
-                ✓ Mark Done
+                {lang === 'hi' ? '✓ पूर्ण हुआ' : lang === 'mr' ? '✓ पूर्ण झाले' : '✓ Mark Done'}
               </button>
             </div>
           </div>
@@ -381,12 +411,15 @@ export default function FarmPlanner() {
 
             {/* ── List header: title + filters + add button ── */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <h2 className="text-xl font-bold text-gray-900">Your Farm Tasks</h2>
+              <h2 className="text-xl font-bold text-gray-900">
+                {lang === 'hi' ? 'आपके कृषि कार्य' : lang === 'mr' ? 'तुमची शेतीची कामे' : 'Your Farm Tasks'}
+              </h2>
               <button
                 onClick={() => setShowAddModal(true)}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-sm font-bold text-white transition-colors"
               >
-                <Plus size={14} /> Add Task
+                <Plus size={14} />
+                {lang === 'hi' ? 'नया कार्य जोड़ें' : lang === 'mr' ? 'नवीन काम जोडा' : 'Add Task'}
               </button>
             </div>
 
@@ -415,8 +448,12 @@ export default function FarmPlanner() {
                     initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                     className="bg-white rounded-2xl border border-gray-200 p-12 text-center"
                   >
-                    <p className="text-base font-semibold text-gray-500">No tasks match this filter.</p>
-                    <p className="text-sm text-gray-400 mt-1">Try switching to "All".</p>
+                    <p className="text-base font-semibold text-gray-500">
+                      {lang === 'hi' ? 'इस फिल्टर के तहत कोई कार्य नहीं मिला।' : lang === 'mr' ? 'या फिल्टरमध्ये कोणतीही कामे आढळली नाहीत.' : 'No tasks match this filter.'}
+                    </p>
+                    <p className="text-sm text-gray-400 mt-1">
+                      {lang === 'hi' ? '"सभी" पर स्विच करने का प्रयास करें।' : lang === 'mr' ? '"सर्व" वर स्विच करण्याचा प्रयत्न करा.' : 'Try switching to "All".'}
+                    </p>
                   </motion.div>
                 ) : (
                   filteredActivities.map((act, index) => {
@@ -454,11 +491,13 @@ export default function FarmPlanner() {
                                 {STAGE_LABEL[act.stage] || act.stage}
                               </span>
                               {dateInfo.isToday && (
-                                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800">TODAY</span>
+                                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                                  {lang === 'hi' ? 'आज' : lang === 'mr' ? 'आज' : 'TODAY'}
+                                </span>
                               )}
                               {!act.completed && dateInfo.daysRemaining > 0 && dateInfo.daysRemaining <= 7 && (
                                 <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-                                  In {dateInfo.daysRemaining} days
+                                  {lang === 'hi' ? `${dateInfo.daysRemaining} दिनों में` : lang === 'mr' ? `${dateInfo.daysRemaining} दिवसांत` : `In ${dateInfo.daysRemaining} days`}
                                 </span>
                               )}
                             </div>
@@ -499,7 +538,8 @@ export default function FarmPlanner() {
                                     onClick={() => { setEditingDateId(act.id); setTempCustomDate(dateInfo.dateStr) }}
                                     className="ml-1 text-xs text-gray-400 hover:text-green-600 flex items-center gap-1"
                                   >
-                                    <Edit3 size={11} /> Change
+                                    <Edit3 size={11} />
+                                    {lang === 'hi' ? 'बदलें' : lang === 'mr' ? 'बदला' : 'Change'}
                                   </button>
                                 </>
                               )}
@@ -516,7 +556,7 @@ export default function FarmPlanner() {
                                   className="flex items-center gap-1.5 text-sm font-semibold text-green-700 hover:text-green-800"
                                 >
                                   <Info size={14} />
-                                  Farming Tip
+                                  {lang === 'hi' ? 'कृषि सलाह' : lang === 'mr' ? 'शेती सल्ला' : 'Farming Tip'}
                                   {tipOpen ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
                                 </button>
                                 {tipOpen && (
@@ -531,11 +571,11 @@ export default function FarmPlanner() {
                             <div className="mt-3">
                               {act.completed ? (
                                 <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-green-600">
-                                  <CheckCircle2 size={16} /> ✓ Completed
+                                  <CheckCircle2 size={16} /> ✓ {lang === 'hi' ? 'पूर्ण' : lang === 'mr' ? 'पूर्ण' : 'Completed'}
                                 </span>
                               ) : (
                                 <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-400">
-                                  <Circle size={16} /> ○ Pending
+                                  <Circle size={16} /> ○ {lang === 'hi' ? 'लंबित' : lang === 'mr' ? 'प्रलंबित' : 'Pending'}
                                 </span>
                               )}
                             </div>
@@ -548,14 +588,14 @@ export default function FarmPlanner() {
                                 onClick={() => toggleActivityComplete(act.id)}
                                 className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold text-gray-500 hover:bg-gray-50 transition-colors"
                               >
-                                Undo
+                                {lang === 'hi' ? 'पूर्ववत करें' : lang === 'mr' ? 'पूर्ववत करा' : 'Undo'}
                               </button>
                             ) : (
                               <button
                                 onClick={() => toggleActivityComplete(act.id)}
                                 className="px-4 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white text-sm font-bold transition-colors"
                               >
-                                Mark Done
+                                {lang === 'hi' ? 'पूर्ण करें' : lang === 'mr' ? 'पूर्ण करा' : 'Mark Done'}
                               </button>
                             )}
                           </div>
@@ -581,16 +621,21 @@ export default function FarmPlanner() {
             className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4"
           >
             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-              <h3 className="text-lg font-bold text-gray-900">Add a Farm Task</h3>
+              <h3 className="text-lg font-bold text-gray-900">
+                {lang === 'hi' ? 'कृषि कार्य जोड़ें' : lang === 'mr' ? 'शेतीचे काम जोडा' : 'Add a Farm Task'}
+              </h3>
               <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-600 text-xl leading-none">✕</button>
             </div>
 
             <form onSubmit={handleAddCustomActivity} className="space-y-4">
               {/* Task name */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Task Name *</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  {lang === 'hi' ? 'कार्य का नाम *' : lang === 'mr' ? 'कामाचे नाव *' : 'Task Name *'}
+                </label>
                 <input
-                  type="text" required placeholder="e.g., Foliar Zinc Spray"
+                  type="text" required
+                  placeholder={lang === 'hi' ? 'उदा. जिंक का पर्णीय छिड़काव' : lang === 'mr' ? 'उदा. झिंक फवारणी' : 'e.g., Foliar Zinc Spray'}
                   value={newTitle} onChange={(e) => setNewTitle(e.target.value)}
                   className="w-full px-4 py-3 text-sm border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400"
                 />
@@ -598,24 +643,28 @@ export default function FarmPlanner() {
 
               {/* Stage */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Stage</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  {lang === 'hi' ? 'चरण' : lang === 'mr' ? 'टप्पा' : 'Stage'}
+                </label>
                 <select
                   value={newStage}
                   onChange={(e) => setNewStage(e.target.value as FarmActivity['stage'])}
                   className="w-full px-4 py-3 text-sm bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400"
                 >
-                  <option value="Sowing">🌱 Sowing</option>
-                  <option value="Irrigation">💧 Irrigation</option>
-                  <option value="Fertilization">🌿 Fertilizer</option>
-                  <option value="Pest Monitoring">🐛 Pest Check</option>
-                  <option value="Harvest">🌾 Harvest</option>
-                  <option value="Custom">📌 Custom Task</option>
+                  <option value="Sowing">🌱 {lang === 'hi' ? 'बुवाई' : lang === 'mr' ? 'पेरणी' : 'Sowing'}</option>
+                  <option value="Irrigation">💧 {lang === 'hi' ? 'सिंचाई' : lang === 'mr' ? 'सिंचन' : 'Irrigation'}</option>
+                  <option value="Fertilization">🌿 {lang === 'hi' ? 'उर्वरक' : lang === 'mr' ? 'खत' : 'Fertilizer'}</option>
+                  <option value="Pest Monitoring">🐛 {lang === 'hi' ? 'कीट नियंत्रण' : lang === 'mr' ? 'कीटक तपासणी' : 'Pest Check'}</option>
+                  <option value="Harvest">🌾 {lang === 'hi' ? 'कटाई' : lang === 'mr' ? 'कापणी' : 'Harvest'}</option>
+                  <option value="Custom">📌 {lang === 'hi' ? 'कस्टम कार्य' : lang === 'mr' ? 'इतर काम' : 'Custom Task'}</option>
                 </select>
               </div>
 
               {/* Days after sowing */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Days After Sowing</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  {lang === 'hi' ? 'बुवाई के कितने दिन बाद' : lang === 'mr' ? 'पेरणीनंतर किती दिवसांनी' : 'Days After Sowing'}
+                </label>
                 <input
                   type="number" min="0" max="365"
                   value={newDayOffset}
@@ -626,9 +675,12 @@ export default function FarmPlanner() {
 
               {/* Notes */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Notes</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  {lang === 'hi' ? 'विवरण या खुराक' : lang === 'mr' ? 'तपशील किंवा सूचना' : 'Notes'}
+                </label>
                 <textarea
-                  rows={2} placeholder="Any details or dosage notes..."
+                  rows={2}
+                  placeholder={lang === 'hi' ? 'विवरण या खुराक संबंधी नोट्स...' : lang === 'mr' ? 'काही सूचना किंवा मात्रा...' : 'Any details or dosage notes...'}
                   value={newDesc} onChange={(e) => setNewDesc(e.target.value)}
                   className="w-full px-4 py-3 text-sm border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400"
                 />
@@ -639,13 +691,13 @@ export default function FarmPlanner() {
                   type="button" onClick={() => setShowAddModal(false)}
                   className="flex-1 py-3 text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
                 >
-                  Cancel
+                  {lang === 'hi' ? 'रद्द करें' : lang === 'mr' ? 'रद्द करा' : 'Cancel'}
                 </button>
                 <button
                   type="submit"
                   className="flex-1 py-3 text-sm font-bold text-white bg-green-600 hover:bg-green-700 rounded-xl transition-colors"
                 >
-                  Add Task
+                  {lang === 'hi' ? 'कार्य जोड़ें' : lang === 'mr' ? 'काम जोडा' : 'Add Task'}
                 </button>
               </div>
             </form>

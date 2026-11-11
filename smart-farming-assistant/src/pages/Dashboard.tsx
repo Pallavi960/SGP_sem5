@@ -24,50 +24,53 @@ import {
   ArrowDownRight,
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { useLanguage } from '../context/LanguageContext'
+import { t } from '../lib/i18n'
 
 export default function Dashboard() {
   const { user, userPhone, userName, signOut } = useAuth()
+  const { lang } = useLanguage()
 
   const quickActions = [
     {
-      title: 'AI Farming Assistant',
-      desc: 'Ask any farming query, pest problem, or fertilizer tip in your language',
+      title: t(lang, 'db_ai_title'),
+      desc: t(lang, 'db_ai_desc'),
       icon: <Bot className="w-6 h-6 text-white" />,
       color: 'from-emerald-500 to-green-600',
       to: '/ai-assistant',
       badge: 'Cohere AI',
     },
     {
-      title: 'Crop Recommendation',
-      desc: 'Get data-backed crop suggestions for your soil type and season',
+      title: t(lang, 'db_crop_title'),
+      desc: t(lang, 'db_crop_desc'),
       icon: <Sprout className="w-6 h-6 text-white" />,
       color: 'from-green-600 to-teal-700',
       to: '/crop-recommendation',
-      badge: 'Soil & Climate',
+      badge: lang === 'hi' ? 'मिट्टी व मौसम' : lang === 'mr' ? 'माती व हवामान' : 'Soil & Climate',
     },
     {
-      title: 'Disease Detection',
-      desc: 'Upload crop leaf photos to instantly detect diseases & remedies',
+      title: t(lang, 'db_disease_title'),
+      desc: t(lang, 'db_disease_desc'),
       icon: <ShieldAlert className="w-6 h-6 text-white" />,
       color: 'from-amber-500 to-orange-600',
       to: '/disease-detection',
-      badge: 'Scan Leaf',
+      badge: lang === 'hi' ? 'पत्ती स्कैन' : lang === 'mr' ? 'पान स्कॅन' : 'Scan Leaf',
     },
     {
-      title: 'Weather Advisory',
-      desc: 'Live 7-day temperature, rainfall, and wind forecast for your farm',
+      title: t(lang, 'db_weather_title'),
+      desc: t(lang, 'db_weather_desc'),
       icon: <CloudRain className="w-6 h-6 text-white" />,
       color: 'from-blue-500 to-cyan-600',
       to: '/weather',
-      badge: 'Live Radar',
+      badge: lang === 'hi' ? 'लाइव रडार' : lang === 'mr' ? 'थेट रडार' : 'Live Radar',
     },
     {
-      title: 'Government Schemes',
-      desc: 'Explore available subsidies, financial grants, and PM-KISAN updates',
+      title: t(lang, 'db_schemes_title'),
+      desc: t(lang, 'db_schemes_desc'),
       icon: <Landmark className="w-6 h-6 text-white" />,
       color: 'from-purple-500 to-indigo-600',
       to: '/government-schemes',
-      badge: 'Subsidies',
+      badge: lang === 'hi' ? 'सब्सिडी' : lang === 'mr' ? 'अनुदान' : 'Subsidies',
     },
   ]
 
@@ -113,15 +116,20 @@ export default function Dashboard() {
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-                  Welcome, <span className="text-[#087f3e]">{userName || 'Farmer'}</span>! 👋
+                  {t(lang, 'db_welcome')}, <span className="text-[#087f3e]">{userName || (lang === 'hi' ? 'किसान' : lang === 'mr' ? 'शेतकरी' : 'Farmer')}</span>! 👋
                 </h1>
                 <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#087f3e] bg-[#E8F5E9] border border-[#b8e5c1] px-2.5 py-0.5 rounded-full">
                   <Sparkles className="w-3 h-3" />
-                  Authenticated
+                  {t(lang, 'db_authenticated')}
                 </span>
               </div>
-              <p className="text-sm text-gray-500 mt-1">
-                Connected Mobile: <span className="font-semibold text-gray-800 font-mono">{userPhone || user?.id || 'Active User'}</span>
+              <p className="text-sm text-gray-500 mt-1 flex items-center gap-2 flex-wrap">
+                <span>{t(lang, 'db_phone_label')}:</span>
+                <span className="font-semibold text-gray-800 font-mono">
+                  {userPhone || user?.phone || (lang === 'hi' ? 'सत्यापित किसान' : lang === 'mr' ? 'प्रमाणित शेतकरी' : 'Verified Farmer')}
+                </span>
+                <span className="text-gray-300 hidden sm:inline">•</span>
+                <span className="text-xs text-[#087f3e] font-semibold bg-[#E8F5E9] px-2 py-0.5 rounded-md">{t(lang, 'db_sms_verified')}</span>
               </p>
             </div>
           </div>
@@ -131,7 +139,7 @@ export default function Dashboard() {
             className="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 rounded-xl transition-all duration-200 shrink-0"
           >
             <LogOut className="w-4 h-4" />
-            <span>Sign Out</span>
+            <span>{t(lang, 'db_sign_out')}</span>
           </button>
         </motion.div>
 
@@ -140,7 +148,7 @@ export default function Dashboard() {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-[#087f3e]" />
-              Smart Farming Tools & Services
+              {t(lang, 'db_tools_title')}
             </h2>
           </div>
 
@@ -175,7 +183,7 @@ export default function Dashboard() {
                   </div>
 
                   <div className="flex items-center gap-1 text-xs font-semibold text-[#087f3e] mt-4 pt-3 border-t border-gray-50 group-hover:underline">
-                    <span>Open Tool</span>
+                    <span>{t(lang, 'db_open_tool')}</span>
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </Link>
@@ -195,7 +203,7 @@ export default function Dashboard() {
                   <div className="w-8 h-8 rounded-xl bg-[#E8F5E9] flex items-center justify-center text-[#087f3e]">
                     <Sun size={16} />
                   </div>
-                  <span className="text-sm font-semibold text-gray-900">Weather Today</span>
+                  <span className="text-sm font-semibold text-gray-900">{t(lang, 'db_weather_today')}</span>
                 </div>
                 <span className="text-xs font-medium text-gray-400 bg-gray-50 px-2.5 py-1 rounded-full">Pune, MH</span>
               </div>
@@ -203,16 +211,16 @@ export default function Dashboard() {
               <div className="mt-4 flex items-end gap-3">
                 <span className="text-4xl font-black text-gray-900">31°</span>
                 <div className="mb-1">
-                  <p className="text-xs font-semibold text-[#087f3e]">Partly Cloudy</p>
-                  <p className="text-[10px] text-gray-400">Feels like 34°C</p>
+                  <p className="text-xs font-semibold text-[#087f3e]">{lang === 'hi' ? 'आंशिक बादल' : lang === 'mr' ? 'अंशतः ढगाळ' : 'Partly Cloudy'}</p>
+                  <p className="text-[10px] text-gray-400">{lang === 'hi' ? 'महसूस 34°C' : lang === 'mr' ? 'जाणवणारे तापमान 34°C' : 'Feels like 34°C'}</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-3 gap-2 mt-4">
                 {[
-                  { icon: <Droplets size={13} />, label: 'Humidity', val: '72%' },
-                  { icon: <Wind size={13} />, label: 'Wind', val: '14 km/h' },
-                  { icon: <Thermometer size={13} />, label: 'UV Index', val: 'High' },
+                  { icon: <Droplets size={13} />, label: t(lang, 'db_humidity'), val: '72%' },
+                  { icon: <Wind size={13} />, label: t(lang, 'db_wind'), val: '14 km/h' },
+                  { icon: <Thermometer size={13} />, label: t(lang, 'db_uv_index'), val: lang === 'hi' ? 'उच्च' : lang === 'mr' ? 'जास्त' : 'High' },
                 ].map((s) => (
                   <div key={s.label} className="flex flex-col items-center gap-1 bg-[#F9FBF9] rounded-xl py-2">
                     <span className="text-[#087f3e]">{s.icon}</span>
@@ -241,13 +249,13 @@ export default function Dashboard() {
                 <div className="w-8 h-8 rounded-xl bg-[#E8F5E9] flex items-center justify-center text-[#087f3e]">
                   <Sprout size={16} />
                 </div>
-                <span className="text-sm font-semibold text-gray-900">Crop Matches</span>
+                <span className="text-sm font-semibold text-gray-900">{t(lang, 'db_crop_matches')}</span>
               </div>
-              <span className="text-[10px] font-semibold text-[#087f3e] bg-[#E8F5E9] px-2.5 py-1 rounded-full">AI Suggested</span>
+              <span className="text-[10px] font-semibold text-[#087f3e] bg-[#E8F5E9] px-2.5 py-1 rounded-full">{t(lang, 'db_ai_suggested')}</span>
             </div>
 
             <div className="mt-3 flex flex-col gap-3">
-              <p className="text-xs text-gray-400">Based on soil pH 6.8 · Loamy · Western Ghats</p>
+              <p className="text-xs text-gray-400">{lang === 'hi' ? 'मिट्टी pH 6.8 · दोमट · पश्चिमी घाट' : lang === 'mr' ? 'माती pH 6.8 · पोयटा · पश्चिम घाट' : 'Based on soil pH 6.8 · Loamy · Western Ghats'}</p>
               {crops.map((c) => (
                 <div key={c.name} className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: c.color + '22' }}>
@@ -276,7 +284,7 @@ export default function Dashboard() {
                   <div className="w-8 h-8 rounded-xl bg-red-50 flex items-center justify-center text-red-500">
                     <ShieldAlert size={16} />
                   </div>
-                  <span className="text-sm font-semibold text-gray-900">Health Alerts</span>
+                  <span className="text-sm font-semibold text-gray-900">{t(lang, 'db_health_alerts')}</span>
                 </div>
                 <span className="text-[10px] font-semibold text-red-600 bg-red-50 px-2.5 py-1 rounded-full">1 Alert</span>
               </div>
@@ -287,10 +295,10 @@ export default function Dashboard() {
                     <AlertTriangle size={14} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-gray-900 truncate">Early Blight Risk</p>
-                    <p className="text-[10px] text-gray-500">Tomato Crop · Wet humidity</p>
+                    <p className="text-xs font-semibold text-gray-900 truncate">{t(lang, 'db_early_blight_risk')}</p>
+                    <p className="text-[10px] text-gray-500">{t(lang, 'db_early_blight_sub')}</p>
                   </div>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-red-700 bg-red-100 shrink-0">High</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-red-700 bg-red-100 shrink-0">{lang === 'hi' ? 'उच्च' : lang === 'mr' ? 'जास्त' : 'High'}</span>
                 </div>
 
                 <div className="flex items-center gap-3 p-3 rounded-xl border border-amber-200/60 bg-amber-50/40">
@@ -298,10 +306,10 @@ export default function Dashboard() {
                     <Info size={14} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-gray-900 truncate">Rust Fungus Warning</p>
-                    <p className="text-[10px] text-gray-500">Wheat Crop · Moderate</p>
+                    <p className="text-xs font-semibold text-gray-900 truncate">{t(lang, 'db_rust_fungus_risk')}</p>
+                    <p className="text-[10px] text-gray-500">{t(lang, 'db_rust_fungus_sub')}</p>
                   </div>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-amber-700 bg-amber-100 shrink-0">Medium</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-amber-700 bg-amber-100 shrink-0">{lang === 'hi' ? 'मध्यम' : lang === 'mr' ? 'मध्यम' : 'Medium'}</span>
                 </div>
               </div>
             </div>
@@ -310,7 +318,7 @@ export default function Dashboard() {
               to="/disease-detection"
               className="mt-4 w-full flex items-center justify-center gap-1.5 text-xs font-semibold text-[#087f3e] bg-[#E8F5E9] hover:bg-[#C8E6C9] py-2.5 rounded-xl transition-colors duration-200"
             >
-              <span>Scan Leaf with Camera</span>
+              <span>{t(lang, 'db_scan_leaf_btn')}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>

@@ -8,6 +8,8 @@ import {
   RotateCcw, ExternalLink, Download
 } from 'lucide-react'
 import axios from 'axios'
+import { useLanguage } from './context/LanguageContext'
+import { t } from './lib/i18n'
 
 // Backend endpoint
 const API_BASE = `${import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000'}/api/disease`
@@ -307,6 +309,7 @@ const CLIENT_CLASS_INFO: Record<string, DiseaseDetails> = {
 
 export default function DiseaseDetection() {
   const navigate = useNavigate()
+  const { lang } = useLanguage()
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [analyzing, setAnalyzing] = useState(false)
@@ -557,7 +560,7 @@ export default function DiseaseDetection() {
           className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E8F5E9] border border-[#C8E6C9] text-[#2E7D32] text-xs font-semibold uppercase tracking-wider mb-3 shadow-xs"
         >
           <Sparkles className="w-3.5 h-3.5" />
-          AI Plant Pathology • MobileNetV3 Architecture
+          {t(lang, 'dd_badge')}
         </motion.div>
         
         <motion.h1
@@ -566,7 +569,7 @@ export default function DiseaseDetection() {
           transition={{ delay: 0.1 }}
           className="text-3xl sm:text-4xl font-extrabold text-[#1F2937] tracking-tight"
         >
-          Plant Leaf <span className="text-[#2E7D32]">Disease Detection</span>
+          {t(lang, 'dd_title_prefix')} <span className="text-[#2E7D32]">{t(lang, 'dd_title_highlight')}</span>
         </motion.h1>
         
         <motion.p
@@ -575,8 +578,7 @@ export default function DiseaseDetection() {
           transition={{ delay: 0.2 }}
           className="mt-3 text-base text-gray-600 max-w-2xl mx-auto leading-relaxed"
         >
-          Instantly scan crop leaves to identify Bacterial Blight, Leaf Curl Virus, and Fusarium Wilt. 
-          Get agricultural remedies, dosage charts, and scientific treatment protocols.
+          {t(lang, 'dd_subtitle')}
         </motion.p>
       </div>
 
@@ -595,7 +597,7 @@ export default function DiseaseDetection() {
                 }`}
               >
                 <UploadCloud className="w-3.5 h-3.5" />
-                Upload Photo
+                {t(lang, 'dd_tab_upload')}
               </button>
               <button
                 onClick={() => { setActiveTab('camera'); startCamera(); }}
@@ -604,7 +606,7 @@ export default function DiseaseDetection() {
                 }`}
               >
                 <Camera className="w-3.5 h-3.5" />
-                Live Camera
+                {t(lang, 'dd_tab_camera')}
               </button>
               <button
                 onClick={() => { setActiveTab('samples'); stopCamera(); }}
@@ -613,7 +615,7 @@ export default function DiseaseDetection() {
                 }`}
               >
                 <Eye className="w-3.5 h-3.5" />
-                Demo Samples
+                {t(lang, 'dd_tab_samples')}
               </button>
             </div>
 
@@ -638,13 +640,13 @@ export default function DiseaseDetection() {
                       <UploadCloud className="w-7 h-7" />
                     </div>
                     <p className="text-sm font-semibold text-gray-800">
-                      Click to upload or drag & drop leaf photo
+                      {t(lang, 'dd_drop_title')}
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
-                      JPG, PNG, WebP up to 10MB (Single leaf in focus)
+                      {t(lang, 'dd_drop_sub')}
                     </p>
                     <span className="mt-4 px-3 py-1 bg-white border border-[#A5D6A7] text-[#2E7D32] text-xs font-medium rounded-full shadow-2xs">
-                      Select Leaf Image
+                      {t(lang, 'dd_select_btn')}
                     </span>
                   </div>
                 ) : (
@@ -714,7 +716,7 @@ export default function DiseaseDetection() {
                           className="px-4 py-2 bg-[#2E7D32] hover:bg-[#1B5E20] text-white font-semibold text-xs rounded-full shadow-lg flex items-center gap-1.5 border border-white/20 transition transform active:scale-95"
                         >
                           <Camera className="w-4 h-4" />
-                          Snap Photo
+                          {t(lang, 'dd_camera_capture')}
                         </button>
                       </div>
                     )}
@@ -727,7 +729,7 @@ export default function DiseaseDetection() {
             {activeTab === 'samples' && (
               <div className="flex flex-col gap-2.5">
                 <p className="text-xs text-gray-500 mb-1">
-                  Choose a sample leaf dataset image to test diagnosis instantly:
+                  {lang === 'hi' ? 'तुरंत जांचने के लिए नमूना पत्ती चुनें:' : lang === 'mr' ? 'त्वरित निदानासाठी नमुना पान निवडा:' : 'Choose a sample leaf dataset image to test diagnosis instantly:'}
                 </p>
                 <div className="grid grid-cols-2 gap-2">
                   <button
@@ -738,8 +740,8 @@ export default function DiseaseDetection() {
                       <Leaf className="w-5 h-5" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-emerald-900 group-hover:text-emerald-700">Healthy Leaf</div>
-                      <div className="text-[10px] text-emerald-600">No disease detected</div>
+                      <div className="text-xs font-bold text-emerald-900 group-hover:text-emerald-700">{t(lang, 'dd_sample_healthy')}</div>
+                      <div className="text-[10px] text-emerald-600">{lang === 'hi' ? 'कोई रोग नहीं' : lang === 'mr' ? 'कोणताही रोग नाही' : 'No disease detected'}</div>
                     </div>
                   </button>
 
@@ -751,8 +753,8 @@ export default function DiseaseDetection() {
                       <Bug className="w-5 h-5" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-rose-900 group-hover:text-rose-700">Bacterial Blight</div>
-                      <div className="text-[10px] text-rose-600">Angular leaf spots</div>
+                      <div className="text-xs font-bold text-rose-900 group-hover:text-rose-700">{t(lang, 'dd_sample_blight')}</div>
+                      <div className="text-[10px] text-rose-600">{lang === 'hi' ? 'कोणीय धब्बे' : lang === 'mr' ? 'कोनीय ठिपके' : 'Angular spots'}</div>
                     </div>
                   </button>
 
@@ -764,8 +766,8 @@ export default function DiseaseDetection() {
                       <RotateCcw className="w-5 h-5" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-amber-900 group-hover:text-amber-700">Leaf Curl Virus</div>
-                      <div className="text-[10px] text-amber-600">Curled leaf margins</div>
+                      <div className="text-xs font-bold text-amber-900 group-hover:text-amber-700">{t(lang, 'dd_sample_curl')}</div>
+                      <div className="text-[10px] text-amber-600">{lang === 'hi' ? 'मुड़ी हुई पत्तियाँ' : lang === 'mr' ? 'वाकलेली पाने' : 'Curled leaf margins'}</div>
                     </div>
                   </button>
 
@@ -777,8 +779,8 @@ export default function DiseaseDetection() {
                       <Droplets className="w-5 h-5" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-orange-900 group-hover:text-orange-700">Fusarium Wilt</div>
-                      <div className="text-[10px] text-orange-600">Vascular chlorosis</div>
+                      <div className="text-xs font-bold text-orange-900 group-hover:text-orange-700">{t(lang, 'dd_sample_wilt')}</div>
+                      <div className="text-[10px] text-orange-600">{lang === 'hi' ? 'उकठा / पीलापन' : lang === 'mr' ? 'सुकणे / पिवळेपणा' : 'Vascular wilt'}</div>
                     </div>
                   </button>
                 </div>
@@ -799,12 +801,12 @@ export default function DiseaseDetection() {
                 {analyzing ? (
                   <>
                     <RefreshCw className="w-4 h-4 animate-spin" />
-                    <span>Analyzing Leaf Biomarkers...</span>
+                    <span>{t(lang, 'dd_analyzing_btn')}</span>
                   </>
                 ) : (
                   <>
                     <Activity className="w-4 h-4" />
-                    <span>Diagnose Plant Disease</span>
+                    <span>{t(lang, 'dd_diagnose_btn')}</span>
                   </>
                 )}
               </button>
@@ -824,24 +826,24 @@ export default function DiseaseDetection() {
           <div className="bg-white rounded-2xl p-4 border border-gray-200/80 text-xs text-gray-600 shadow-2xs">
             <div className="font-semibold text-gray-800 flex items-center gap-1.5 mb-2">
               <Sparkles className="w-4 h-4 text-[#2E7D32]" />
-              Model Architecture & Pipeline
+              {t(lang, 'dd_pipeline_title')}
             </div>
             <div className="grid grid-cols-2 gap-2 text-[11px]">
               <div className="bg-gray-50 p-2 rounded-lg">
-                <span className="text-gray-400 block">Backbone</span>
+                <span className="text-gray-400 block">{lang === 'hi' ? 'बैकबोन' : lang === 'mr' ? 'बॅकबोन' : 'Backbone'}</span>
                 <span className="font-medium text-gray-700">MobileNetV3-Large</span>
               </div>
               <div className="bg-gray-50 p-2 rounded-lg">
-                <span className="text-gray-400 block">Input Format</span>
-                <span className="font-medium text-gray-700">224x224 RGB (3-ch)</span>
+                <span className="text-gray-400 block">{lang === 'hi' ? 'इनपुट आकार' : lang === 'mr' ? 'इनपुट आकार' : 'Input Format'}</span>
+                <span className="font-medium text-gray-700">224x224 RGB</span>
               </div>
               <div className="bg-gray-50 p-2 rounded-lg">
-                <span className="text-gray-400 block">Validation Acc.</span>
+                <span className="text-gray-400 block">{lang === 'hi' ? 'सटीकता' : lang === 'mr' ? 'अचूकता' : 'Validation Acc.'}</span>
                 <span className="font-medium text-emerald-700 font-bold">98.83%</span>
               </div>
               <div className="bg-gray-50 p-2 rounded-lg">
-                <span className="text-gray-400 block">Output Format</span>
-                <span className="font-medium text-gray-700">ONNX / PyTorch JIT</span>
+                <span className="text-gray-400 block">{lang === 'hi' ? 'आउटपुट' : lang === 'mr' ? 'आउटपुट' : 'Output'}</span>
+                <span className="font-medium text-gray-700">ONNX / PyTorch</span>
               </div>
             </div>
           </div>
@@ -860,15 +862,15 @@ export default function DiseaseDetection() {
                 <div className="w-16 h-16 rounded-2xl bg-[#E8F5E9] flex items-center justify-center text-[#2E7D32] mb-4">
                   <Leaf className="w-8 h-8 stroke-[1.5]" />
                 </div>
-                <h3 className="text-lg font-bold text-gray-800">Awaiting Leaf Inspection</h3>
+                <h3 className="text-lg font-bold text-gray-800">{t(lang, 'dd_awaiting_title')}</h3>
                 <p className="text-xs text-gray-500 max-w-sm mt-1 leading-relaxed">
-                  Upload an image from your device, take a live snapshot with the camera, or choose a demo leaf sample to view real-time disease classification and treatment recommendations.
+                  {t(lang, 'dd_awaiting_desc')}
                 </p>
                 <div className="mt-6 flex flex-wrap justify-center gap-2">
-                  <span className="text-[11px] px-2.5 py-1 bg-gray-100 text-gray-600 rounded-md">Bacterial Blight</span>
-                  <span className="text-[11px] px-2.5 py-1 bg-gray-100 text-gray-600 rounded-md">Leaf Curl Virus</span>
-                  <span className="text-[11px] px-2.5 py-1 bg-gray-100 text-gray-600 rounded-md">Fusarium Wilt</span>
-                  <span className="text-[11px] px-2.5 py-1 bg-gray-100 text-gray-600 rounded-md">Healthy Crops</span>
+                  <span className="text-[11px] px-2.5 py-1 bg-gray-100 text-gray-600 rounded-md">{t(lang, 'dd_sample_blight')}</span>
+                  <span className="text-[11px] px-2.5 py-1 bg-gray-100 text-gray-600 rounded-md">{t(lang, 'dd_sample_curl')}</span>
+                  <span className="text-[11px] px-2.5 py-1 bg-gray-100 text-gray-600 rounded-md">{t(lang, 'dd_sample_wilt')}</span>
+                  <span className="text-[11px] px-2.5 py-1 bg-gray-100 text-gray-600 rounded-md">{t(lang, 'dd_sample_healthy')}</span>
                 </div>
               </motion.div>
             ) : (
@@ -909,7 +911,7 @@ export default function DiseaseDetection() {
                         {result.confidence}%
                       </div>
                       <div className="text-[10px] font-semibold uppercase tracking-wider text-[#388E3C] mt-0.5">
-                        Confidence
+                        {t(lang, 'dd_confidence')}
                       </div>
                     </div>
                   </div>
@@ -921,7 +923,7 @@ export default function DiseaseDetection() {
                   {/* Top-3 Probability Distribution Bars */}
                   <div className="mt-4 pt-3 border-t border-gray-100">
                     <span className="text-[11px] font-bold text-gray-700 block mb-2">
-                      Top Diagnostic Probabilities (Softmax):
+                      {lang === 'hi' ? 'संभाव्यता वितरण:' : lang === 'mr' ? 'संभाव्यता वितरण:' : 'Top Diagnostic Probabilities (Softmax):'}
                     </span>
                     <div className="space-y-1.5">
                       {result.top3.map((pred, i) => (
@@ -959,7 +961,7 @@ export default function DiseaseDetection() {
                           : 'border-transparent hover:text-gray-900'
                       }`}
                     >
-                      Urgent Actions & Symptoms
+                      {lang === 'hi' ? 'तत्काल उपाय और लक्षण' : lang === 'mr' ? 'तातडीच्या उपाययोजना आणि लक्षणे' : 'Urgent Actions & Symptoms'}
                     </button>
                     {result.details.chemical_control.length > 0 && (
                       <button
@@ -970,7 +972,7 @@ export default function DiseaseDetection() {
                             : 'border-transparent hover:text-gray-900'
                         }`}
                       >
-                        Chemical Treatments
+                        {lang === 'hi' ? 'रासायनिक उपचार' : lang === 'mr' ? 'रासायनिक उपचार' : 'Chemical Treatments'}
                       </button>
                     )}
                     <button
@@ -981,7 +983,7 @@ export default function DiseaseDetection() {
                           : 'border-transparent hover:text-gray-900'
                       }`}
                     >
-                      Organic & Biological
+                      {lang === 'hi' ? 'जैविक व प्राकृतिक' : lang === 'mr' ? 'सेंद्रिय व जैविक' : 'Organic & Biological'}
                     </button>
                     <button
                       onClick={() => setTreatmentTab('prevention')}
@@ -991,7 +993,7 @@ export default function DiseaseDetection() {
                           : 'border-transparent hover:text-gray-900'
                       }`}
                     >
-                      Long-Term Prevention
+                      {lang === 'hi' ? 'दीर्घकालिक रोकथाम' : lang === 'mr' ? 'दीर्घकालीन प्रतिबंध' : 'Long-Term Prevention'}
                     </button>
                   </div>
 
@@ -1002,7 +1004,7 @@ export default function DiseaseDetection() {
                         <div>
                           <h4 className="text-xs font-bold uppercase tracking-wider text-rose-700 flex items-center gap-1.5 mb-2">
                             <AlertTriangle className="w-3.5 h-3.5" />
-                            Immediate Emergency Actions
+                            {lang === 'hi' ? 'तत्काल आपातकालीन कदम' : lang === 'mr' ? 'तातडीने करावयाची कृती' : 'Immediate Emergency Actions'}
                           </h4>
                           <ul className="space-y-2">
                             {result.details.immediate_actions.map((act, idx) => (
@@ -1017,7 +1019,7 @@ export default function DiseaseDetection() {
                         <div>
                           <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700 flex items-center gap-1.5 mb-2">
                             <Eye className="w-3.5 h-3.5 text-gray-500" />
-                            Observed Botanical Symptoms
+                            {lang === 'hi' ? 'दिखाई देने वाले लक्षण' : lang === 'mr' ? 'निरीक्षण केलेली लक्षणे' : 'Observed Botanical Symptoms'}
                           </h4>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             {result.details.symptoms.map((sym, idx) => (
@@ -1036,7 +1038,7 @@ export default function DiseaseDetection() {
                       <div className="space-y-3">
                         <h4 className="text-xs font-bold uppercase tracking-wider text-blue-700 flex items-center gap-1.5 mb-2">
                           <Pill className="w-3.5 h-3.5" />
-                          Recommended Chemical Fungicides / Bactericides / Insecticides
+                          {lang === 'hi' ? 'अनुशंसित रासायनिक उपचार' : lang === 'mr' ? 'शिफारस केलेले रासायनिक उपचार' : 'Recommended Chemical Fungicides / Bactericides'}
                         </h4>
                         {result.details.chemical_control.map((chem, idx) => (
                           <div key={idx} className="p-3 bg-blue-50/50 rounded-xl border border-blue-100 text-xs space-y-1">
@@ -1047,17 +1049,17 @@ export default function DiseaseDetection() {
                               </span>
                             </div>
                             <div className="text-gray-700">
-                              <strong>Dosage:</strong> {chem.dosage}
+                              <strong>{lang === 'hi' ? 'खुराक:' : lang === 'mr' ? 'मात्रा:' : 'Dosage:'}</strong> {chem.dosage}
                             </div>
                             {chem.application && (
                               <div className="text-gray-600">
-                                <strong>Application:</strong> {chem.application}
+                                <strong>{lang === 'hi' ? 'प्रयोग विधि:' : lang === 'mr' ? 'वापरण्याची पद्धत:' : 'Application:'}</strong> {chem.application}
                               </div>
                             )}
                           </div>
                         ))}
                         <p className="text-[11px] text-gray-400 italic">
-                          * Caution: Always wear protective gear and follow instructions on manufacturer label. Verify suitability with your local Krishi Vigyan Kendra (KVK).
+                          {lang === 'hi' ? '* सावधानी: कीटनाशक का छिड़काव करते समय सुरक्षात्मक उपकरण पहनें और स्थानीय कृषि विज्ञान केंद्र से सलाह लें।' : lang === 'mr' ? '* दक्षता: कीटकनाशक वापरताना संरक्षणात्मक साधने वापरा आणि स्थानिक कृषी विज्ञान केंद्राचा सल्ला घ्या.' : '* Caution: Always wear protective gear and follow instructions on manufacturer label. Verify suitability with your local Krishi Vigyan Kendra (KVK).'}
                         </p>
                       </div>
                     )}
@@ -1067,22 +1069,22 @@ export default function DiseaseDetection() {
                       <div className="space-y-3">
                         <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-700 flex items-center gap-1.5 mb-2">
                           <Leaf className="w-3.5 h-3.5" />
-                          Natural, Organic & Biological Controls
+                          {lang === 'hi' ? 'प्राकृतिक, जैविक और घरेलू उपचार' : lang === 'mr' ? 'नैसर्गिक, सेंद्रिय आणि जैविक उपाय' : 'Natural, Organic & Biological Controls'}
                         </h4>
                         {result.details.organic_control.map((org, idx) => (
                           <div key={idx} className="p-3 bg-[#E8F5E9]/50 rounded-xl border border-[#C8E6C9] text-xs space-y-1">
                             <div className="font-bold text-[#1B5E20] flex items-center justify-between">
                               <span>{org.treatment}</span>
                               <span className="text-[10px] px-2 py-0.5 bg-[#C8E6C9] text-[#2E7D32] rounded-md font-semibold">
-                                Eco-Friendly
+                                {lang === 'hi' ? 'पर्यावरण अनुकूल' : lang === 'mr' ? 'पर्यावरणपूरक' : 'Eco-Friendly'}
                               </span>
                             </div>
                             <div className="text-gray-700">
-                              <strong>Dosage / Rate:</strong> {org.dosage}
+                              <strong>{lang === 'hi' ? 'मात्रा / दर:' : lang === 'mr' ? 'प्रमाण / दर:' : 'Dosage / Rate:'}</strong> {org.dosage}
                             </div>
                             {org.timing && (
                               <div className="text-gray-600">
-                                <strong>Timing / Guidance:</strong> {org.timing}
+                                <strong>{lang === 'hi' ? 'समय / मार्गदर्शन:' : lang === 'mr' ? 'वेळ / मार्गदर्शन:' : 'Timing / Guidance:'}</strong> {org.timing}
                               </div>
                             )}
                           </div>
@@ -1095,7 +1097,7 @@ export default function DiseaseDetection() {
                       <div className="space-y-3">
                         <h4 className="text-xs font-bold uppercase tracking-wider text-purple-700 flex items-center gap-1.5 mb-2">
                           <ShieldAlert className="w-3.5 h-3.5" />
-                          Agronomic & Preventive Measures
+                          {lang === 'hi' ? 'कृषि एवं निवारक उपाय' : lang === 'mr' ? 'कृषी व प्रतिबंधात्मक उपाय' : 'Agronomic & Preventive Measures'}
                         </h4>
                         <div className="space-y-2">
                           {result.details.prevention.map((prev, idx) => (
@@ -1116,7 +1118,7 @@ export default function DiseaseDetection() {
                       className="px-4 py-2.5 bg-[#2E7D32] hover:bg-[#1B5E20] text-white text-xs font-bold rounded-xl flex items-center gap-2 shadow-xs transition"
                     >
                       <Sparkles className="w-4 h-4 text-emerald-200" />
-                      Ask Krishi Mitra AI About This
+                      {lang === 'hi' ? 'कृषि मित्र AI से इस बारे में पूछें' : lang === 'mr' ? 'कृषी मित्र AI ला विचारा' : 'Ask Krishi Mitra AI About This'}
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
 
@@ -1126,7 +1128,7 @@ export default function DiseaseDetection() {
                         className="px-3 py-2 bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 text-xs font-medium rounded-xl flex items-center gap-1.5 transition"
                       >
                         <Download className="w-3.5 h-3.5 text-gray-500" />
-                        Save Diagnosis
+                        {lang === 'hi' ? 'निदान सेव करें' : lang === 'mr' ? 'निदान सेव्ह करा' : 'Save Diagnosis'}
                       </button>
 
                       <button
@@ -1134,7 +1136,7 @@ export default function DiseaseDetection() {
                         className="px-3 py-2 bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 text-xs font-medium rounded-xl flex items-center gap-1.5 transition"
                       >
                         <RotateCcw className="w-3.5 h-3.5 text-gray-500" />
-                        Scan Another
+                        {t(lang, 'dd_scan_another')}
                       </button>
                     </div>
                   </div>
@@ -1150,12 +1152,14 @@ export default function DiseaseDetection() {
       {/* Visual Disease Encyclopedia Section */}
       <div className="max-w-5xl mx-auto mt-16 pt-10 border-t border-gray-200/80">
         <div className="text-center mb-8">
-          <span className="text-xs font-bold text-[#2E7D32] uppercase tracking-wider">Field Reference Guide</span>
+          <span className="text-xs font-bold text-[#2E7D32] uppercase tracking-wider">
+            {lang === 'hi' ? 'खेत संदर्भ गाइड' : lang === 'mr' ? 'शेत संदर्भ मार्गदर्शक' : 'Field Reference Guide'}
+          </span>
           <h3 className="text-xl sm:text-2xl font-black text-gray-900 mt-1">
-            Common Cotton Leaf Diseases Recognized by the Model
+            {lang === 'hi' ? 'मॉडल द्वारा पहचाने जाने वाले प्रमुख फसल पत्ती रोग' : lang === 'mr' ? 'मॉडेलद्वारे ओळखले जाणारे प्रमुख पीक रोग' : 'Common Cotton Leaf Diseases Recognized by the Model'}
           </h3>
           <p className="text-xs text-gray-500 mt-1">
-            Trained and benchmarked on verified agricultural pathology datasets.
+            {lang === 'hi' ? 'सत्यापित कृषि रोग विज्ञान डेटासेट पर प्रशिक्षित।' : lang === 'mr' ? 'सत्यापित कृषी पॅथॉलॉजी डेटासेटवर प्रशिक्षित.' : 'Trained and benchmarked on verified agricultural pathology datasets.'}
           </p>
         </div>
 

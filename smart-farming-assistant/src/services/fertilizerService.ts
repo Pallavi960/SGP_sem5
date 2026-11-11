@@ -229,7 +229,6 @@ export function calculateFertilizerRecommendation(input: FertilizerInput): Ferti
   } else if (isFlowering) {
     // Flowering / Panicle: Balanced with Micronutrients (Boron/Zinc)
     const ureaPerAcre = Math.round((baseUreaKg * 0.25) * nFactor)
-    const mopPerAcre = Math.round((baseMopKg * 0.3) * kFactor)
 
     if (ureaPerAcre > 0) {
       primaryFertilizers.push({

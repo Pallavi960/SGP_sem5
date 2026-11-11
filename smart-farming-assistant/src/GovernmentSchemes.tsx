@@ -12,7 +12,7 @@ import {
   searchSchemes,
 } from './services/GovernmentSchemeService'
 import type { GovernmentScheme } from './services/GovernmentSchemeService'
-// using static data with official links — no backend needed
+import { useLanguage } from './context/LanguageContext'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
@@ -22,18 +22,13 @@ const fadeUp = {
   }),
 }
 
-const quickAccess = [
-  { icon: Shield, label: 'Crop Insurance', desc: 'Protect your harvest', color: 'bg-blue-50 text-blue-600 border-blue-100' },
-  { icon: Tag, label: 'Subsidies', desc: 'Input cost reduction', color: 'bg-amber-50 text-amber-600 border-amber-100' },
-  { icon: Banknote, label: 'Agricultural Loans', desc: 'Easy credit access', color: 'bg-purple-50 text-purple-600 border-purple-100' },
-  { icon: Tractor, label: 'Equipment Assistance', desc: 'Modern farm tools', color: 'bg-[#E8F5E9] text-[#2E7D32] border-[#A5D6A7]' },
-]
 
 const states = ['All India', 'Maharashtra', 'Punjab', 'Uttar Pradesh', 'Karnataka', 'Rajasthan']
 const categories = ['All', 'Financial Support', 'Crop Insurance', 'Subsidies', 'Agricultural Loans']
 const eligibilities = ['All Farmers', 'Small & Marginal', 'Registered Farmers', 'Land Record Holders']
 
 export default function GovernmentSchemes() {
+  const { lang } = useLanguage()
   const [schemes, setSchemes] = useState<GovernmentScheme[]>([])
   const [search, setSearch] = useState('')
   const [selectedState, setSelectedState] = useState('All India')
@@ -59,7 +54,13 @@ export default function GovernmentSchemes() {
         }
         setSchemes(data)
       } catch (err) {
-        setError('Unable to load government schemes right now. Please try again later.')
+        setError(
+          lang === 'hi'
+            ? 'सरकारी योजनाएं लोड करने में असमर्थ। कृपया बाद में पुनः प्रयास करें।'
+            : lang === 'mr'
+            ? 'शासकीय योजना लोड करण्यात अडचण. कृपया नंतर पुन्हा प्रयत्न करा.'
+            : 'Unable to load government schemes right now. Please try again later.'
+        )
         setSchemes([])
       } finally {
         setLoading(false)
@@ -67,7 +68,7 @@ export default function GovernmentSchemes() {
     }
 
     loadSchemes()
-  }, [search, selectedCategory, selectedState])
+  }, [search, selectedCategory, selectedState, lang])
 
   const filtered = useMemo(() => {
     return schemes.filter((s) => {
@@ -96,7 +97,7 @@ export default function GovernmentSchemes() {
               <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search schemes..."
+                placeholder={lang === 'hi' ? 'योजनाएं खोजें...' : lang === 'mr' ? 'योजना शोधा...' : 'Search schemes...'}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#A5D6A7] focus:border-[#2E7D32] transition-all"
@@ -125,7 +126,9 @@ export default function GovernmentSchemes() {
             {loading ? (
               <motion.div variants={fadeUp} className="col-span-full flex flex-col items-center gap-3 py-20 text-gray-400">
                 <Search size={40} className="opacity-30" />
-                <p className="text-sm font-medium">Loading schemes...</p>
+                <p className="text-sm font-medium">
+                  {lang === 'hi' ? 'योजनाएं लोड हो रही हैं...' : lang === 'mr' ? 'योजना लोड होत आहेत...' : 'Loading schemes...'}
+                </p>
               </motion.div>
             ) : error ? (
               <motion.div variants={fadeUp} className="col-span-full flex flex-col items-center gap-3 py-20 text-red-500">
@@ -133,11 +136,13 @@ export default function GovernmentSchemes() {
                 <p className="text-sm font-medium">{error}</p>
               </motion.div>
             ) : filtered.length > 0 ? filtered.map((scheme, i) => (
-              <SchemeCard key={scheme.id} scheme={scheme} index={i} />
+              <SchemeCard key={scheme.id} scheme={scheme} index={i} lang={lang} />
             )) : (
               <motion.div variants={fadeUp} className="col-span-full flex flex-col items-center gap-3 py-20 text-gray-400">
                 <Search size={40} className="opacity-30" />
-                <p className="text-sm font-medium">No schemes found. Try a different search.</p>
+                <p className="text-sm font-medium">
+                  {lang === 'hi' ? 'कोई योजना नहीं मिली। अलग खोज का प्रयास करें।' : lang === 'mr' ? 'कोणतीही योजना आढळली नाही. वेगळा शोध घ्या.' : 'No schemes found. Try a different search.'}
+                </p>
               </motion.div>
             )}
           </motion.div>
@@ -154,12 +159,21 @@ export default function GovernmentSchemes() {
             variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
           >
             <motion.div variants={fadeUp} className="text-center mb-10">
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-2">Quick Access</p>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1F2937]">Browse by Category</h2>
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-2">
+                {lang === 'hi' ? 'त्वरित पहुंच' : lang === 'mr' ? 'जलद प्रवेश' : 'Quick Access'}
+              </p>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1F2937]">
+                {lang === 'hi' ? 'श्रेणी अनुसार खोजें' : lang === 'mr' ? 'वर्गवारीनुसार शोधा' : 'Browse by Category'}
+              </h2>
             </motion.div>
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
-              {quickAccess.map((item, i) => {
+              {[
+                { icon: Shield, label: lang === 'hi' ? 'फसल बीमा' : lang === 'mr' ? 'पीक विमा' : 'Crop Insurance', desc: lang === 'hi' ? 'फसल सुरक्षा' : lang === 'mr' ? 'पिकाचे संरक्षण' : 'Protect your harvest', color: 'bg-blue-50 text-blue-600 border-blue-100' },
+                { icon: Tag, label: lang === 'hi' ? 'सब्सिडी व अनुदान' : lang === 'mr' ? 'अनुदान आणि सवलत' : 'Subsidies', desc: lang === 'hi' ? 'लागत में कमी' : lang === 'mr' ? 'खर्च कमी करा' : 'Input cost reduction', color: 'bg-amber-50 text-amber-600 border-amber-100' },
+                { icon: Banknote, label: lang === 'hi' ? 'कृषि ऋण' : lang === 'mr' ? 'कृषी कर्ज' : 'Agricultural Loans', desc: lang === 'hi' ? 'आसान लोन सुविधा' : lang === 'mr' ? 'सुलभ कर्ज सुविधा' : 'Easy credit access', color: 'bg-purple-50 text-purple-600 border-purple-100' },
+                { icon: Tractor, label: lang === 'hi' ? 'कृषि उपकरण सहायता' : lang === 'mr' ? 'कृषी अवजारे साहाय्य' : 'Equipment Assistance', desc: lang === 'hi' ? 'आधुनिक कृषि यंत्र' : lang === 'mr' ? 'आधुनिक शेती यंत्रसामग्री' : 'Modern farm tools', color: 'bg-[#E8F5E9] text-[#2E7D32] border-[#A5D6A7]' },
+              ].map((item, i) => {
                 const Icon = item.icon
                 return (
                   <motion.div
@@ -199,9 +213,15 @@ export default function GovernmentSchemes() {
               <Info size={22} className="text-amber-600" />
             </div>
             <div className="flex-1">
-              <p className="font-bold text-amber-800 text-base">Need Help Applying?</p>
+              <p className="font-bold text-amber-800 text-base">
+                {lang === 'hi' ? 'आवेदन करने में मदद चाहिए?' : lang === 'mr' ? 'अर्ज करण्यासाठी मदत हवी आहे?' : 'Need Help Applying?'}
+              </p>
               <p className="text-amber-700 text-sm mt-0.5">
-                Visit your nearest agriculture office or CSC center for assistance with scheme applications and documentation.
+                {lang === 'hi'
+                  ? 'योजना आवेदन और दस्तावेजों के लिए अपने नजदीकी कृषि कार्यालय या सीएससी केंद्र पर जाएं।'
+                  : lang === 'mr'
+                  ? 'योजना अर्ज आणि कागदपत्रांच्या मदतीसाठी आपल्या जवळच्या कृषी कार्यालयाला किंवा सीएससी केंद्राला भेट द्या.'
+                  : 'Visit your nearest agriculture office or CSC center for assistance with scheme applications and documentation.'}
               </p>
             </div>
             <motion.button
@@ -209,7 +229,8 @@ export default function GovernmentSchemes() {
               whileTap={{ scale: 0.97 }}
               className="flex items-center gap-2 px-5 py-2.5 bg-amber-500 text-white text-sm font-semibold rounded-xl hover:bg-amber-600 transition-colors shrink-0"
             >
-              <Phone size={14} /> Find Center
+              <Phone size={14} />
+              {lang === 'hi' ? 'केंद्र खोजें' : lang === 'mr' ? 'केंद्र शोधा' : 'Find Center'}
             </motion.button>
           </motion.div>
         </div>
@@ -231,20 +252,26 @@ export default function GovernmentSchemes() {
 
             <div className="relative z-10 flex flex-col items-center gap-6">
               <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 text-white text-sm font-medium border border-white/20">
-                <Leaf size={14} /> We're here to help
+                <Leaf size={14} />
+                {lang === 'hi' ? 'हम आपकी मदद के लिए उपस्थित हैं' : lang === 'mr' ? 'आम्ही मदतीसाठी सदैव तत्पर आहोत' : "We're here to help"}
               </span>
               <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight">
-                Didn't find your scheme?
+                {lang === 'hi' ? 'अपनी योजना नहीं मिली?' : lang === 'mr' ? 'तुमची योजना सापडली नाही?' : "Didn't find your scheme?"}
               </h2>
               <p className="text-green-200 text-base max-w-md">
-                Our agriculture officers can help you discover and apply for the right government schemes for your needs.
+                {lang === 'hi'
+                  ? 'हमारे कृषि अधिकारी आपको आपकी आवश्यकताओं के अनुसार सही सरकारी योजनाओं को खोजने और आवेदन करने में मदद कर सकते हैं।'
+                  : lang === 'mr'
+                  ? 'आमचे कृषी अधिकारी आपल्या गरजेनुसार योग्य सरकारी योजना शोधण्यात आणि अर्ज करण्यात मदत करू शकतात.'
+                  : 'Our agriculture officers can help you discover and apply for the right government schemes for your needs.'}
               </p>
               <motion.button
                 whileHover={{ scale: 1.04, boxShadow: '0 20px 40px rgba(0,0,0,0.25)' }}
                 whileTap={{ scale: 0.97 }}
                 className="inline-flex items-center gap-2 px-8 py-3.5 bg-white text-[#2E7D32] text-sm font-bold rounded-xl shadow-lg hover:bg-[#F1F8E9] transition-all duration-200"
               >
-                <Phone size={16} /> Contact Agriculture Officer
+                <Phone size={16} />
+                {lang === 'hi' ? 'कृषि अधिकारी से संपर्क करें' : lang === 'mr' ? 'कृषी अधिकाऱ्याशी संपर्क साधा' : 'Contact Agriculture Officer'}
               </motion.button>
             </div>
           </motion.div>
@@ -278,7 +305,7 @@ function FilterSelect({
   )
 }
 
-function SchemeCard({ scheme, index }: { scheme: any; index: number }) {
+function SchemeCard({ scheme, index, lang }: { scheme: any; index: number; lang?: string }) {
   return (
     <motion.div
       custom={index}
@@ -307,9 +334,22 @@ function SchemeCard({ scheme, index }: { scheme: any; index: number }) {
 
         {/* Benefits & Eligibility */}
         <div className="flex flex-col gap-2">
-          <InfoRow icon={<Banknote size={13} className="text-[#2E7D32]" />} label="Benefits" value={scheme.benefits || 'View details'} />
-          <InfoRow icon={<Users size={13} className="text-[#2E7D32]" />} label="Eligibility" value={scheme.eligibility || 'Check official source'} />
-          <InfoRow icon={<Calendar size={13} className="text-gray-400" />} label="Category" value={scheme.category || 'Government Scheme'} muted />
+          <InfoRow
+            icon={<Banknote size={13} className="text-[#2E7D32]" />}
+            label={lang === 'hi' ? 'लाभ' : lang === 'mr' ? 'फायदे' : 'Benefits'}
+            value={scheme.benefits || (lang === 'hi' ? 'विवरण देखें' : lang === 'mr' ? 'तपशील पहा' : 'View details')}
+          />
+          <InfoRow
+            icon={<Users size={13} className="text-[#2E7D32]" />}
+            label={lang === 'hi' ? 'पात्रता' : lang === 'mr' ? 'पात्रता' : 'Eligibility'}
+            value={scheme.eligibility || (lang === 'hi' ? 'आधिकारिक स्रोत देखें' : lang === 'mr' ? 'अधिकृत स्रोत तपासा' : 'Check official source')}
+          />
+          <InfoRow
+            icon={<Calendar size={13} className="text-gray-400" />}
+            label={lang === 'hi' ? 'श्रेणी' : lang === 'mr' ? 'वर्ग' : 'Category'}
+            value={scheme.category || (lang === 'hi' ? 'सरकारी योजना' : lang === 'mr' ? 'शासकीय योजना' : 'Government Scheme')}
+            muted
+          />
         </div>
       </div>
 
@@ -323,7 +363,7 @@ function SchemeCard({ scheme, index }: { scheme: any; index: number }) {
           whileTap={{ scale: 0.97 }}
           className="w-full flex items-center justify-center gap-2 py-2.5 bg-[#E8F5E9] text-[#2E7D32] text-sm font-semibold rounded-xl hover:bg-[#2E7D32] hover:text-white transition-all duration-200"
         >
-          Visit Official Site <ChevronRight size={15} />
+          {lang === 'hi' ? 'आधिकारिक वेबसाइट देखें' : lang === 'mr' ? 'अधिकृत संकेतस्थळाला भेट द्या' : 'Visit Official Site'} <ChevronRight size={15} />
         </motion.a>
       </div>
     </motion.div>

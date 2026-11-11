@@ -26,19 +26,17 @@ function getNavLinks(lang: LangCode) {
   return NAV_LINKS_BASE.map((l) => ({ label: t(lang, l.key), to: l.to, icon: l.icon }))
 }
 
-// ── Grouped nav for logged-out view ─────────────────────────────────────────
-// Groups are purely visual; routes are unchanged.
-const GROUPS = [
+const getGroups = (lang: LangCode) => [
   {
-    label: 'Main',
+    label: t(lang, 'sec_main'),
     keys: ['/', '/crop-recommendation', '/weather'],
   },
   {
-    label: 'Farm Tools',
+    label: t(lang, 'sec_farm_tools'),
     keys: ['/disease-detection', '/fertilizer-advisor', '/farm-planner', '/prediction'],
   },
   {
-    label: 'Information',
+    label: t(lang, 'sec_information'),
     keys: ['/government-schemes', '/how-to-use'],
   },
 ]
@@ -48,7 +46,7 @@ export default function Sidebar() {
   const { user, userName, userPhone, signOut } = useAuth()
   const { lang } = useLanguage()
 
-  const displayName = userName || userPhone || 'My Account'
+  const displayName = userName || userPhone || t(lang, 'my_account')
 
   const baseNavLinks = getNavLinks(lang)
 
@@ -77,7 +75,7 @@ export default function Sidebar() {
               SmartFarm AI
             </span>
             <span className="text-[10px] font-semibold text-[#15803D] tracking-wide uppercase leading-tight">
-              Smart Farming Assistant
+              {t(lang, 'brand_tagline')}
             </span>
           </div>
         </Link>
@@ -89,14 +87,14 @@ export default function Sidebar() {
         {/* ── Logged-in: Dashboard + flat Tools section ─────────────────── */}
         {user && (
           <>
-            <SectionLabel>Overview</SectionLabel>
+            <SectionLabel>{t(lang, 'sec_overview')}</SectionLabel>
             <NavItem
               to="/dashboard"
               label={t(lang, 'nav_dashboard')}
               Icon={LayoutDashboard}
               active={isActive('/dashboard')}
             />
-            <SectionLabel>Tools</SectionLabel>
+            <SectionLabel>{t(lang, 'sec_tools')}</SectionLabel>
             {baseNavLinks.map(({ label, to, icon: Icon }) => (
               <NavItem key={to} to={to} label={label} Icon={Icon} active={isActive(to)} />
             ))}
@@ -104,7 +102,7 @@ export default function Sidebar() {
         )}
 
         {/* ── Logged-out: grouped view ───────────────────────────────────── */}
-        {!user && GROUPS.map((group) => {
+        {!user && getGroups(lang).map((group) => {
           const items = navLinks.filter((l) => group.keys.includes(l.to))
           if (items.length === 0) return null
           return (
@@ -192,7 +190,7 @@ export default function Sidebar() {
             <span className="text-[10px] font-semibold text-[#15803D] opacity-60">SmartFarm AI</span>
             <span className="text-[9.5px] text-gray-300 tracking-wide">SGP · v1.0</span>
           </div>
-          <span className="text-[9.5px] text-gray-300 leading-tight">Your simple farming assistant</span>
+          <span className="text-[9.5px] text-gray-300 leading-tight">{t(lang, 'brand_sub')}</span>
         </div>
       </div>
     </aside>

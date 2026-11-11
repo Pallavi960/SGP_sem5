@@ -5,6 +5,8 @@ import {
   ShieldAlert, Info, Leaf, Droplets, Bug, Pill, ChevronDown, ChevronUp,
 } from 'lucide-react'
 import axios from 'axios'
+import { useLanguage } from './context/LanguageContext'
+import { t } from './lib/i18n'
 
 const API_BASE = `${import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000'}/api/prediction`
 
@@ -68,6 +70,7 @@ const CLASS_COLOR: Record<string, { bar: string; bg: string; text: string }> = {
 
 // ── Component ────────────────────────────────────────────────────────────────
 export default function Prediction() {
+  const { lang } = useLanguage()
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [imageFile, setImageFile]       = useState<File | null>(null)
   const [result, setResult]             = useState<PredictionResponse | null>(null)
@@ -113,7 +116,13 @@ export default function Prediction() {
       streamRef.current = stream
       if (videoRef.current) videoRef.current.srcObject = stream
     } catch {
-      setError('Cannot access camera. Please upload an image instead.')
+      setError(
+        lang === 'hi'
+          ? 'कैमरा एक्सेस नहीं हो सका। कृपया फोटो अपलोड करें।'
+          : lang === 'mr'
+          ? 'कॅमेरा सुरू करता आला नाही. कृपया फोटो अपलोड करा.'
+          : 'Cannot access camera. Please upload an image instead.'
+      )
       setShowCamera(false)
     }
   }
@@ -166,7 +175,15 @@ export default function Prediction() {
       setResult(response.data)
       setOpenSection('immediate')
     } catch (err: any) {
-      setError(err?.response?.data?.detail ?? err?.message ?? 'Prediction failed. Check the backend is running.')
+      setError(
+        err?.response?.data?.detail ??
+        err?.message ??
+        (lang === 'hi'
+          ? 'निदान विफल हुआ। सुनिश्चित करें कि बैकएंड चालू है।'
+          : lang === 'mr'
+          ? 'निदान अयशस्वी झाले. बॅकएंड चालू असल्याची खात्री करा.'
+          : 'Prediction failed. Check the backend is running.')
+      )
     } finally {
       setLoading(false)
     }
@@ -191,9 +208,15 @@ export default function Prediction() {
 
         {/* ─── Header ────────────────────────────────────────────────── */}
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">🥔 Potato Leaf Prediction</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            {lang === 'hi' ? '🥔 आलू पत्ती रोग पहचान' : lang === 'mr' ? '🥔 बटाटा पान रोग निदान' : '🥔 Potato Leaf Prediction'}
+          </h1>
           <p className="text-gray-500 mt-1 text-base">
-            Upload or take a photo of a potato leaf to detect Early Blight, Late Blight, or confirm it's Healthy.
+            {lang === 'hi'
+              ? 'अगेती झुलसा, पछेती झुलसा का पता लगाने या स्वस्थ फसल की पुष्टि के लिए आलू की पत्ती की फोटो अपलोड करें।'
+              : lang === 'mr'
+              ? 'करपा (Early Blight), तांबेरा (Late Blight) किंवा निरोगी पीक तपासण्यासाठी बटाट्याच्या पानाचा फोटो अपलोड करा.'
+              : "Upload or take a photo of a potato leaf to detect Early Blight, Late Blight, or confirm it's Healthy."}
           </p>
         </div>
 
@@ -224,9 +247,15 @@ export default function Prediction() {
             ) : (
               <div className="flex flex-col items-center justify-center py-14 gap-3 text-gray-400">
                 <UploadCloud size={40} className="text-green-400" />
-                <p className="text-base font-semibold text-gray-600">Drop a leaf photo here</p>
-                <p className="text-sm">or click to browse</p>
-                <p className="text-xs text-gray-400">JPG, PNG, WEBP — max 10 MB</p>
+                <p className="text-base font-semibold text-gray-600">
+                  {lang === 'hi' ? 'पत्ती का फोटो यहाँ डालें' : lang === 'mr' ? 'इथे पानाचा फोटो टाका' : 'Drop a leaf photo here'}
+                </p>
+                <p className="text-sm">
+                  {lang === 'hi' ? 'या ब्राउज़ करने के लिए क्लिक करें' : lang === 'mr' ? 'किंवा निवडण्यासाठी क्लिक करा' : 'or click to browse'}
+                </p>
+                <p className="text-xs text-gray-400">
+                  {lang === 'hi' ? 'JPG, PNG, WEBP — अधिकतम 10 MB' : lang === 'mr' ? 'JPG, PNG, WEBP — कमाल 10 MB' : 'JPG, PNG, WEBP — max 10 MB'}
+                </p>
               </div>
             )}
           </div>
@@ -242,13 +271,13 @@ export default function Prediction() {
                 onClick={capturePhoto}
                 className="px-6 py-2.5 bg-white text-gray-900 font-bold rounded-xl shadow"
               >
-                📸 Capture
+                {lang === 'hi' ? '📸 फोटो खींचें' : lang === 'mr' ? '📸 फोटो काढा' : '📸 Capture'}
               </button>
               <button
                 onClick={stopCamera}
                 className="px-4 py-2.5 bg-white/30 text-white font-semibold rounded-xl"
               >
-                Cancel
+                {lang === 'hi' ? 'रद्द करें' : lang === 'mr' ? 'रद्द करा' : 'Cancel'}
               </button>
             </div>
           </div>
@@ -269,13 +298,15 @@ export default function Prediction() {
               onClick={() => fileInputRef.current?.click()}
               className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-gray-300 bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
             >
-              <UploadCloud size={16} /> Upload Photo
+              <UploadCloud size={16} />
+              {lang === 'hi' ? 'फोटो अपलोड करें' : lang === 'mr' ? 'फोटो अपलोड करा' : 'Upload Photo'}
             </button>
             <button
               onClick={startCamera}
               className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-gray-300 bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
             >
-              <Camera size={16} /> Take Photo
+              <Camera size={16} />
+              {lang === 'hi' ? 'कैमरा शुरू करें' : lang === 'mr' ? 'कॅमेरा सुरू करा' : 'Take Photo'}
             </button>
             {imagePreview && (
               <button
@@ -284,9 +315,9 @@ export default function Prediction() {
                 className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-green-600 hover:bg-green-700 text-white text-sm font-bold transition-colors disabled:opacity-60"
               >
                 {loading ? (
-                  <><RefreshCw size={15} className="animate-spin" /> Analysing…</>
+                  <><RefreshCw size={15} className="animate-spin" /> {lang === 'hi' ? 'विश्लेषण जारी है…' : lang === 'mr' ? 'विश्लेषण सुरू आहे…' : 'Analysing…'}</>
                 ) : (
-                  <><Leaf size={15} /> Predict Disease</>
+                  <><Leaf size={15} /> {lang === 'hi' ? 'रोग का पता लगाएं' : lang === 'mr' ? 'रोग निदान करा' : 'Predict Disease'}</>
                 )}
               </button>
             )}
@@ -295,7 +326,8 @@ export default function Prediction() {
                 onClick={handleReset}
                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-gray-200 bg-white text-sm font-semibold text-gray-500 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
               >
-                <RefreshCw size={15} /> Reset
+                <RefreshCw size={15} />
+                {lang === 'hi' ? 'रीसेट करें' : lang === 'mr' ? 'रीसेट करा' : 'Reset'}
               </button>
             )}
           </div>
@@ -323,7 +355,9 @@ export default function Prediction() {
               <div className="bg-white rounded-2xl border border-gray-200 p-5">
                 <div className="flex flex-col sm:flex-row sm:items-start gap-4">
                   <div className="flex-1">
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Diagnosis</p>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
+                      {lang === 'hi' ? 'निदान' : lang === 'mr' ? 'निदान' : 'Diagnosis'}
+                    </p>
                     <h2 className="text-2xl font-bold text-gray-900">
                       {CLASS_LABEL[result.predicted_class] ?? result.predicted_class}
                     </h2>
@@ -370,14 +404,18 @@ export default function Prediction() {
                         {result.confidence.toFixed(0)}%
                       </text>
                     </svg>
-                    <p className="text-xs text-gray-500 mt-1 font-semibold">Confidence</p>
+                    <p className="text-xs text-gray-500 mt-1 font-semibold">
+                      {t(lang, 'dd_confidence')}
+                    </p>
                     <p className="text-xs text-gray-400 mt-0.5">{result.engine}</p>
                   </div>
                 </div>
 
                 {/* Top-3 bar chart */}
                 <div className="mt-5 space-y-2">
-                  <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Top Predictions</p>
+                  <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                    {lang === 'hi' ? 'शीर्ष पूर्वानुमान' : lang === 'mr' ? 'प्रमुख अंदाज' : 'Top Predictions'}
+                  </p>
                   {result.top3.map((p) => {
                     const c = CLASS_COLOR[p.class_name] ?? { bar: 'bg-gray-400', bg: 'bg-gray-50', text: 'text-gray-700' }
                     return (
@@ -403,35 +441,35 @@ export default function Prediction() {
                 {
                   key: 'immediate',
                   icon: <AlertTriangle size={16} className="text-amber-600" />,
-                  title: 'What to do right now',
+                  title: lang === 'hi' ? 'तत्काल क्या करें' : lang === 'mr' ? 'तातडीने काय करावे' : 'What to do right now',
                   items: result.details.immediate_actions,
                   color: 'text-amber-700',
                 },
                 {
                   key: 'symptoms',
                   icon: <Bug size={16} className="text-red-500" />,
-                  title: 'Symptoms to watch',
+                  title: lang === 'hi' ? 'प्रमुख लक्षण' : lang === 'mr' ? 'लक्षणे' : 'Symptoms to watch',
                   items: result.details.symptoms,
                   color: 'text-red-700',
                 },
                 {
                   key: 'chemical',
                   icon: <Pill size={16} className="text-purple-600" />,
-                  title: 'Chemical Treatment',
+                  title: lang === 'hi' ? 'रासायनिक उपचार' : lang === 'mr' ? 'रासायनिक उपचार' : 'Chemical Treatment',
                   measures: result.details.chemical_control,
                   color: 'text-purple-700',
                 },
                 {
                   key: 'organic',
                   icon: <Leaf size={16} className="text-green-600" />,
-                  title: 'Organic / Natural Treatment',
+                  title: lang === 'hi' ? 'जैविक / प्राकृतिक उपचार' : lang === 'mr' ? 'सेंद्रिय / नैसर्गिक उपचार' : 'Organic / Natural Treatment',
                   measures: result.details.organic_control,
                   color: 'text-green-700',
                 },
                 {
                   key: 'prevention',
                   icon: <Droplets size={16} className="text-blue-600" />,
-                  title: 'How to Prevent',
+                  title: lang === 'hi' ? 'रोकथाम के उपाय' : lang === 'mr' ? 'प्रतिबंधात्मक उपाय' : 'How to Prevent',
                   items: result.details.prevention,
                   color: 'text-blue-700',
                 },
@@ -473,11 +511,11 @@ export default function Prediction() {
                                   {m.product ?? m.treatment}
                                 </p>
                                 <p className="text-xs text-gray-500 mt-0.5">
-                                  <span className="font-semibold">Dosage:</span> {m.dosage}
+                                  <span className="font-semibold">{lang === 'hi' ? 'खुराक:' : lang === 'mr' ? 'मात्रा:' : 'Dosage:'}</span> {m.dosage}
                                 </p>
                                 {(m.application ?? m.timing) && (
                                   <p className="text-xs text-gray-500 mt-0.5">
-                                    <span className="font-semibold">How:</span> {m.application ?? m.timing}
+                                    <span className="font-semibold">{lang === 'hi' ? 'विधि:' : lang === 'mr' ? 'पद्धत:' : 'How:'}</span> {m.application ?? m.timing}
                                   </p>
                                 )}
                               </div>
@@ -494,9 +532,15 @@ export default function Prediction() {
               <div className="bg-green-50 border border-green-200 rounded-2xl p-4 flex items-start gap-3">
                 <Info size={18} className="text-green-600 shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm font-bold text-green-700">Want more detailed advice?</p>
+                  <p className="text-sm font-bold text-green-700">
+                    {lang === 'hi' ? 'विस्तृत सलाह चाहिए?' : lang === 'mr' ? 'सविस्तर सल्ला हवा आहे?' : 'Want more detailed advice?'}
+                  </p>
                   <p className="text-sm text-gray-600 mt-1">
-                    Use the <span className="font-semibold">Krishi Mitra AI</span> chat (bottom-right button) and paste the suggested question below:
+                    {lang === 'hi'
+                      ? 'कृषि मित्र AI चैट (नीचे-दाएं बटन) का उपयोग करें और नीचे दिया गया प्रश्न पूछें:'
+                      : lang === 'mr'
+                      ? 'कृषी मित्र AI चॅट (खालील उजवे बटण) वापरा आणि खालील प्रश्न विचारा:'
+                      : 'Use the Krishi Mitra AI chat (bottom-right button) and paste the suggested question below:'}
                   </p>
                   <p className="text-xs bg-white border border-green-200 rounded-lg p-2 mt-2 text-gray-700 leading-relaxed select-all">
                     {result.ai_prompt}
