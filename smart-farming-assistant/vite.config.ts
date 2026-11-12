@@ -9,6 +9,10 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: 'auto',
+      devOptions: {
+        enabled: true
+      },
       includeAssets: ['favicon.svg', 'icons/*.png'],
       manifest: {
         name: 'SmartFarm AI — Smart Farming Assistant',
