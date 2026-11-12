@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Phone, MapPin, Send, CheckCircle2, MessageSquare } from 'lucide-react'
 import { useLanguage } from './context/LanguageContext'
+import { tr } from './lib/i18n'
 
 export default function Contact() {
   const { lang } = useLanguage()
@@ -21,17 +22,13 @@ export default function Contact() {
         <div className="max-w-3xl mx-auto text-center">
           <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E8F5E9] border border-[#A5D6A7] text-[#2E7D32] text-xs font-semibold mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-[#4CAF50] animate-pulse" />
-            {lang === 'hi' ? 'सहायता एवं संपर्क' : lang === 'mr' ? 'मदत व संपर्क' : 'Help & Contact'}
+            {tr(lang, 'Help & Contact', 'सहायता एवं संपर्क', 'मदत व संपर्क')}
           </span>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-[#1F2937]">
-            {lang === 'hi' ? 'हमसे संपर्क करें' : lang === 'mr' ? 'आमच्याशी संपर्क साधा' : 'Get in Touch'}
+            {tr(lang, 'Get in Touch', 'हमसे संपर्क करें', 'आमच्याशी संपर्क साधा')}
           </h1>
           <p className="mt-3 text-base text-gray-600 max-w-xl mx-auto">
-            {lang === 'hi'
-              ? 'कृषि परामर्श, ऐप में किसी तकनीकी समस्या या सुझाव के लिए हमसे संपर्क करें।'
-              : lang === 'mr'
-              ? 'शेती सल्ला, अॅपमधील तांत्रिक अडचण किंवा सूचनांसाठी आमच्याशी संपर्क साधा.'
-              : 'Have questions, suggestions, or need technical assistance with SmartFarm AI? Reach out anytime.'}
+            {tr(lang, 'Have questions, suggestions, or need technical assistance with SmartFarm AI? Reach out anytime.', 'कृषि परामर्श, ऐप में किसी तकनीकी समस्या या सुझाव के लिए हमसे संपर्क करें।', 'शेती सल्ला, अॅपमधील तांत्रिक अडचण किंवा सूचनांसाठी आमच्याशी संपर्क साधा.')}
           </p>
         </div>
       </section>
@@ -46,10 +43,10 @@ export default function Contact() {
                 <Phone size={20} className="text-[#2E7D32]" />
               </div>
               <h3 className="font-bold text-gray-900 text-sm">
-                {lang === 'hi' ? 'किसान कॉल सेंटर' : lang === 'mr' ? 'किसान कॉल सेंटर' : 'Kisan Call Center'}
+                {tr(lang, 'Kisan Call Center', 'किसान कॉल सेंटर', 'किसान कॉल सेंटर')}
               </h3>
               <p className="text-xs text-gray-500 mt-1">
-                {lang === 'hi' ? 'टोल-फ्री राष्ट्रीय हेल्पलाइन (24x7)' : lang === 'mr' ? 'टोल-फ्री राष्ट्रीय हेल्पलाइन (24x7)' : 'Toll-free national helpline (24x7)'}
+                {tr(lang, 'Toll-free national helpline (24x7)', 'टोल-फ्री राष्ट्रीय हेल्पलाइन (24x7)', 'टोल-फ्री राष्ट्रीय हेल्पलाइन (24x7)')}
               </p>
               <a href="tel:18001801551" className="inline-block mt-3 text-base font-bold text-[#2E7D32] hover:underline">
                 1800-180-1551
@@ -61,10 +58,10 @@ export default function Contact() {
                 <MessageSquare size={20} className="text-[#2E7D32]" />
               </div>
               <h3 className="font-bold text-gray-900 text-sm">
-                {lang === 'hi' ? 'व्हाट्सएप किसान सहायता' : lang === 'mr' ? 'व्हॉट्सअॅप शेतकरी मदत' : 'WhatsApp Farmer Help'}
+                {tr(lang, 'WhatsApp Farmer Help', 'व्हाट्सएप किसान सहायता', 'व्हॉट्सअॅप शेतकरी मदत')}
               </h3>
               <p className="text-xs text-gray-500 mt-1">
-                {lang === 'hi' ? 'त्वरित चैट सहायता' : lang === 'mr' ? 'त्वरित चॅट मदत' : 'Instant chat assistance'}
+                {tr(lang, 'Instant chat assistance', 'त्वरित चैट सहायता', 'त्वरित चॅट मदत')}
               </p>
               <p className="mt-3 text-sm font-semibold text-gray-800">+91 91726 59109</p>
             </div>
@@ -74,14 +71,10 @@ export default function Contact() {
                 <MapPin size={20} className="text-[#2E7D32]" />
               </div>
               <h3 className="font-bold text-gray-900 text-sm">
-                {lang === 'hi' ? 'स्थान' : lang === 'mr' ? 'पत्ता' : 'Location'}
+                {tr(lang, 'Location', 'स्थान', 'पत्ता')}
               </h3>
               <p className="text-xs text-gray-500 mt-1">
-                {lang === 'hi'
-                  ? 'गुजरात / महाराष्ट्र, भारत'
-                  : lang === 'mr'
-                  ? 'महाराष्ट्र / गुजरात, भारत'
-                  : 'Gujarat / Maharashtra, India'}
+                {tr(lang, 'Gujarat / Maharashtra, India', 'गुजरात / महाराष्ट्र, भारत', 'महाराष्ट्र / गुजरात, भारत')}
               </p>
             </div>
           </div>
@@ -98,18 +91,10 @@ export default function Contact() {
                   <CheckCircle2 size={36} className="text-[#2E7D32]" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900">
-                  {lang === 'hi'
-                    ? 'संदेश सफलतापूर्वक भेजा गया!'
-                    : lang === 'mr'
-                    ? 'संदेश यशस्वीरित्या पाठवला गेला!'
-                    : 'Message Sent Successfully!'}
+                  {tr(lang, 'Message Sent Successfully!', 'संदेश सफलतापूर्वक भेजा गया!', 'संदेश यशस्वीरित्या पाठवला गेला!')}
                 </h3>
                 <p className="text-sm text-gray-500 mt-2 max-w-md">
-                  {lang === 'hi'
-                    ? 'धन्यवाद! हमारी कृषि तकनीकी टीम जल्द ही आपसे संपर्क करेगी।'
-                    : lang === 'mr'
-                    ? 'धन्यवाद! आमची कृषी तंत्रज्ञान टीम लवकरच आपल्याशी संपर्क करेल.'
-                    : 'Thank you! Our agricultural tech team will get back to you shortly.'}
+                  {tr(lang, 'Thank you! Our agricultural tech team will get back to you shortly.', 'धन्यवाद! हमारी कृषि तकनीकी टीम जल्द ही आपसे संपर्क करेगी।', 'धन्यवाद! आमची कृषी तंत्रज्ञान टीम लवकरच आपल्याशी संपर्क करेल.')}
                 </p>
                 <button
                   onClick={() => {
@@ -118,30 +103,30 @@ export default function Contact() {
                   }}
                   className="mt-6 px-5 py-2.5 rounded-xl bg-[#E8F5E9] text-[#2E7D32] text-sm font-semibold hover:bg-[#C8E6C9] transition-colors"
                 >
-                  {lang === 'hi' ? 'अन्य संदेश भेजें' : lang === 'mr' ? 'दुसरा संदेश पाठवा' : 'Send Another Message'}
+                  {tr(lang, 'Send Another Message', 'अन्य संदेश भेजें', 'दुसरा संदेश पाठवा')}
                 </button>
               </motion.div>
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <h2 className="text-xl font-bold text-gray-900 mb-1">
-                  {lang === 'hi' ? 'हमें संदेश भेजें' : lang === 'mr' ? 'आम्हाला संदेश पाठवा' : 'Send Us a Message'}
+                  {tr(lang, 'Send Us a Message', 'हमें संदेश भेजें', 'आम्हाला संदेश पाठवा')}
                 </h2>
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 mb-1.5">
-                    {lang === 'hi' ? 'आपका नाम *' : lang === 'mr' ? 'आपले नाव *' : 'Your Name *'}
+                    {tr(lang, 'Your Name *', 'आपका नाम *', 'आपले नाव *')}
                   </label>
                   <input
                     type="text"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder={lang === 'hi' ? 'उदा. रमेश पाटिल' : lang === 'mr' ? 'उदा. रमेश पाटील' : 'e.g. Ramesh Patil'}
+                    placeholder={tr(lang, 'e.g. Ramesh Patil', 'उदा. रमेश पाटिल', 'उदा. रमेश पाटील')}
                     className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4CAF50]"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 mb-1.5">
-                    {lang === 'hi' ? 'मोबाइल नंबर *' : lang === 'mr' ? 'मोबाईल नंबर *' : 'Phone Number *'}
+                    {tr(lang, 'Phone Number *', 'मोबाइल नंबर *', 'मोबाईल नंबर *')}
                   </label>
                   <input
                     type="tel"
@@ -154,18 +139,14 @@ export default function Contact() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 mb-1.5">
-                    {lang === 'hi' ? 'संदेश या समस्या' : lang === 'mr' ? 'संदेश किंवा समस्या' : 'Message or Query'}
+                    {tr(lang, 'Message or Query', 'संदेश या समस्या', 'संदेश किंवा समस्या')}
                   </label>
                   <textarea
                     rows={4}
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     placeholder={
-                      lang === 'hi'
-                        ? 'अपनी फसल, समस्या या प्रश्न के बारे में बताएं...'
-                        : lang === 'mr'
-                        ? 'आपले पीक, समस्या किंवा प्रश्नाबद्दल सांगा...'
-                        : 'Describe your query, crop issue, or feedback...'
+                      tr(lang, 'Describe your query, crop issue, or feedback...', 'अपनी फसल, समस्या या प्रश्न के बारे में बताएं...', 'आपले पीक, समस्या किंवा प्रश्नाबद्दल सांगा...')
                     }
                     className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4CAF50] resize-none"
                   />
@@ -175,7 +156,7 @@ export default function Contact() {
                   className="mt-2 inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#2E7D32] hover:bg-[#1B5E20] text-white text-sm font-semibold rounded-xl shadow-md transition-colors"
                 >
                   <Send size={16} />
-                  {lang === 'hi' ? 'संदेश भेजें' : lang === 'mr' ? 'संदेश पाठवा' : 'Send Message'}
+                  {tr(lang, 'Send Message', 'संदेश भेजें', 'संदेश पाठवा')}
                 </button>
               </form>
             )}

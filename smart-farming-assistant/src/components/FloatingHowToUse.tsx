@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { X, ArrowRight, BookOpenCheck } from 'lucide-react'
 import { useLanguage } from '../context/LanguageContext'
+import { tr } from '../lib/i18n'
 
 export default function FloatingHowToUse() {
   const { lang } = useLanguage()
@@ -12,56 +13,56 @@ export default function FloatingHowToUse() {
   const steps = [
     {
       emoji: '🌱',
-      title: lang === 'hi' ? 'अपनी फसल चुनें' : lang === 'mr' ? 'आपले पीक निवडा' : 'Choose Your Crop',
-      desc: lang === 'hi' ? 'अपनी आवश्यकताओं के अनुसार कृषि सलाह प्राप्त करें।' : lang === 'mr' ? 'शेतीच्या गरजांसाठी योग्य सल्ला मिळवा.' : 'Select your crop to get advice for your farming needs.',
+      title: tr(lang, 'Choose Your Crop', 'अपनी फसल चुनें', 'आपले पीक निवडा'),
+      desc: tr(lang, 'Select your crop to get advice for your farming needs.', 'अपनी आवश्यकताओं के अनुसार कृषि सलाह प्राप्त करें।', 'शेतीच्या गरजांसाठी योग्य सल्ला मिळवा.'),
       route: '/crop-recommendation'
     },
     {
       emoji: '📍',
-      title: lang === 'hi' ? 'स्थान निर्धारित करें' : lang === 'mr' ? 'स्थान निश्चित करा' : 'Set Your Location',
-      desc: lang === 'hi' ? 'स्थानीय जानकारी के लिए अपना स्थान चुनें।' : lang === 'mr' ? 'स्थानिक माहितीसाठी आपले स्थान निवडा.' : 'Choose your location for more useful local information.',
+      title: tr(lang, 'Set Your Location', 'स्थान निर्धारित करें', 'स्थान निश्चित करा'),
+      desc: tr(lang, 'Choose your location for more useful local information.', 'स्थानीय जानकारी के लिए अपना स्थान चुनें।', 'स्थानिक माहितीसाठी आपले स्थान निवडा.'),
       route: '/weather'
     },
     {
       emoji: '🌦️',
-      title: lang === 'hi' ? 'मौसम जांचें' : lang === 'mr' ? 'हवामान तपासा' : 'Check the Weather',
-      desc: lang === 'hi' ? 'महत्वपूर्ण कृषि कार्यों से पहले मौसम देखें।' : lang === 'mr' ? 'महत्त्वाच्या कामांपूर्वी हवामान तपासा.' : 'Check weather conditions before important farm work.',
+      title: tr(lang, 'Check the Weather', 'मौसम जांचें', 'हवामान तपासा'),
+      desc: tr(lang, 'Check weather conditions before important farm work.', 'महत्वपूर्ण कृषि कार्यों से पहले मौसम देखें।', 'महत्त्वाच्या कामांपूर्वी हवामान तपासा.'),
       route: '/weather'
     },
     {
       emoji: '🩺',
-      title: lang === 'hi' ? 'रोग पहचानें' : lang === 'mr' ? 'रोग ओळखा' : 'Check Crop Health',
-      desc: lang === 'hi' ? 'संभावित रोगों की जांच हेतु पत्ती की फोटो अपलोड करें।' : lang === 'mr' ? 'संभाव्य रोगांच्या तपासणीसाठी पानाचा फोटो अपलोड करा.' : 'Upload a crop photo to check for possible diseases.',
+      title: tr(lang, 'Check Crop Health', 'रोग पहचानें', 'रोग ओळखा'),
+      desc: tr(lang, 'Upload a crop photo to check for possible diseases.', 'संभावित रोगों की जांच हेतु पत्ती की फोटो अपलोड करें।', 'संभाव्य रोगांच्या तपासणीसाठी पानाचा फोटो अपलोड करा.'),
       route: '/disease-detection'
     },
     {
       emoji: '🧪',
-      title: lang === 'hi' ? 'खाद सलाह' : lang === 'mr' ? 'खत सल्ला' : 'Check Fertilizer',
-      desc: lang === 'hi' ? 'मिट्टी और फसल के अनुसार सही खाद की मात्रा जानें।' : lang === 'mr' ? 'माती व पिकाच्या आधारे योग्य खत प्रमाण जाणून घ्या.' : 'Get fertilizer guidance based on your soil and crop.',
+      title: tr(lang, 'Check Fertilizer', 'खाद सलाह', 'खत सल्ला'),
+      desc: tr(lang, 'Get fertilizer guidance based on your soil and crop.', 'मिट्टी और फसल के अनुसार सही खाद की मात्रा जानें।', 'माती व पिकाच्या आधारे योग्य खत प्रमाण जाणून घ्या.'),
       route: '/fertilizer-advisor'
     },
     {
       emoji: '📅',
-      title: lang === 'hi' ? 'खेती योजना' : lang === 'mr' ? 'शेती नियोजन' : 'Plan Farm Work',
-      desc: lang === 'hi' ? 'देखें कि आपके खेत में कब क्या काम करना है।' : lang === 'mr' ? 'आपल्या शेतात कधी काय काम करायचे ते पहा.' : 'See what needs to be done and when on your farm.',
+      title: tr(lang, 'Plan Farm Work', 'खेती योजना', 'शेती नियोजन'),
+      desc: tr(lang, 'See what needs to be done and when on your farm.', 'देखें कि आपके खेत में कब क्या काम करना है।', 'आपल्या शेतात कधी काय काम करायचे ते पहा.'),
       route: '/farm-planner'
     },
     {
       emoji: '🏛️',
-      title: lang === 'hi' ? 'सरकारी योजनाएं' : lang === 'mr' ? 'सरकारी योजना' : 'Find Govt. Schemes',
-      desc: lang === 'hi' ? 'किसानों के लिए उपलब्ध सरकारी लाभ और सहायता खोजें।' : lang === 'mr' ? 'शेतकऱ्यांसाठी शासकीय लाभ व योजना शोधा.' : 'Explore government support and schemes for farmers.',
+      title: tr(lang, 'Find Govt. Schemes', 'सरकारी योजनाएं', 'सरकारी योजना'),
+      desc: tr(lang, 'Explore government support and schemes for farmers.', 'किसानों के लिए उपलब्ध सरकारी लाभ और सहायता खोजें।', 'शेतकऱ्यांसाठी शासकीय लाभ व योजना शोधा.'),
       route: '/government-schemes'
     },
     {
       emoji: '🤖',
-      title: lang === 'hi' ? 'एआई से पूछें' : lang === 'mr' ? 'एआयला विचारा' : 'Ask SmartFarm AI',
-      desc: lang === 'hi' ? 'खेती का कोई भी सवाल पूछें और समाधान पाएं।' : lang === 'mr' ? 'शेतीचा कोणताही प्रश्न विचारा आणि मार्गदर्शन मिळवा.' : 'Ask any farming question and get simple guidance.',
+      title: tr(lang, 'Ask SmartFarm AI', 'एआई से पूछें', 'एआयला विचारा'),
+      desc: tr(lang, 'Ask any farming question and get simple guidance.', 'खेती का कोई भी सवाल पूछें और समाधान पाएं।', 'शेतीचा कोणताही प्रश्न विचारा आणि मार्गदर्शन मिळवा.'),
       route: '/ai-assistant'
     },
     {
       emoji: '✅',
-      title: lang === 'hi' ? 'कदम उठाएं' : lang === 'mr' ? 'कृती करा' : 'Take Action',
-      desc: lang === 'hi' ? 'सीखे गए ज्ञान से बेहतर कृषि निर्णय लें।' : lang === 'mr' ? 'मिळालेल्या माहितीवरून योग्य शेती निर्णय घ्या.' : "Use what you've learned to make better farm decisions.",
+      title: tr(lang, 'Take Action', 'कदम उठाएं', 'कृती करा'),
+      desc: tr(lang, "Use what you've learned to make better farm decisions.", 'सीखे गए ज्ञान से बेहतर कृषि निर्णय लें।', 'मिळालेल्या माहितीवरून योग्य शेती निर्णय घ्या.'),
       route: null
     },
   ]
@@ -92,7 +93,7 @@ export default function FloatingHowToUse() {
         {/* Tooltip */}
         {showTooltip && !open && (
           <div className="absolute right-14 bg-gray-900 text-white text-[11px] font-semibold py-1.5 px-2.5 rounded-lg shadow-lg whitespace-nowrap pointer-events-none select-none">
-            {lang === 'hi' ? 'कैसे उपयोग करें' : lang === 'mr' ? 'कसे वापरावे' : 'How to Use'}
+            {tr(lang, 'How to Use', 'कैसे उपयोग करें', 'कसे वापरावे')}
             <span className="absolute top-1/2 -right-1 -translate-y-1/2 border-4 border-transparent border-l-gray-900" />
           </div>
         )}
@@ -101,7 +102,7 @@ export default function FloatingHowToUse() {
           onClick={() => setOpen((p) => !p)}
           onMouseEnter={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
-          aria-label="How to Use SmartFarm AI"
+          aria-label={tr(lang, 'How to Use SmartFarm AI')}
           aria-expanded={open}
           className={`w-11 h-11 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 ${
             open
@@ -122,7 +123,7 @@ export default function FloatingHowToUse() {
       {open && (
         <div
           role="dialog"
-          aria-label="How to Use SmartFarm AI"
+          aria-label={tr(lang, 'How to Use SmartFarm AI')}
           className="w-[min(320px,calc(100vw-40px))] bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden"
           style={{ boxShadow: '0 20px 40px -12px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05)' }}
         >
@@ -131,13 +132,13 @@ export default function FloatingHowToUse() {
             <div className="flex items-center gap-2">
               <span className="text-base leading-none">🌾</span>
               <span className="text-[13px] font-bold text-gray-900">
-                {lang === 'hi' ? 'SmartFarm AI कैसे उपयोग करें' : lang === 'mr' ? 'SmartFarm AI कसे वापरावे' : 'How to Use SmartFarm AI'}
+                {tr(lang, 'How to Use SmartFarm AI', 'SmartFarm AI कैसे उपयोग करें', 'SmartFarm AI कसे वापरावे')}
               </span>
             </div>
             <button
               onClick={() => setOpen(false)}
               className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-              aria-label="Close"
+              aria-label={tr(lang, 'Close')}
             >
               <X size={14} />
             </button>
@@ -146,11 +147,7 @@ export default function FloatingHowToUse() {
           {/* Subtitle */}
           <div className="px-4 pt-3 pb-1">
             <p className="text-[11.5px] text-gray-400">
-              {lang === 'hi'
-                ? 'SmartFarm AI का सर्वोत्तम लाभ उठाने के लिए इन चरणों का पालन करें।'
-                : lang === 'mr'
-                ? 'SmartFarm AI चा पूर्ण लाभ घेण्यासाठी या सोप्या पायऱ्यांचे अनुसरण करा.'
-                : 'Follow these simple steps to get the most from SmartFarm AI.'}
+              {tr(lang, 'Follow these simple steps to get the most from SmartFarm AI.', 'SmartFarm AI का सर्वोत्तम लाभ उठाने के लिए इन चरणों का पालन करें।', 'SmartFarm AI चा पूर्ण लाभ घेण्यासाठी या सोप्या पायऱ्यांचे अनुसरण करा.')}
             </p>
           </div>
 
@@ -204,7 +201,7 @@ export default function FloatingHowToUse() {
               onClick={() => setOpen(false)}
               className="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl bg-white hover:bg-[#EAF7EC] border border-gray-200 hover:border-[#c8e6c9] text-[12px] font-semibold text-[#15803D] transition-colors"
             >
-              {lang === 'hi' ? 'पूरी मार्गदर्शिका देखें' : lang === 'mr' ? 'संपूर्ण मार्गदर्शिका पहा' : 'View Full Guide'}
+              {tr(lang, 'View Full Guide', 'पूरी मार्गदर्शिका देखें', 'संपूर्ण मार्गदर्शिका पहा')}
               <ArrowRight size={12} />
             </Link>
           </div>

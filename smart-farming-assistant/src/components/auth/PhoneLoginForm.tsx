@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Phone, ArrowRight, Loader2, AlertCircle, ShieldCheck, User } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useLanguage } from '../../context/LanguageContext'
+import { tr, pickLang } from '../../lib/i18n'
 
 interface PhoneLoginFormProps {
   onOtpSent: (fullPhoneNumber: string, name: string) => void
@@ -42,22 +43,14 @@ export default function PhoneLoginForm({ onOtpSent }: PhoneLoginFormProps) {
     const trimmedName = fullName.trim()
     if (!trimmedName) {
       setError(
-        lang === 'hi'
-          ? 'कृपया अपना पूरा नाम दर्ज करें।'
-          : lang === 'mr'
-          ? 'कृपया तुमचे पूर्ण नाव प्रविष्ट करा.'
-          : 'Please enter your full name.'
+        tr(lang, 'Please enter your full name.', 'कृपया अपना पूरा नाम दर्ज करें।', 'कृपया तुमचे पूर्ण नाव प्रविष्ट करा.')
       )
       return
     }
 
     if (trimmedName.length < 2) {
       setError(
-        lang === 'hi'
-          ? 'कृपया मान्य नाम दर्ज करें (कम से कम 2 अक्षर)।'
-          : lang === 'mr'
-          ? 'कृपया वैध नाव प्रविष्ट करा (किमान २ अक्षरे).'
-          : 'Please enter a valid name (at least 2 characters).'
+        tr(lang, 'Please enter a valid name (at least 2 characters).', 'कृपया मान्य नाम दर्ज करें (कम से कम 2 अक्षर)।', 'कृपया वैध नाव प्रविष्ट करा (किमान २ अक्षरे).')
       )
       return
     }
@@ -66,33 +59,29 @@ export default function PhoneLoginForm({ onOtpSent }: PhoneLoginFormProps) {
 
     if (!cleanNumber) {
       setError(
-        lang === 'hi'
-          ? 'कृपया अपना मोबाइल नंबर दर्ज करें।'
-          : lang === 'mr'
-          ? 'कृपया तुमचा मोबाईल नंबर प्रविष्ट करा.'
-          : 'Please enter your mobile phone number.'
+        tr(lang, 'Please enter your mobile phone number.', 'कृपया अपना मोबाइल नंबर दर्ज करें।', 'कृपया तुमचा मोबाईल नंबर प्रविष्ट करा.')
       )
       return
     }
 
     if (cleanNumber.length !== selectedCountry.length) {
       setError(
-        lang === 'hi'
-          ? `कृपया ${selectedCountry.country} के लिए मान्य ${selectedCountry.length}-अंकीय मोबाइल नंबर दर्ज करें।`
-          : lang === 'mr'
-          ? `कृपया ${selectedCountry.country} साठी वैध ${selectedCountry.length}-अंकी मोबाईल नंबर प्रविष्ट करा.`
-          : `Please enter a valid ${selectedCountry.length}-digit mobile number for ${selectedCountry.country}.`
+        pickLang(lang, {
+          hi: `कृपया ${selectedCountry.country} के लिए मान्य ${selectedCountry.length}-अंकीय मोबाइल नंबर दर्ज करें।`,
+          mr: `कृपया ${selectedCountry.country} साठी वैध ${selectedCountry.length}-अंकी मोबाईल नंबर प्रविष्ट करा.`,
+          gu: `કૃપા કરીને ${selectedCountry.country} માટે માન્ય ${selectedCountry.length}-અંકનો મોબાઇલ નંબર દાખલ કરો.`,
+          pa: `ਕਿਰਪਾ ਕਰਕੇ ${selectedCountry.country} ਲਈ ਸਹੀ ${selectedCountry.length}-ਅੰਕਾਂ ਦਾ ਮੋਬਾਈਲ ਨੰਬਰ ਦਰਜ ਕਰੋ।`,
+          ta: `${selectedCountry.country} நாட்டிற்கான சரியான ${selectedCountry.length}-இலக்க மொபைல் எண்ணை உள்ளிடவும்.`,
+          te: `దయచేసి ${selectedCountry.country} కోసం చెల్లుబాటు అయ్యే ${selectedCountry.length}-అంకెల మొబైల్ నంబర్‌ను నమోదు చేయండి.`,
+          en: `Please enter a valid ${selectedCountry.length}-digit mobile number for ${selectedCountry.country}.`,
+        })
       )
       return
     }
 
     if (selectedCountry.code === '+91' && !selectedCountry.pattern.test(cleanNumber)) {
       setError(
-        lang === 'hi'
-          ? 'कृपया 6, 7, 8 या 9 से शुरू होने वाला मान्य भारतीय मोबाइल नंबर दर्ज करें।'
-          : lang === 'mr'
-          ? 'कृपया 6, 7, 8 किंवा 9 ने सुरू होणारा वैध भारतीय मोबाईल नंबर प्रविष्ट करा.'
-          : 'Please enter a valid Indian mobile number starting with 6, 7, 8, or 9.'
+        tr(lang, 'Please enter a valid Indian mobile number starting with 6, 7, 8, or 9.', 'कृपया 6, 7, 8 या 9 से शुरू होने वाला मान्य भारतीय मोबाइल नंबर दर्ज करें।', 'कृपया 6, 7, 8 किंवा 9 ने सुरू होणारा वैध भारतीय मोबाईल नंबर प्रविष्ट करा.')
       )
       return
     }
@@ -107,22 +96,16 @@ export default function PhoneLoginForm({ onOtpSent }: PhoneLoginFormProps) {
         const msg = authError.message.toLowerCase()
         if (msg.includes('rate limit') || msg.includes('over_email_send_rate_limit')) {
           setError(
-            lang === 'hi'
-              ? 'अत्यधिक ओटीपी प्रयास। सुरक्षा के लिए, कृपया पुनः प्रयास करने से पहले 60 सेकंड प्रतीक्षा करें।'
-              : lang === 'mr'
-              ? 'अतिप्रमाणित ओटीपी प्रयत्न. सुरक्षेसाठी, कृपया पुन्हा प्रयत्न करण्यापूर्वी ६० सेकंद प्रतीक्षा करा.'
-              : 'Too many OTP attempts. For security, please wait 60 seconds before trying again.'
+            tr(lang, 'Too many OTP attempts. For security, please wait 60 seconds before trying again.', 'अत्यधिक ओटीपी प्रयास। सुरक्षा के लिए, कृपया पुनः प्रयास करने से पहले 60 सेकंड प्रतीक्षा करें।', 'अतिप्रमाणित ओटीपी प्रयत्न. सुरक्षेसाठी, कृपया पुन्हा प्रयत्न करण्यापूर्वी ६० सेकंद प्रतीक्षा करा.')
           )
         } else if (msg.includes('sms provider') || msg.includes('phone provider')) {
-          setError('SMS provider is not configured in Supabase. Please configure Vonage or Twilio in your Supabase Auth settings.')
+          setError(
+            tr(lang, 'SMS provider is not configured in Supabase. Please configure Vonage or Twilio in your Supabase Auth settings.')
+          )
         } else {
           setError(
             authError.message ||
-            (lang === 'hi'
-              ? 'एसएमएस ओटीपी भेजने में असमर्थ। कृपया अपने फ़ोन नंबर की जांच करें।'
-              : lang === 'mr'
-              ? 'एसएमएस ओटीपी पाठवणे शक्य झाले नाही. कृपया आपला फोन नंबर तपासा.'
-              : 'Unable to send SMS OTP. Please check your phone number and try again.')
+            (tr(lang, 'Unable to send SMS OTP. Please check your phone number and try again.', 'एसएमएस ओटीपी भेजने में असमर्थ। कृपया अपने फ़ोन नंबर की जांच करें।', 'एसएमएस ओटीपी पाठवणे शक्य झाले नाही. कृपया आपला फोन नंबर तपासा.'))
           )
         }
       } else {
@@ -130,11 +113,7 @@ export default function PhoneLoginForm({ onOtpSent }: PhoneLoginFormProps) {
       }
     } catch {
       setError(
-        lang === 'hi'
-          ? 'एसएमएस गेटवे से संपर्क करते समय त्रुटि हुई।'
-          : lang === 'mr'
-          ? 'एसएमएस गेटवेशी संपर्क साधताना त्रुटी आढळली.'
-          : 'An unexpected error occurred while contacting the SMS gateway.'
+        tr(lang, 'An unexpected error occurred while contacting the SMS gateway.', 'एसएमएस गेटवे से संपर्क करते समय त्रुटि हुई।', 'एसएमएस गेटवेशी संपर्क साधताना त्रुटी आढळली.')
       )
     } finally {
       setLoading(false)
@@ -153,14 +132,14 @@ export default function PhoneLoginForm({ onOtpSent }: PhoneLoginFormProps) {
       {/* Name Input */}
       <div>
         <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1.5">
-          {lang === 'hi' ? 'आपका पूरा नाम' : lang === 'mr' ? 'तुमचे पूर्ण नाव' : 'Your Full Name'}
+          {tr(lang, 'Your Full Name', 'आपका पूरा नाम', 'तुमचे पूर्ण नाव')}
         </label>
         <div className="flex rounded-xl shadow-sm border border-gray-300 focus-within:border-[#087f3e] focus-within:ring-2 focus-within:ring-[#087f3e]/20 transition-all bg-white overflow-hidden px-3.5">
           <User className="w-4 h-4 text-gray-400 mr-2.5 shrink-0 my-auto" />
           <input
             id="fullName"
             type="text"
-            placeholder={lang === 'hi' ? 'उदा. रमेश पटेल' : lang === 'mr' ? 'उदा. रमेश पाटील' : 'e.g. Ramesh Patel'}
+            placeholder={tr(lang, 'e.g. Ramesh Patel', 'उदा. रमेश पटेल', 'उदा. रमेश पाटील')}
             value={fullName}
             onChange={(e) => {
               setFullName(e.target.value)
@@ -176,7 +155,7 @@ export default function PhoneLoginForm({ onOtpSent }: PhoneLoginFormProps) {
       {/* Phone Number Input */}
       <div>
         <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-1.5">
-          {lang === 'hi' ? 'मोबाइल फ़ोन नंबर' : lang === 'mr' ? 'मोबाईल फोन नंबर' : 'Mobile Phone Number'}
+          {tr(lang, 'Mobile Phone Number', 'मोबाइल फ़ोन नंबर', 'मोबाईल फोन नंबर')}
         </label>
         <div className="flex rounded-xl shadow-sm border border-gray-300 focus-within:border-[#087f3e] focus-within:ring-2 focus-within:ring-[#087f3e]/20 transition-all bg-white overflow-hidden">
           {/* Country Code Dropdown */}
@@ -189,7 +168,7 @@ export default function PhoneLoginForm({ onOtpSent }: PhoneLoginFormProps) {
                 setError(null)
               }}
               className="appearance-none bg-transparent py-3 pl-3 pr-7 text-sm font-medium text-gray-700 focus:outline-none cursor-pointer"
-              aria-label="Country Code"
+              aria-label={tr(lang, 'Country Code')}
             >
               {COUNTRY_CODES.map((c) => (
                 <option key={c.code} value={c.code}>
@@ -207,7 +186,7 @@ export default function PhoneLoginForm({ onOtpSent }: PhoneLoginFormProps) {
               id="phoneNumber"
               type="tel"
               inputMode="numeric"
-              placeholder={`e.g. ${selectedCountry.length === 10 ? '9876543210' : '123456789'}`}
+              placeholder={`${tr(lang, 'e.g.')} ${selectedCountry.length === 10 ? '9876543210' : '123456789'}`}
               value={phoneNumber}
               onChange={handlePhoneChange}
               className="w-full py-3 bg-transparent text-sm text-gray-900 placeholder-gray-400 focus:outline-none tracking-wide"
@@ -217,11 +196,7 @@ export default function PhoneLoginForm({ onOtpSent }: PhoneLoginFormProps) {
         </div>
         <p className="text-[11px] text-gray-500 mt-1.5 flex items-center gap-1">
           <ShieldCheck className="w-3.5 h-3.5 text-[#087f3e]" />
-          {lang === 'hi'
-            ? 'आपके फ़ोन पर 6-अंकीय वास्तविक एसएमएस सत्यापन कोड भेजा जाएगा।'
-            : lang === 'mr'
-            ? 'तुमच्या फोनवर 6-अंकी खरा एसएमएस पडताळणी कोड पाठवला जाईल.'
-            : 'A real 6-digit SMS verification code will be sent to your phone.'}
+          {tr(lang, 'A real 6-digit SMS verification code will be sent to your phone.', 'आपके फ़ोन पर 6-अंकीय वास्तविक एसएमएस सत्यापन कोड भेजा जाएगा।', 'तुमच्या फोनवर 6-अंकी खरा एसएमएस पडताळणी कोड पाठवला जाईल.')}
         </p>
       </div>
 
@@ -233,11 +208,11 @@ export default function PhoneLoginForm({ onOtpSent }: PhoneLoginFormProps) {
         {loading ? (
           <>
             <Loader2 className="w-5 h-5 animate-spin" />
-            <span>{lang === 'hi' ? 'एसएमएस ओटीपी भेजा जा रहा है...' : lang === 'mr' ? 'एसएमएस ओटीपी पाठवत आहे...' : 'Sending SMS OTP...'}</span>
+            <span>{tr(lang, 'Sending SMS OTP...', 'एसएमएस ओटीपी भेजा जा रहा है...', 'एसएमएस ओटीपी पाठवत आहे...')}</span>
           </>
         ) : (
           <>
-            <span>{lang === 'hi' ? 'ओटीपी भेजें' : lang === 'mr' ? 'ओटीपी पाठवा' : 'Send OTP'}</span>
+            <span>{tr(lang, 'Send OTP', 'ओटीपी भेजें', 'ओटीपी पाठवा')}</span>
             <ArrowRight className="w-4 h-4" />
           </>
         )}

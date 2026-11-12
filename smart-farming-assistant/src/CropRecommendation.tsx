@@ -9,10 +9,14 @@ import {
   cropRecommendationAPI, 
   STATES, WATER_OPTIONS, SOIL_OPTIONS, SEASON_OPTIONS,
   PREFERENCE_OPTIONS, BUDGET_OPTIONS, GOAL_OPTIONS,
+  translateSoilSuitability, translateWhySuitable,
   type FarmerInput, type CropRecommendation, type FarmLayoutSection
 } from './services/cropRecommendationService'
+import { useLanguage } from './context/LanguageContext'
+import { tr, trFormat } from './lib/i18n'
 
 export default function CropRecommendation() {
+  const { lang } = useLanguage()
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -35,8 +39,6 @@ export default function CropRecommendation() {
     mainGoal: 'higher_profit'
   })
 
-  const totalSteps = 4
-
   const updateField = (field: keyof FarmerInput, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
@@ -45,11 +47,11 @@ export default function CropRecommendation() {
     // Validate required fields before advancing
     if (step === 1) {
       if (!formData.state || !formData.district.trim()) {
-        setError('Please enter your state and district')
+        setError(tr(lang, 'Please enter your state and district'))
         return
       }
       if (formData.farmSize <= 0) {
-        setError('Please enter a valid farm size')
+        setError(tr(lang, 'Please enter a valid farm size'))
         return
       }
       setError(null)
@@ -68,13 +70,13 @@ export default function CropRecommendation() {
     setLoading(true)
     setError(null)
     try {
-      const result = await cropRecommendationAPI.getRecommendations(formData)
+      const result = await cropRecommendationAPI.getRecommendations({ ...formData, lang })
       setRecommendations(result.recommendations)
       setFarmLayout(result.farmLayout)
       setAdjustedLayout(result.farmLayout)
       setStep(5)
     } catch (err) {
-      setError('Failed to get recommendations. Please try again.')
+      setError(tr(lang, 'Failed to get recommendations. Please try again.'))
       console.error(err)
     } finally {
       setLoading(false)
@@ -144,13 +146,13 @@ export default function CropRecommendation() {
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-green-100 text-green-700 text-sm font-medium mb-4">
             <Sparkles className="w-4 h-4" />
-            AI-Powered Crop Advisory
+            {tr(lang, 'AI-Powered Crop Advisory')}
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Crop Recommendation System
+            {tr(lang, 'Crop Recommendation System')}
           </h1>
           <p className="text-gray-600">
-            Get personalized crop suggestions based on your farm conditions
+            {tr(lang, 'Get personalized crop suggestions based on your farm conditions')}
           </p>
         </motion.div>
 
@@ -170,10 +172,10 @@ export default function CropRecommendation() {
               ))}
             </div>
             <div className="flex justify-between text-xs text-gray-500 px-1">
-              <span>Location</span>
-              <span>Farm Details</span>
-              <span>Preferences</span>
-              <span>Goals</span>
+              <span>{tr(lang, 'Location')}</span>
+              <span>{tr(lang, 'Farm Details')}</span>
+              <span>{tr(lang, 'Preferences')}</span>
+              <span>{tr(lang, 'Goals')}</span>
             </div>
           </div>
         )}
@@ -190,39 +192,39 @@ export default function CropRecommendation() {
             >
               <div className="flex items-center gap-3 mb-6">
                 <MapPin className="w-6 h-6 text-green-600" />
-                <h2 className="text-2xl font-bold text-gray-900">Farm Location</h2>
+                <h2 className="text-2xl font-bold text-gray-900">{tr(lang, 'Farm Location')}</h2>
               </div>
               
               <div className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">State</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{tr(lang, 'State')}</label>
                   <select
                     value={formData.state}
                     onChange={(e) => updateField('state', e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   >
-                    {STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                    {STATES.map(s => <option key={s} value={s}>{tr(lang, s)}</option>)}
                   </select>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">District</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{tr(lang, 'District')}</label>
                   <input
                     type="text"
                     value={formData.district}
                     onChange={(e) => updateField('district', e.target.value)}
-                    placeholder="e.g., Nashik"
+                    placeholder={tr(lang, 'e.g., Nashik')}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Village/Town</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{tr(lang, 'Village/Town')}</label>
                   <input
                     type="text"
                     value={formData.village}
                     onChange={(e) => updateField('village', e.target.value)}
-                    placeholder="e.g., Sinnar"
+                    placeholder={tr(lang, 'e.g., Sinnar')}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   />
                 </div>
@@ -239,7 +241,7 @@ export default function CropRecommendation() {
                 onClick={nextStep}
                 className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors"
               >
-                Continue <ChevronRight className="w-5 h-5" />
+                {tr(lang, 'Continue')} <ChevronRight className="w-5 h-5" />
               </button>
             </motion.div>
           )}
@@ -255,12 +257,12 @@ export default function CropRecommendation() {
             >
               <div className="flex items-center gap-3 mb-6">
                 <Sprout className="w-6 h-6 text-green-600" />
-                <h2 className="text-2xl font-bold text-gray-900">Farm Details</h2>
+                <h2 className="text-2xl font-bold text-gray-900">{tr(lang, 'Farm Details')}</h2>
               </div>
               
               <div className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Farm Size</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{tr(lang, 'Farm Size')}</label>
                   <div className="flex gap-3">
                     <input
                       type="number"
@@ -275,14 +277,14 @@ export default function CropRecommendation() {
                       onChange={(e) => updateField('farmSizeUnit', e.target.value)}
                       className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500"
                     >
-                      <option value="acres">Acres</option>
-                      <option value="hectares">Hectares</option>
+                      <option value="acres">{tr(lang, 'Acres')}</option>
+                      <option value="hectares">{tr(lang, 'Hectares')}</option>
                     </select>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Water Availability</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{tr(lang, 'Water Availability')}</label>
                   <div className="grid grid-cols-1 gap-3">
                     {WATER_OPTIONS.map(opt => (
                       <button
@@ -296,7 +298,7 @@ export default function CropRecommendation() {
                       >
                         <div className="flex items-center gap-3">
                           <span className="text-2xl">{opt.icon}</span>
-                          <span className="font-medium">{opt.label}</span>
+                          <span className="font-medium">{tr(lang, opt.label)}</span>
                         </div>
                       </button>
                     ))}
@@ -304,27 +306,27 @@ export default function CropRecommendation() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Soil Type</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{tr(lang, 'Soil Type')}</label>
                   <select
                     value={formData.soilType}
                     onChange={(e) => updateField('soilType', e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500"
                   >
                     {SOIL_OPTIONS.map(opt => (
-                      <option key={opt.value} value={opt.value}>{opt.icon} {opt.label}</option>
+                      <option key={opt.value} value={opt.value}>{opt.icon} {tr(lang, opt.label)}</option>
                     ))}
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Previous Crop (Optional)
+                    {tr(lang, 'Previous Crop (Optional)')}
                   </label>
                   <input
                     type="text"
                     value={formData.previousCrop}
                     onChange={(e) => updateField('previousCrop', e.target.value)}
-                    placeholder="e.g., Cotton, Rice"
+                    placeholder={tr(lang, 'e.g., Cotton, Rice')}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500"
                   />
                 </div>
@@ -335,13 +337,13 @@ export default function CropRecommendation() {
                   onClick={prevStep}
                   className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors"
                 >
-                  <ChevronLeft className="w-5 h-5" /> Back
+                  <ChevronLeft className="w-5 h-5" /> {tr(lang, 'Back')}
                 </button>
                 <button
                   onClick={nextStep}
                   className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors"
                 >
-                  Continue <ChevronRight className="w-5 h-5" />
+                  {tr(lang, 'Continue')} <ChevronRight className="w-5 h-5" />
                 </button>
               </div>
             </motion.div>
@@ -358,12 +360,12 @@ export default function CropRecommendation() {
             >
               <div className="flex items-center gap-3 mb-6">
                 <Calendar className="w-6 h-6 text-green-600" />
-                <h2 className="text-2xl font-bold text-gray-900">Farming Preferences</h2>
+                <h2 className="text-2xl font-bold text-gray-900">{tr(lang, 'Farming Preferences')}</h2>
               </div>
               
               <div className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Season</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{tr(lang, 'Season')}</label>
                   <div className="grid grid-cols-1 gap-3">
                     {SEASON_OPTIONS.map(opt => (
                       <button
@@ -377,7 +379,7 @@ export default function CropRecommendation() {
                       >
                         <div className="flex items-center gap-3">
                           <span className="text-2xl">{opt.icon}</span>
-                          <span className="font-medium">{opt.label}</span>
+                          <span className="font-medium">{tr(lang, opt.label)}</span>
                         </div>
                       </button>
                     ))}
@@ -385,20 +387,20 @@ export default function CropRecommendation() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Crop Preference</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{tr(lang, 'Crop Preference')}</label>
                   <select
                     value={formData.farmingPreference}
                     onChange={(e) => updateField('farmingPreference', e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500"
                   >
                     {PREFERENCE_OPTIONS.map(opt => (
-                      <option key={opt.value} value={opt.value}>{opt.icon} {opt.label}</option>
+                      <option key={opt.value} value={opt.value}>{opt.icon} {tr(lang, opt.label)}</option>
                     ))}
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Budget</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{tr(lang, 'Budget')}</label>
                   <div className="grid grid-cols-1 gap-3">
                     {BUDGET_OPTIONS.map(opt => (
                       <button
@@ -412,7 +414,7 @@ export default function CropRecommendation() {
                       >
                         <div className="flex items-center gap-3">
                           <span className="text-2xl">{opt.icon}</span>
-                          <span className="font-medium">{opt.label}</span>
+                          <span className="font-medium">{tr(lang, opt.label)}</span>
                         </div>
                       </button>
                     ))}
@@ -425,13 +427,13 @@ export default function CropRecommendation() {
                   onClick={prevStep}
                   className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors"
                 >
-                  <ChevronLeft className="w-5 h-5" /> Back
+                  <ChevronLeft className="w-5 h-5" /> {tr(lang, 'Back')}
                 </button>
                 <button
                   onClick={nextStep}
                   className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors"
                 >
-                  Continue <ChevronRight className="w-5 h-5" />
+                  {tr(lang, 'Continue')} <ChevronRight className="w-5 h-5" />
                 </button>
               </div>
             </motion.div>
@@ -448,7 +450,7 @@ export default function CropRecommendation() {
             >
               <div className="flex items-center gap-3 mb-6">
                 <TrendingUp className="w-6 h-6 text-green-600" />
-                <h2 className="text-2xl font-bold text-gray-900">Your Farming Goal</h2>
+                <h2 className="text-2xl font-bold text-gray-900">{tr(lang, 'Your Farming Goal')}</h2>
               </div>
               
               <div className="space-y-3">
@@ -464,7 +466,7 @@ export default function CropRecommendation() {
                   >
                     <div className="flex items-center gap-4">
                       <span className="text-3xl">{opt.icon}</span>
-                      <span className="font-semibold text-lg">{opt.label}</span>
+                      <span className="font-semibold text-lg">{tr(lang, opt.label)}</span>
                     </div>
                   </button>
                 ))}
@@ -483,7 +485,7 @@ export default function CropRecommendation() {
                   disabled={loading}
                   className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
                 >
-                  <ChevronLeft className="w-5 h-5" /> Back
+                  <ChevronLeft className="w-5 h-5" /> {tr(lang, 'Back')}
                 </button>
                 <button
                   onClick={nextStep}
@@ -493,11 +495,11 @@ export default function CropRecommendation() {
                   {loading ? (
                     <>
                       <Loader2 className="w-5 h-5 animate-spin" />
-                      Analyzing...
+                      {tr(lang, 'Analyzing...')}
                     </>
                   ) : (
                     <>
-                      Get Recommendations <Sparkles className="w-5 h-5" />
+                      {tr(lang, 'Get Recommendations')} <Sparkles className="w-5 h-5" />
                     </>
                   )}
                 </button>
@@ -517,7 +519,7 @@ export default function CropRecommendation() {
               <div className="bg-white rounded-2xl shadow-lg p-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
                   <Sparkles className="w-6 h-6 text-green-600" />
-                  Top 3 Recommended Crops
+                  {tr(lang, 'Top 3 Recommended Crops')}
                 </h2>
                 
                 <div className="space-y-4">
@@ -525,35 +527,35 @@ export default function CropRecommendation() {
                     <div key={idx} className="border-2 border-gray-200 rounded-xl p-6 hover:border-green-300 transition-colors">
                       <div className="flex items-start justify-between mb-3">
                         <div>
-                          <h3 className="text-xl font-bold text-gray-900">{crop.cropName}</h3>
-                          {crop.cropNameLocal && (
+                          <h3 className="text-xl font-bold text-gray-900">{tr(lang, crop.cropName)}</h3>
+                          {lang === 'hi' && crop.cropNameLocal && crop.cropNameLocal !== tr(lang, crop.cropName) && (
                             <p className="text-sm text-gray-600">{crop.cropNameLocal}</p>
                           )}
                         </div>
                         <div className="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
                           <BarChart3 className="w-4 h-4" />
-                          {crop.suitabilityScore}% Match
+                          {trFormat(lang, '{score}% Match', { score: crop.suitabilityScore })}
                         </div>
                       </div>
                       
-                      <p className="text-gray-700 mb-4">{crop.whySuitable}</p>
+                      <p className="text-gray-700 mb-4">{translateWhySuitable(lang, crop.whySuitable)}</p>
                       
                       <div className="grid grid-cols-2 gap-3 text-sm">
                         <div className="flex items-center gap-2">
                           <Calendar className="w-4 h-4 text-gray-500" />
-                          <span className="text-gray-600">{crop.season}</span>
+                          <span className="text-gray-600">{tr(lang, crop.season)}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Clock className="w-4 h-4 text-gray-500" />
-                          <span className="text-gray-600">{crop.duration}</span>
+                          <span className="text-gray-600">{tr(lang, crop.duration)}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Droplets className="w-4 h-4 text-gray-500" />
-                          <span className="text-gray-600">{crop.waterRequirement}</span>
+                          <span className="text-gray-600">{tr(lang, crop.waterRequirement)}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Mountain className="w-4 h-4 text-gray-500" />
-                          <span className="text-gray-600">{crop.soilSuitability}</span>
+                          <span className="text-gray-600">{translateSoilSuitability(lang, crop.soilSuitability)}</span>
                         </div>
                       </div>
                       
@@ -561,13 +563,13 @@ export default function CropRecommendation() {
                         <div className="mt-4 p-4 bg-amber-50 rounded-lg">
                           <p className="text-sm font-semibold text-amber-900 mb-2 flex items-center gap-2">
                             <Info className="w-4 h-4" />
-                            Important Considerations:
+                            {tr(lang, 'Important Considerations:')}
                           </p>
                           <ul className="text-sm text-amber-800 space-y-1">
                             {crop.considerations.map((con, i) => (
                               <li key={i} className="flex items-start gap-2">
                                 <span className="text-amber-600 mt-1">•</span>
-                                <span>{con}</span>
+                                <span>{tr(lang, con)}</span>
                               </li>
                             ))}
                           </ul>
@@ -583,14 +585,14 @@ export default function CropRecommendation() {
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
                     <MapPin className="w-6 h-6 text-green-600" />
-                    Visual Farm Layout
+                    {tr(lang, 'Visual Farm Layout')}
                   </h2>
                   <button
                     onClick={resetLayout}
                     className="text-sm text-green-600 hover:text-green-700 font-medium flex items-center gap-1"
                   >
                     <RotateCcw className="w-4 h-4" />
-                    Reset
+                    {tr(lang, 'Reset')}
                   </button>
                 </div>
 
@@ -609,9 +611,9 @@ export default function CropRecommendation() {
                         className="absolute w-full flex items-center justify-center text-white font-bold border-b-2 border-white/30"
                       >
                         <div className="text-center">
-                          <div className="text-lg">{section.cropName}</div>
+                          <div className="text-lg">{tr(lang, section.cropName)}</div>
                           <div className="text-sm opacity-90">
-                            {section.area.toFixed(1)} {formData.farmSizeUnit} ({section.areaPercentage.toFixed(0)}%)
+                            {section.area.toFixed(1)} {tr(lang, formData.farmSizeUnit)} ({section.areaPercentage.toFixed(0)}%)
                           </div>
                         </div>
                       </div>
@@ -626,10 +628,10 @@ export default function CropRecommendation() {
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-3">
                           <div className="w-6 h-6 rounded" style={{ backgroundColor: section.color }} />
-                          <span className="font-semibold text-gray-900">{section.cropName}</span>
+                          <span className="font-semibold text-gray-900">{tr(lang, section.cropName)}</span>
                         </div>
                         <span className="text-sm text-gray-600">
-                          {section.area.toFixed(1)} {formData.farmSizeUnit}
+                          {section.area.toFixed(1)} {tr(lang, formData.farmSizeUnit)}
                         </span>
                       </div>
                       <input
@@ -649,7 +651,7 @@ export default function CropRecommendation() {
 
                 <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                   <p className="text-sm text-green-800">
-                    <strong>Total Farm Area:</strong> {formData.farmSize} {formData.farmSizeUnit}
+                    <strong>{tr(lang, 'Total Farm Area:')}</strong> {formData.farmSize} {tr(lang, formData.farmSizeUnit)}
                   </p>
                 </div>
               </div>
@@ -659,7 +661,7 @@ export default function CropRecommendation() {
                 className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors"
               >
                 <RotateCcw className="w-5 h-5" />
-                Start New Recommendation
+                {tr(lang, 'Start New Recommendation')}
               </button>
             </motion.div>
           )}

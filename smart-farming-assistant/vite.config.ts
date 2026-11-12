@@ -40,6 +40,8 @@ export default defineConfig({
         ],
       },
       workbox: {
+        // Increase precache limit so localized bundles remain precached cleanly
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         // Cache static assets (JS, CSS, fonts, images)
         globPatterns: ['**/*.{js,css,html,ico,svg,png,woff2}'],
         // Runtime caching for external APIs that are safe to cache

@@ -10,7 +10,7 @@ import {
   Loader2,
 } from 'lucide-react'
 import { useLanguage } from '../context/LanguageContext'
-import { t, tArr } from '../lib/i18n'
+import { t, tArr, tr } from '../lib/i18n'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -95,11 +95,7 @@ export default function FloatingAIAssistant() {
         {
           role: 'assistant',
           text:
-            lang === 'hi'
-              ? 'माफ करें, सर्वर से जुड़ नहीं पाए। कृपया बाद में पुनः प्रयास करें।'
-              : lang === 'mr'
-              ? 'माफ करा, सर्व्हरशी संपर्क होऊ शकला नाही. कृपया पुन्हा प्रयत्न करा.'
-              : 'Sorry, I could not connect to the assistant server. Please check your backend connection and try again.',
+            tr(lang, 'Sorry, I could not connect to the assistant server. Please check your backend connection and try again.', 'माफ करें, सर्वर से जुड़ नहीं पाए। कृपया बाद में पुनः प्रयास करें।', 'माफ करा, सर्व्हरशी संपर्क होऊ शकला नाही. कृपया पुन्हा प्रयत्न करा.'),
         },
       ])
     } finally {
@@ -144,11 +140,11 @@ export default function FloatingAIAssistant() {
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5 leading-none">
-                    <h3 className="text-sm font-bold text-white leading-none">Krishi Mitra</h3>
+                    <h3 className="text-sm font-bold text-white leading-none">{tr(lang, 'Krishi Mitra')}</h3>
                     <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse" />
                   </div>
                   <span className="text-[11px] text-white/80 font-medium leading-none block mt-1">
-                    AI Farming Assistant
+                    {tr(lang, 'AI Farming Assistant')}
                   </span>
                 </div>
               </div>
@@ -168,8 +164,8 @@ export default function FloatingAIAssistant() {
                   type="button"
                   onClick={() => setIsOpen(false)}
                   className="p-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                  title="Close Krishi Mitra"
-                  aria-label="Close"
+                  title={tr(lang, 'Close Krishi Mitra')}
+                  aria-label={tr(lang, 'Close')}
                 >
                   <X size={16} />
                 </button>
@@ -228,7 +224,7 @@ export default function FloatingAIAssistant() {
               {messages.length === 1 && !loading && (
                 <div className="pt-2">
                   <p className="text-[11px] font-semibold text-gray-400 mb-2 ml-8">
-                    {lang === 'hi' ? 'सुझाए गए प्रश्न:' : lang === 'mr' ? 'सुचवलेले प्रश्न:' : 'Suggested Questions:'}
+                    {tr(lang, 'Suggested Questions:', 'सुझाए गए प्रश्न:', 'सुचवलेले प्रश्न:')}
                   </p>
                   <div className="flex flex-col gap-1.5 ml-8">
                     {suggestions.map((s, idx) => (
@@ -264,8 +260,8 @@ export default function FloatingAIAssistant() {
                   onClick={() => sendMessage()}
                   disabled={loading || !input.trim()}
                   className="w-7 h-7 rounded-lg bg-[#087f3e] hover:bg-[#066832] disabled:opacity-40 disabled:hover:bg-[#087f3e] text-white flex items-center justify-center shrink-0 transition-colors"
-                  title="Send message"
-                  aria-label="Send"
+                  title={tr(lang, 'Send message')}
+                  aria-label={tr(lang, 'Send')}
                 >
                   <Send size={13} />
                 </button>
@@ -302,7 +298,7 @@ export default function FloatingAIAssistant() {
           onClick={() => setIsOpen((prev) => !prev)}
           onMouseEnter={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
-          aria-label="Ask Krishi Mitra AI Assistant"
+          aria-label={tr(lang, 'Ask Krishi Mitra AI Assistant')}
           className={`relative w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 cursor-pointer ${
             isOpen
               ? 'bg-gray-800 text-white shadow-md'

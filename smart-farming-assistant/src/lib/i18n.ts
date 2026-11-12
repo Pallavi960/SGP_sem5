@@ -1,4 +1,14 @@
 import type { LangCode } from '../context/LanguageContext'
+import { GU_PHRASES } from './locales/gu'
+import { PA_PHRASES } from './locales/pa'
+import { TA_PHRASES } from './locales/ta'
+import { TE_PHRASES } from './locales/te'
+import { COMMON_DOMAIN_PHRASES, type ExtraLang, type MultiLangDict } from './locales/commonDomain'
+import { PLANNER_AND_DISEASE_PHRASES } from './locales/plannerAndDisease'
+import { DISEASE_AND_RECOMMEND_PHRASES } from './locales/diseaseDetailsPhrases'
+import { DISEASE_EXTRA_PHRASES } from './locales/diseaseExtraPhrases'
+import { FERTILIZER_SERVICE_PHRASES } from './locales/fertilizerServicePhrases'
+import { CROP_EXTRA_PHRASES } from './locales/cropExtraPhrases'
 
 export interface Translations {
   // Navigation & Sidebar
@@ -730,6 +740,814 @@ const translations: Record<LangCode, Translations> = {
     login_verify_otp: 'पडताळणी करा आणि लॉगिन व्हा',
     login_resend_otp: 'ओटीपी पुन्हा पाठवा',
   },
+
+  gu: {
+    // Nav
+    nav_home: 'હોમ',
+    nav_disease_detection: 'રોગ ઓળખ',
+    nav_crop_recommendation: 'પાક ભલામણ',
+    nav_weather: 'હવામાન',
+    nav_farm_planner: 'ખેતી આયોજક',
+    nav_fertilizer_advisor: 'ખાતર સલાહકાર',
+    nav_govt_schemes: 'સરકારી યોજનાઓ',
+    nav_about_us: 'અમારા વિશે',
+    nav_sign_in: 'લૉગ ઇન',
+    nav_dashboard: 'ડેશબોર્ડ',
+    nav_log_out: 'લૉગ આઉટ',
+    nav_prediction: 'પૂર્વાનુમાન',
+    nav_how_to_use: 'કેવી રીતે વાપરવું',
+
+    sec_overview: 'વિહંગાવલોકન',
+    sec_tools: 'સાધનો',
+    sec_main: 'મુખ્ય',
+    sec_farm_tools: 'ખેતી સાધનો',
+    sec_information: 'માહિતી',
+    brand_tagline: 'સ્માર્ટ ફાર્મિંગ આસિસ્ટન્ટ',
+    brand_sub: 'તમારો સરળ ખેતી સહાયક',
+    my_account: 'મારું ખાતું',
+
+    help_how_to_use: 'કેવી રીતે વાપરવું',
+    help_panel_title: 'SmartFarm AI કેવી રીતે વાપરવું',
+
+    ai_welcome:
+      'નમસ્તે! 🌱 હું કૃષિ મિત્ર છું, તમારો AI ખેતી સહાયક.\n\nપાક, જીવાત, જમીન, ખાતર, હવામાન કે સરકારી યોજનાઓ વિશે કંઈપણ પૂછો.',
+    ai_suggestions: [
+      '🌾 ખરીફ ઋતુ માટે પાક સૂચન',
+      '🐛 પાંદડા પીળા પડે છે, શું કરવું?',
+      '🧪 ઘઉં માટે શ્રેષ્ઠ ખાતર',
+      '🌦️ ખેતી માટે વરસાદની આગાહી',
+    ],
+    ai_input_placeholder: 'કૃષિ મિત્રને કંઈપણ પૂછો...',
+    ai_typing: 'કૃષિ મિત્ર જવાબ લખી રહ્યો છે...',
+    ai_disclaimer: 'AI ભૂલ કરી શકે છે. મહત્વપૂર્ણ સલાહ સ્થાનિક કૃષિ નિષ્ણાત પાસેથી ચકાસો.',
+    ai_new_chat: 'નવી વાતચીત',
+    ai_tooltip: 'કૃષિ મિત્રને પૂછો 🤖',
+    ai_system_lang_instruction:
+      'કૃપા કરીને ગુજરાતી ભાષામાં જવાબ આપો. ખેડૂતોને સમજાય તેવી સરળ અને વ્યવહારુ ભાષામાં લખો.',
+
+    search_placeholder: 'યોજનાઓ શોધો...',
+    loading_text: 'લોડ થઈ રહ્યું છે...',
+    back_to_home: 'હોમ પર પાછા જાઓ',
+
+    // Disease Detection
+    dd_badge: 'AI વનસ્પતિ રોગવિજ્ઞાન • MobileNetV3 આર્કિટેક્ચર',
+    dd_title_prefix: 'છોડના પાંદડાની',
+    dd_title_highlight: 'રોગ ઓળખ',
+    dd_subtitle:
+      'બેક્ટેરિયલ બ્લાઇટ, લીફ કર્લ વાયરસ અને ફ્યુઝેરિયમ વિલ્ટ તરત ઓળખવા માટે પાંદડા સ્કેન કરો. કૃષિ ઉપાયો, માત્રા અને વૈજ્ઞાનિક સારવાર મેળવો.',
+    dd_tab_upload: 'ફોટો અપલોડ કરો',
+    dd_tab_camera: 'લાઇવ કેમેરા',
+    dd_tab_samples: 'ડેમો નમૂનાઓ',
+    dd_drop_title: 'પાંદડાનો ફોટો અપલોડ કરવા ક્લિક કરો અથવા અહીં ખેંચો',
+    dd_drop_sub: 'JPG, PNG, WebP વધુમાં વધુ 10MB (એક પાંદડું સ્પષ્ટ દેખાય)',
+    dd_select_btn: 'પાંદડાનો ફોટો પસંદ કરો',
+    dd_diagnose_btn: 'છોડના રોગનું નિદાન કરો',
+    dd_analyzing_btn: 'પાંદડાનું વિશ્લેષણ ચાલુ છે...',
+    dd_change_photo: 'ફોટો બદલો',
+    dd_awaiting_title: 'પાંદડાની તપાસની રાહ છે',
+    dd_awaiting_desc:
+      'તમારા ડિવાઇસમાંથી ફોટો અપલોડ કરો, કેમેરાથી લાઇવ ફોટો લો અથવા ડેમો નમૂનો પસંદ કરીને તરત રોગ ઓળખ અને સારવાર જુઓ.',
+    dd_sample_blight: 'બેક્ટેરિયલ બ્લાઇટ',
+    dd_sample_curl: 'લીફ કર્લ વાયરસ',
+    dd_sample_wilt: 'ફ્યુઝેરિયમ વિલ્ટ',
+    dd_sample_healthy: 'સ્વસ્થ પાંદડું',
+    dd_camera_start: 'કેમેરા ચાલુ કરો',
+    dd_camera_capture: 'ફોટો પાડો',
+    dd_camera_stop: 'કેમેરા બંધ કરો',
+    dd_diagnosis_result: 'નિદાન પરિણામ',
+    dd_confidence: 'ચોકસાઈ દર',
+    dd_severity: 'ગંભીરતા સ્તર',
+    dd_detected_disease: 'ઓળખાયેલ રોગ',
+    dd_symptoms: 'રોગના લક્ષણો',
+    dd_immediate_actions: 'ખેડૂત માટે તાત્કાલિક પગલાં',
+    dd_chemical_control: 'રાસાયણિક નિયંત્રણ અને માત્રા',
+    dd_organic_control: 'જૈવિક અને કુદરતી ઉપાયો',
+    dd_prevention: 'લાંબા ગાળાનું નિવારણ',
+    dd_scan_another: 'બીજું પાંદડું સ્કેન કરો',
+    dd_pipeline_title: 'મોડેલ આર્કિટેક્ચર અને પાઇપલાઇન',
+    dd_healthy_title: 'સ્વસ્થ પાક — કોઈ રોગ મળ્યો નથી',
+    dd_healthy_desc: 'તમારું પાંદડું સંપૂર્ણ સ્વસ્થ છે અને તેમાં કોઈ રોગ કે ચેપના લક્ષણો નથી.',
+
+    // Dashboard
+    db_welcome: 'નમસ્તે',
+    db_authenticated: 'પ્રમાણિત',
+    db_sms_verified: 'SMS ચકાસાયેલ',
+    db_phone_label: 'ફોન',
+    db_sign_out: 'સાઇન આઉટ',
+    db_tools_title: 'સ્માર્ટ ખેતી સાધનો અને સેવાઓ',
+    db_open_tool: 'સાધન ખોલો →',
+    db_ai_title: 'AI ખેતી સહાયક',
+    db_ai_desc: 'તમારી ભાષામાં ખેતી, જીવાત કે ખાતર વિશે કોઈપણ પ્રશ્ન પૂછો',
+    db_crop_title: 'પાક ભલામણ',
+    db_crop_desc: 'તમારી જમીન અને ઋતુ મુજબ શ્રેષ્ઠ પાકોના સૂચનો મેળવો',
+    db_disease_title: 'રોગ ઓળખ',
+    db_disease_desc: 'પાંદડાનો ફોટો અપલોડ કરી તરત રોગ અને ઉપાય જાણો',
+    db_weather_title: 'હવામાન સલાહ',
+    db_weather_desc: 'તમારા ખેતર માટે 7 દિવસનું તાપમાન, વરસાદ અને પવન પૂર્વાનુમાન',
+    db_schemes_title: 'સરકારી યોજનાઓ',
+    db_schemes_desc: 'ઉપલબ્ધ સબસિડી, આર્થિક સહાય અને PM-KISAN અપડેટ્સ જુઓ',
+    db_prediction_title: 'બટાકાના પાકનું પૂર્વાનુમાન',
+    db_prediction_desc: 'બટાકામાં અર્લી અને લેટ બ્લાઇટ ઓળખી લણણીની સલાહ મેળવો',
+    db_weather_today: 'આજનું હવામાન',
+    db_crop_matches: 'યોગ્ય પાકો',
+    db_health_alerts: 'આરોગ્ય ચેતવણીઓ',
+    db_scan_leaf_btn: 'કેમેરાથી પાંદડું સ્કેન કરો →',
+    db_ai_suggested: 'AI સૂચિત',
+    db_early_blight_risk: 'અર્લી બ્લાઇટનું જોખમ',
+    db_early_blight_sub: 'ટામેટાનો પાક • વધુ ભેજ',
+    db_rust_fungus_risk: 'ગેરુ (Rust) ફૂગ ચેતવણી',
+    db_rust_fungus_sub: 'ઘઉંનો પાક • મધ્યમ જોખમ',
+    db_humidity: 'ભેજ',
+    db_wind: 'પવન',
+    db_uv_index: 'UV ઇન્ડેક્સ',
+
+    // Weather
+    w_title: 'કૃષિ હવામાન રડાર',
+    w_subtitle: 'ભારતીય ખેતી માટે ખાસ તૈયાર કરાયેલ 7-દિવસીય સ્થાનિક હવામાન આગાહી.',
+    w_today: 'આજનું ખેતર હવામાન',
+    w_forecast_7day: '7-દિવસની કૃષિ આગાહી',
+    w_temp: 'તાપમાન',
+    w_humidity: 'હવામાં ભેજ',
+    w_wind: 'પવનની ગતિ',
+    w_precipitation: 'વરસાદની શક્યતા',
+    w_farming_advisory: 'આજ માટે કૃષિ સલાહ',
+
+    // Prediction
+    pred_title: 'બટાકાના પાકના રોગ અને ઉત્પાદનનું પૂર્વાનુમાન',
+    pred_subtitle: 'બટાકાના પાંદડાના રોગોની ઓળખ અને પાક સુરક્ષા માટે ડીપ લર્નિંગ સિસ્ટમ.',
+    pred_upload_title: 'બટાકાનું પાંદડું અપલોડ કરો',
+    pred_select_sample: 'ડેમો નમૂનો પસંદ કરો',
+    pred_diagnose: 'રોગ અને ઉત્પાદન અસરની આગાહી કરો',
+    pred_result_title: 'નિદાન પૂર્વાનુમાન પરિણામ',
+
+    // Fertilizer
+    fa_title: 'સ્માર્ટ ખાતર માત્રા સલાહકાર',
+    fa_subtitle: 'જમીનની ખામી અને પાકના તબક્કા આધારિત વૈજ્ઞાનિક N-P-K પોષક સંતુલન.',
+    fa_soil_type: 'જમીનનો પ્રકાર',
+    fa_crop_type: 'લક્ષ્ય પાક',
+    fa_calculate: 'શ્રેષ્ઠ ખાતર મિશ્રણની ગણતરી કરો',
+    fa_recommendation: 'ખાતર ભલામણ યોજના',
+
+    // Planner
+    fp_title: 'ખેતી પ્રવૃત્તિ અને સમયપત્રક આયોજક',
+    fp_subtitle: 'વાવણી, સિંચાઈ, ખાતર અને લણણીનું સચોટ આયોજન કરો.',
+    fp_seasonal_schedule: 'મોસમી ખેતી સમયપત્રક',
+    fp_add_activity: 'ખેતી પ્રવૃત્તિ ઉમેરો',
+
+    // Schemes
+    gs_title: 'સરકારી કૃષિ યોજનાઓ અને સબસિડી',
+    gs_subtitle: 'કેન્દ્ર અને રાજ્ય સરકારની ખેડૂત સહાય યોજનાઓ, ગ્રાન્ટ અને ધિરાણ સુવિધાઓ જાણો.',
+    gs_search: 'કીવર્ડ દ્વારા યોજનાઓ શોધો...',
+    gs_all_schemes: 'તમામ યોજનાઓ',
+    gs_subsidies: 'સબસિડી અને સાધનો',
+    gs_insurance: 'પાક વીમો',
+    gs_financial_support: 'નાણાકીય સહાય',
+    gs_apply_now: 'સત્તાવાર પોર્ટલ / અરજી કરો →',
+    gs_eligibility: 'પાત્રતા માપદંડ',
+    gs_benefits: 'સીધા લાભો',
+
+    // How to Use
+    htu_title: 'SmartFarm AI કેવી રીતે વાપરવું',
+    htu_subtitle: 'ખેડૂતો માટે કૃષિ ઉત્પાદન વધારવા માટેનું સરળ પગલાવાર માર્ગદર્શન.',
+    htu_quick_steps: 'ખેતી કાર્યપ્રવાહ માર્ગદર્શિકા',
+
+    // Login
+    login_title: 'મોબાઇલ નંબરથી સાઇન ઇન કરો',
+    login_subtitle: 'Twilio દ્વારા સુરક્ષિત SMS OTP મેળવવા તમારો મોબાઇલ નંબર દાખલ કરો. પાસવર્ડ કે ઇમેઇલની જરૂર નથી.',
+    login_step1: 'પગલું 1 / 2',
+    login_step2: 'પગલું 2 / 2',
+    login_step1_sub: 'SMS OTP મેળવવા તમારું નામ અને ફોન નંબર દાખલ કરો.',
+    login_step2_sub: 'કૃપા કરીને તમારા ફોન પર આવેલો 6-અંકનો કોડ દાખલ કરો.',
+    login_full_name: 'તમારું પૂરું નામ',
+    login_phone: 'મોબાઇલ ફોન નંબર',
+    login_send_otp: 'OTP મોકલો',
+    login_verify_otp: 'ચકાસો અને સાઇન ઇન કરો',
+    login_resend_otp: 'OTP ફરી મોકલો',
+  },
+
+  pa: {
+    // Nav
+    nav_home: 'ਹੋਮ',
+    nav_disease_detection: 'ਰੋਗ ਪਛਾਣ',
+    nav_crop_recommendation: 'ਫਸਲ ਸਿਫ਼ਾਰਸ਼',
+    nav_weather: 'ਮੌਸਮ',
+    nav_farm_planner: 'ਖੇਤੀ ਯੋਜਨਾਕਾਰ',
+    nav_fertilizer_advisor: 'ਖਾਦ ਸਲਾਹਕਾਰ',
+    nav_govt_schemes: 'ਸਰਕਾਰੀ ਸਕੀਮਾਂ',
+    nav_about_us: 'ਸਾਡੇ ਬਾਰੇ',
+    nav_sign_in: 'ਲੌਗ ਇਨ',
+    nav_dashboard: 'ਡੈਸ਼ਬੋਰਡ',
+    nav_log_out: 'ਲੌਗ ਆਉਟ',
+    nav_prediction: 'ਭਵਿੱਖਬਾਣੀ',
+    nav_how_to_use: 'ਵਰਤੋਂ ਕਿਵੇਂ ਕਰੀਏ',
+
+    sec_overview: 'ਸੰਖੇਪ ਜਾਣਕਾਰੀ',
+    sec_tools: 'ਸਾਧਨ',
+    sec_main: 'ਮੁੱਖ',
+    sec_farm_tools: 'ਖੇਤੀ ਸਾਧਨ',
+    sec_information: 'ਜਾਣਕਾਰੀ',
+    brand_tagline: 'ਸਮਾਰਟ ਖੇਤੀ ਸਹਾਇਕ',
+    brand_sub: 'ਤੁਹਾਡਾ ਸੌਖਾ ਖੇਤੀ ਸਹਾਇਕ',
+    my_account: 'ਮੇਰਾ ਖਾਤਾ',
+
+    help_how_to_use: 'ਵਰਤੋਂ ਕਿਵੇਂ ਕਰੀਏ',
+    help_panel_title: 'SmartFarm AI ਦੀ ਵਰਤੋਂ ਕਿਵੇਂ ਕਰੀਏ',
+
+    ai_welcome:
+      'ਸਤ ਸ੍ਰੀ ਅਕਾਲ! 🌱 ਮੈਂ ਕ੍ਰਿਸ਼ੀ ਮਿੱਤਰ ਹਾਂ, ਤੁਹਾਡਾ AI ਖੇਤੀ ਸਹਾਇਕ।\n\nਫਸਲਾਂ, ਕੀੜਿਆਂ, ਮਿੱਟੀ, ਖਾਦ, ਮੌਸਮ ਜਾਂ ਸਰਕਾਰੀ ਸਕੀਮਾਂ ਬਾਰੇ ਕੋਈ ਵੀ ਸਵਾਲ ਪੁੱਛੋ।',
+    ai_suggestions: [
+      '🌾 ਸਾਉਣੀ ਸੀਜ਼ਨ ਲਈ ਫਸਲ ਸੁਝਾਅ',
+      '🐛 ਪੱਤੇ ਪੀਲੇ ਹੋ ਰਹੇ ਹਨ, ਕੀ ਕਰੀਏ?',
+      '🧪 ਕਣਕ ਲਈ ਸਭ ਤੋਂ ਵਧੀਆ ਖਾਦ',
+      '🌦️ ਖੇਤੀ ਲਈ ਮੀਂਹ ਦੀ ਭਵਿੱਖਬਾਣੀ',
+    ],
+    ai_input_placeholder: 'ਕ੍ਰਿਸ਼ੀ ਮਿੱਤਰ ਨੂੰ ਕੁਝ ਵੀ ਪੁੱਛੋ...',
+    ai_typing: 'ਕ੍ਰਿਸ਼ੀ ਮਿੱਤਰ ਜਵਾਬ ਤਿਆਰ ਕਰ ਰਿਹਾ ਹੈ...',
+    ai_disclaimer: 'AI ਗਲਤੀ ਕਰ ਸਕਦਾ ਹੈ। ਮਹੱਤਵਪੂਰਨ ਸਲਾਹ ਸਥਾਨਕ ਖੇਤੀ ਮਾਹਰ ਤੋਂ ਜ਼ਰੂਰ ਜਾਂਚੋ।',
+    ai_new_chat: 'ਨਵੀਂ ਗੱਲਬਾਤ',
+    ai_tooltip: 'ਕ੍ਰਿਸ਼ੀ ਮਿੱਤਰ ਨੂੰ ਪੁੱਛੋ 🤖',
+    ai_system_lang_instruction:
+      'ਕਿਰਪਾ ਕਰਕੇ ਪੰਜਾਬੀ ਭਾਸ਼ਾ ਵਿੱਚ ਜਵਾਬ ਦਿਓ। ਕਿਸਾਨ-ਪੱਖੀ, ਸੌਖੀ ਅਤੇ ਵਿਹਾਰਕ ਭਾਸ਼ਾ ਵਿੱਚ ਦੱਸੋ।',
+
+    search_placeholder: 'ਸਕੀਮਾਂ ਖੋਜੋ...',
+    loading_text: 'ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...',
+    back_to_home: 'ਹੋਮ ਤੇ ਵਾਪਸ ਜਾਓ',
+
+    // Disease Detection
+    dd_badge: 'AI ਪੌਦਾ ਰੋਗ ਵਿਗਿਆਨ • MobileNetV3 ਆਰਕੀਟੈਕਚਰ',
+    dd_title_prefix: 'ਪੌਦੇ ਦੇ ਪੱਤਿਆਂ ਦੀ',
+    dd_title_highlight: 'ਰੋਗ ਪਛਾਣ',
+    dd_subtitle:
+      'ਬੈਕਟੀਰੀਅਲ ਬਲਾਈਟ, ਲੀਫ ਕਰਲ ਵਾਇਰਸ ਅਤੇ ਫਿਊਜ਼ੇਰੀਅਮ ਵਿਲਟ ਦੀ ਤੁਰੰਤ ਪਛਾਣ ਲਈ ਪੱਤਿਆਂ ਨੂੰ ਸਕੈਨ ਕਰੋ। ਖੇਤੀ ਉਪਾਅ, ਮਾਤਰਾ ਅਤੇ ਵਿਗਿਆਨਕ ਇਲਾਜ ਪਾਓ।',
+    dd_tab_upload: 'ਫੋਟੋ ਅੱਪਲੋਡ ਕਰੋ',
+    dd_tab_camera: 'ਲਾਈਵ ਕੈਮਰਾ',
+    dd_tab_samples: 'ਡੈਮੋ ਨਮੂਨੇ',
+    dd_drop_title: 'ਪੱਤੇ ਦੀ ਫੋਟੋ ਅੱਪਲੋਡ ਕਰਨ ਲਈ ਕਲਿੱਕ ਕਰੋ ਜਾਂ ਇੱਥੇ ਖਿੱਚੋ',
+    dd_drop_sub: 'JPG, PNG, WebP ਵੱਧ ਤੋਂ ਵੱਧ 10MB (ਇੱਕ ਪੱਤਾ ਸਾਫ਼ ਦਿਖੇ)',
+    dd_select_btn: 'ਪੱਤੇ ਦੀ ਫੋਟੋ ਚੁਣੋ',
+    dd_diagnose_btn: 'ਪੌਦੇ ਦੇ ਰੋਗ ਦੀ ਜਾਂਚ ਕਰੋ',
+    dd_analyzing_btn: 'ਪੱਤੇ ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ ਜਾਰੀ ਹੈ...',
+    dd_change_photo: 'ਫੋਟੋ ਬਦਲੋ',
+    dd_awaiting_title: 'ਪੱਤੇ ਦੀ ਜਾਂਚ ਦੀ ਉਡੀਕ ਹੈ',
+    dd_awaiting_desc:
+      'ਆਪਣੀ ਡਿਵਾਈਸ ਤੋਂ ਫੋਟੋ ਅੱਪਲੋਡ ਕਰੋ, ਕੈਮਰੇ ਨਾਲ ਲਾਈਵ ਫੋਟੋ ਖਿੱਚੋ, ਜਾਂ ਡੈਮੋ ਨਮੂਨਾ ਚੁਣ ਕੇ ਤੁਰੰਤ ਰੋਗ ਪਛਾਣ ਅਤੇ ਇਲਾਜ ਦੇਖੋ।',
+    dd_sample_blight: 'ਬੈਕਟੀਰੀਅਲ ਬਲਾਈਟ',
+    dd_sample_curl: 'ਲੀਫ ਕਰਲ ਵਾਇਰਸ',
+    dd_sample_wilt: 'ਫਿਊਜ਼ੇਰੀਅਮ ਵਿਲਟ',
+    dd_sample_healthy: 'ਸਿਹਤਮੰਦ ਪੱਤਾ',
+    dd_camera_start: 'ਕੈਮਰਾ ਚਾਲੂ ਕਰੋ',
+    dd_camera_capture: 'ਫੋਟੋ ਖਿੱਚੋ',
+    dd_camera_stop: 'ਕੈਮਰਾ ਬੰਦ ਕਰੋ',
+    dd_diagnosis_result: 'ਜਾਂਚ ਨਤੀਜਾ',
+    dd_confidence: 'ਸ਼ੁੱਧਤਾ ਦਰ',
+    dd_severity: 'ਗੰਭੀਰਤਾ ਪੱਧਰ',
+    dd_detected_disease: 'ਪਛਾਣਿਆ ਗਿਆ ਰੋਗ',
+    dd_symptoms: 'ਰੋਗ ਦੇ ਲੱਛਣ',
+    dd_immediate_actions: 'ਤੁਰੰਤ ਜ਼ਰੂਰੀ ਕਦਮ',
+    dd_chemical_control: 'ਰਸਾਇਣਕ ਕੰਟਰੋਲ ਅਤੇ ਮਾਤਰਾ',
+    dd_organic_control: 'ਜੈਵਿਕ ਅਤੇ ਕੁਦਰਤੀ ਉਪਾਅ',
+    dd_prevention: 'ਲੰਬੇ ਸਮੇਂ ਦੀ ਰੋਕਥਾਮ',
+    dd_scan_another: 'ਹੋਰ ਪੱਤਾ ਸਕੈਨ ਕਰੋ',
+    dd_pipeline_title: 'ਮਾਡਲ ਆਰਕੀਟੈਕਚਰ ਅਤੇ ਪਾਈਪਲਾਈਨ',
+    dd_healthy_title: 'ਸਿਹਤਮੰਦ ਫਸਲ — ਕੋਈ ਰੋਗ ਨਹੀਂ ਮਿਲਿਆ',
+    dd_healthy_desc: 'ਤੁਹਾਡਾ ਪੱਤਾ ਪੂਰੀ ਤਰ੍ਹਾਂ ਸਿਹਤਮੰਦ ਹੈ ਅਤੇ ਇਸ ਵਿੱਚ ਕਿਸੇ ਰੋਗ ਦੇ ਲੱਛਣ ਨਹੀਂ ਹਨ।',
+
+    // Dashboard
+    db_welcome: 'ਜੀ ਆਇਆਂ ਨੂੰ',
+    db_authenticated: 'ਪ੍ਰਮਾਣਿਤ',
+    db_sms_verified: 'SMS ਤਸਦੀਕਸ਼ੁਦਾ',
+    db_phone_label: 'ਫ਼ੋਨ',
+    db_sign_out: 'ਲੌਗ ਆਉਟ',
+    db_tools_title: 'ਸਮਾਰਟ ਖੇਤੀ ਸਾਧਨ ਅਤੇ ਸੇਵਾਵਾਂ',
+    db_open_tool: 'ਸਾਧਨ ਖੋਲ੍ਹੋ →',
+    db_ai_title: 'AI ਖੇਤੀ ਸਹਾਇਕ',
+    db_ai_desc: 'ਆਪਣੀ ਭਾਸ਼ਾ ਵਿੱਚ ਖੇਤੀ, ਕੀੜੇ ਜਾਂ ਖਾਦ ਬਾਰੇ ਕੋਈ ਵੀ ਸਵਾਲ ਪੁੱਛੋ',
+    db_crop_title: 'ਫਸਲ ਸਿਫ਼ਾਰਸ਼',
+    db_crop_desc: 'ਆਪਣੀ ਮਿੱਟੀ ਅਤੇ ਮੌਸਮ ਅਨੁਸਾਰ ਵਧੀਆ ਫਸਲਾਂ ਦੇ ਸੁਝਾਅ ਲਓ',
+    db_disease_title: 'ਰੋਗ ਪਛਾਣ',
+    db_disease_desc: 'ਪੱਤਿਆਂ ਦੀ ਫੋਟੋ ਅੱਪਲੋਡ ਕਰਕੇ ਤੁਰੰਤ ਰੋਗ ਅਤੇ ਇਲਾਜ ਜਾਣੋ',
+    db_weather_title: 'ਮੌਸਮ ਸਲਾਹ',
+    db_weather_desc: 'ਆਪਣੇ ਖੇਤ ਲਈ 7 ਦਿਨਾਂ ਦਾ ਤਾਪਮਾਨ, ਮੀਂਹ ਅਤੇ ਹਵਾ ਦਾ ਅਨੁਮਾਨ',
+    db_schemes_title: 'ਸਰਕਾਰੀ ਸਕੀਮਾਂ',
+    db_schemes_desc: 'ਉਪਲਬਧ ਸਬਸਿਡੀ, ਵਿੱਤੀ ਮਦਦ ਅਤੇ PM-KISAN ਅੱਪਡੇਟ ਦੇਖੋ',
+    db_prediction_title: 'ਆਲੂ ਫਸਲ ਭਵਿੱਖਬਾਣੀ',
+    db_prediction_desc: 'ਆਲੂ ਦੀ ਫਸਲ ਵਿੱਚ ਅਗੇਤਾ ਤੇ ਪਛੇਤਾ ਝੁਲਸ ਪਛਾਣ ਕੇ ਸਲਾਹ ਲਓ',
+    db_weather_today: 'ਅੱਜ ਦਾ ਮੌਸਮ',
+    db_crop_matches: 'ਢੁਕਵੀਆਂ ਫਸਲਾਂ',
+    db_health_alerts: 'ਸਿਹਤ ਅਲਰਟ',
+    db_scan_leaf_btn: 'ਕੈਮਰੇ ਨਾਲ ਪੱਤਾ ਸਕੈਨ ਕਰੋ →',
+    db_ai_suggested: 'AI ਸੁਝਾਅ',
+    db_early_blight_risk: 'ਅਗੇਤਾ ਝੁਲਸ ਦਾ ਖ਼ਤਰਾ',
+    db_early_blight_sub: 'ਟਮਾਟਰ ਫਸਲ • ਵੱਧ ਨਮੀ',
+    db_rust_fungus_risk: 'ਕੁੰਗੀ (Rust) ਉੱਲੀ ਚੇਤਾਵਨੀ',
+    db_rust_fungus_sub: 'ਕਣਕ ਦੀ ਫਸਲ • ਦਰਮਿਆਨਾ',
+    db_humidity: 'ਨਮੀ',
+    db_wind: 'ਹਵਾ',
+    db_uv_index: 'UV ਸੂਚਕਾਂਕ',
+
+    // Weather
+    w_title: 'ਖੇਤੀਬਾੜੀ ਮੌਸਮ ਰਾਡਾਰ',
+    w_subtitle: 'ਭਾਰਤੀ ਖੇਤੀ ਲਈ ਖਾਸ ਤੌਰ ਤੇ ਤਿਆਰ ਕੀਤੀ 7-ਦਿਨਾਂ ਦੀ ਮੌਸਮ ਭਵਿੱਖਬਾਣੀ।',
+    w_today: 'ਅੱਜ ਖੇਤ ਦਾ ਮੌਸਮ',
+    w_forecast_7day: '7-ਦਿਨਾਂ ਦੀ ਖੇਤੀ ਭਵਿੱਖਬਾਣੀ',
+    w_temp: 'ਤਾਪਮਾਨ',
+    w_humidity: 'ਹਵਾ ਵਿੱਚ ਨਮੀ',
+    w_wind: 'ਹਵਾ ਦੀ ਗਤੀ',
+    w_precipitation: 'ਮੀਂਹ ਦੀ ਸੰਭਾਵਨਾ',
+    w_farming_advisory: 'ਅੱਜ ਲਈ ਖੇਤੀ ਸਲਾਹ',
+
+    // Prediction
+    pred_title: 'ਆਲੂ ਫਸਲ ਰੋਗ ਅਤੇ ਝਾੜ ਭਵਿੱਖਬਾਣੀ',
+    pred_subtitle: 'ਆਲੂ ਦੇ ਪੱਤਿਆਂ ਦੇ ਰੋਗਾਂ ਦੀ ਪਛਾਣ ਅਤੇ ਫਸਲ ਸੁਰੱਖਿਆ ਲਈ ਡੀਪ ਲਰਨਿੰਗ ਸਿਸਟਮ।',
+    pred_upload_title: 'ਆਲੂ ਦਾ ਪੱਤਾ ਅੱਪਲੋਡ ਕਰੋ',
+    pred_select_sample: 'ਡੈਮੋ ਨਮੂਨਾ ਚੁਣੋ',
+    pred_diagnose: 'ਰੋਗ ਅਤੇ ਝਾੜ ਪ੍ਰਭਾਵ ਦੀ ਭਵਿੱਖਬਾਣੀ ਕਰੋ',
+    pred_result_title: 'ਜਾਂਚ ਭਵਿੱਖਬਾਣੀ ਨਤੀਜਾ',
+
+    // Fertilizer
+    fa_title: 'ਸਮਾਰਟ ਖਾਦ ਮਾਤਰਾ ਸਲਾਹਕਾਰ',
+    fa_subtitle: 'ਮਿੱਟੀ ਦੀ ਕਮੀ ਅਤੇ ਫਸਲ ਦੇ ਪੜਾਅ ਅਨੁਸਾਰ ਵਿਗਿਆਨਕ N-P-K ਸੰਤੁਲਨ।',
+    fa_soil_type: 'ਮਿੱਟੀ ਦੀ ਕਿਸਮ',
+    fa_crop_type: 'ਮੁੱਖ ਫਸਲ',
+    fa_calculate: 'ਸਹੀ ਖਾਦ ਮਿਸ਼ਰਣ ਦੀ ਗਣਨਾ ਕਰੋ',
+    fa_recommendation: 'ਖਾਦ ਸਿਫ਼ਾਰਸ਼ ਯੋਜਨਾ',
+
+    // Planner
+    fp_title: 'ਖੇਤੀ ਕਾਰਜ ਅਤੇ ਸਮਾਂ ਯੋਜਨਾਕਾਰ',
+    fp_subtitle: 'ਬਿਜਾਈ, ਸਿੰਚਾਈ, ਖਾਦ ਅਤੇ ਵਾਢੀ ਦੀ ਸਟੀਕ ਯੋਜਨਾ ਬਣਾਓ।',
+    fp_seasonal_schedule: 'ਮੌਸਮੀ ਖੇਤੀ ਸਮਾਂ-ਸਾਰਣੀ',
+    fp_add_activity: 'ਖੇਤੀ ਕੰਮ ਜੋੜੋ',
+
+    // Schemes
+    gs_title: 'ਸਰਕਾਰੀ ਖੇਤੀ ਸਕੀਮਾਂ ਅਤੇ ਸਬਸਿਡੀ',
+    gs_subtitle: 'ਕੇਂਦਰ ਅਤੇ ਰਾਜ ਸਰਕਾਰ ਦੀਆਂ ਕਿਸਾਨ ਭਲਾਈ ਸਕੀਮਾਂ, ਗ੍ਰਾਂਟਾਂ ਅਤੇ ਕਰਜ਼ ਸਹੂਲਤਾਂ ਜਾਣੋ।',
+    gs_search: 'ਕੀਵਰਡ ਨਾਲ ਸਕੀਮਾਂ ਖੋਜੋ...',
+    gs_all_schemes: 'ਸਾਰੀਆਂ ਸਕੀਮਾਂ',
+    gs_subsidies: 'ਸਬਸਿਡੀ ਅਤੇ ਸੰਦ',
+    gs_insurance: 'ਫਸਲ ਬੀਮਾ',
+    gs_financial_support: 'ਵਿੱਤੀ ਸਹਾਇਤਾ',
+    gs_apply_now: 'ਅਧਿਕਾਰਤ ਪੋਰਟਲ / ਅਪਲਾਈ ਕਰੋ →',
+    gs_eligibility: 'ਯੋਗਤਾ ਸ਼ਰਤਾਂ',
+    gs_benefits: 'ਸਿੱਧੇ ਲਾਭ',
+
+    // How to Use
+    htu_title: 'SmartFarm AI ਦੀ ਵਰਤੋਂ ਕਿਵੇਂ ਕਰੀਏ',
+    htu_subtitle: 'ਕਿਸਾਨਾਂ ਲਈ ਖੇਤੀ ਪੈਦਾਵਾਰ ਵਧਾਉਣ ਵਾਸਤੇ ਸੌਖੀ ਕਦਮ-ਦਰ-ਕਦਮ ਗਾਈਡ।',
+    htu_quick_steps: 'ਖੇਤੀ ਕਾਰਜਪ੍ਰਣਾਲੀ ਗਾਈਡ',
+
+    // Login
+    login_title: 'ਮੋਬਾਈਲ ਨੰਬਰ ਨਾਲ ਲੌਗ ਇਨ ਕਰੋ',
+    login_subtitle: 'Twilio ਰਾਹੀਂ ਸੁਰੱਖਿਅਤ SMS OTP ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ ਆਪਣਾ ਮੋਬਾਈਲ ਨੰਬਰ ਦਰਜ ਕਰੋ। ਪਾਸਵਰਡ ਜਾਂ ਈਮੇਲ ਦੀ ਲੋੜ ਨਹੀਂ।',
+    login_step1: 'ਕਦਮ 1 / 2',
+    login_step2: 'ਕਦਮ 2 / 2',
+    login_step1_sub: 'SMS OTP ਲੈਣ ਲਈ ਆਪਣਾ ਨਾਮ ਅਤੇ ਫ਼ੋਨ ਨੰਬਰ ਦਰਜ ਕਰੋ।',
+    login_step2_sub: 'ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੇ ਫ਼ੋਨ ਤੇ ਆਇਆ 6-ਅੰਕਾਂ ਦਾ ਕੋਡ ਦਰਜ ਕਰੋ।',
+    login_full_name: 'ਤੁਹਾਡਾ ਪੂਰਾ ਨਾਮ',
+    login_phone: 'ਮੋਬਾਈਲ ਫ਼ੋਨ ਨੰਬਰ',
+    login_send_otp: 'OTP ਭੇਜੋ',
+    login_verify_otp: 'ਤਸਦੀਕ ਕਰੋ ਅਤੇ ਲੌਗ ਇਨ ਕਰੋ',
+    login_resend_otp: 'OTP ਦੁਬਾਰਾ ਭੇਜੋ',
+  },
+
+  ta: {
+    // Nav
+    nav_home: 'முகப்பு',
+    nav_disease_detection: 'நோய் கண்டறிதல்',
+    nav_crop_recommendation: 'பயிர் பரிந்துரை',
+    nav_weather: 'வானிலை',
+    nav_farm_planner: 'பண்ணை திட்டமிடுபவர்',
+    nav_fertilizer_advisor: 'உர ஆலோசகர்',
+    nav_govt_schemes: 'அரசு திட்டங்கள்',
+    nav_about_us: 'எங்களைப் பற்றி',
+    nav_sign_in: 'உள்நுழைக',
+    nav_dashboard: 'டாஷ்போர்டு',
+    nav_log_out: 'வெளியேறு',
+    nav_prediction: 'கணிப்பு',
+    nav_how_to_use: 'பயன்படுத்தும் முறை',
+
+    sec_overview: 'மேலோட்டம்',
+    sec_tools: 'கருவிகள்',
+    sec_main: 'முதன்மை',
+    sec_farm_tools: 'பண்ணை கருவிகள்',
+    sec_information: 'தகவல்',
+    brand_tagline: 'ஸ்மார்ட் விவசாய உதவியாளர்',
+    brand_sub: 'உங்கள் எளிய விவசாய உதவியாளர்',
+    my_account: 'என் கணக்கு',
+
+    help_how_to_use: 'பயன்படுத்தும் முறை',
+    help_panel_title: 'SmartFarm AI-ஐ எவ்வாறு பயன்படுத்துவது',
+
+    ai_welcome:
+      'வணக்கம்! 🌱 நான் கிருஷி மித்ரா, உங்கள் AI விவசாய உதவியாளர்.\n\nபயிர்கள், பூச்சிகள், மண், உர அளவு, வானிலை அல்லது அரசு திட்டங்கள் பற்றி எதுவும் கேளுங்கள்.',
+    ai_suggestions: [
+      '🌾 காரீப் பருவத்திற்கான பயிர் பரிந்துரை',
+      '🐛 இலைகள் மஞ்சளாகின்றன, என்ன செய்வது?',
+      '🧪 கோதுமைக்கு சிறந்த உரம் எது?',
+      '🌦️ விவசாயத்திற்கான மழை முன்னறிவிப்பு',
+    ],
+    ai_input_placeholder: 'கிருஷி மித்ராவிடம் எதுவும் கேளுங்கள்...',
+    ai_typing: 'கிருஷி மித்ரா பதில் எழுதுகிறார்...',
+    ai_disclaimer: 'AI தவறுகள் செய்யலாம். முக்கிய ஆலோசனைகளை உள்ளூர் வேளாண் நிபுணர்களிடம் சரிபார்க்கவும்.',
+    ai_new_chat: 'புதிய உரையாடல்',
+    ai_tooltip: 'கிருஷி மித்ராவிடம் கேளுங்கள் 🤖',
+    ai_system_lang_instruction:
+      'தயவுசெய்து தமிழ் மொழியில் பதிலளிக்கவும். விவசாயிகளுக்குப் புரியும் எளிய, நடைமுறைத் தமிழில் எழுதவும்.',
+
+    search_placeholder: 'திட்டங்களைத் தேடுங்கள்...',
+    loading_text: 'ஏற்றப்படுகிறது...',
+    back_to_home: 'முகப்பிற்குச் செல்',
+
+    // Disease Detection
+    dd_badge: 'AI தாவர நோயியல் • MobileNetV3 கட்டமைப்பு',
+    dd_title_prefix: 'தாவர இலை',
+    dd_title_highlight: 'நோய் கண்டறிதல்',
+    dd_subtitle:
+      'பாக்டீரியா கருகல், இலை சுருட்டு வைரஸ் மற்றும் வாடல் நோய்களை உடனடியாகக் கண்டறிய இலைகளை ஸ்கேன் செய்யுங்கள். சிகிச்சை முறைகள் மற்றும் அளவுகளைப் பெறுங்கள்.',
+    dd_tab_upload: 'படம் பதிவேற்று',
+    dd_tab_camera: 'நேரடி கேமரா',
+    dd_tab_samples: 'மாதிரி படங்கள்',
+    dd_drop_title: 'இலைப் படத்தைப் பதிவேற்ற கிளிக் செய்யவும் அல்லது இழுத்து விடவும்',
+    dd_drop_sub: 'JPG, PNG, WebP அதிகபட்சம் 10MB (ஒரு இலை தெளிவாக இருக்க வேண்டும்)',
+    dd_select_btn: 'இலைப் படத்தைத் தேர்ந்தெடு',
+    dd_diagnose_btn: 'தாவர நோயைக் கண்டறி',
+    dd_analyzing_btn: 'இலையை ஆய்வு செய்கிறது...',
+    dd_change_photo: 'படத்தை மாற்று',
+    dd_awaiting_title: 'இலை ஆய்வுக்குக் காத்திருக்கிறது',
+    dd_awaiting_desc:
+      'உங்கள் சாதனத்திலிருந்து படத்தைப் பதிவேற்றவும், கேமராவில் படம் எடுக்கவும் அல்லது மாதிரி இலையைத் தேர்ந்தெடுத்து உடனடி முடிவுகளைப் பார்க்கவும்.',
+    dd_sample_blight: 'பாக்டீரியா கருகல்',
+    dd_sample_curl: 'இலை சுருட்டு வைரஸ்',
+    dd_sample_wilt: 'வாடல் நோய் (Fusarium Wilt)',
+    dd_sample_healthy: 'ஆரோக்கியமான இலை',
+    dd_camera_start: 'கேமரா தொடங்கு',
+    dd_camera_capture: 'படம் பிடி',
+    dd_camera_stop: 'கேமரா நிறுத்து',
+    dd_diagnosis_result: 'ஆய்வு முடிவு',
+    dd_confidence: 'நம்பகத்தன்மை',
+    dd_severity: 'தீவிர நிலை',
+    dd_detected_disease: 'கண்டறியப்பட்ட நோய்',
+    dd_symptoms: 'அறிகுறிகள்',
+    dd_immediate_actions: 'விவசாயி உடனடி நடவடிக்கைகள்',
+    dd_chemical_control: 'ரசாயன கட்டுப்பாடு & அளவுகள்',
+    dd_organic_control: 'இயற்கை & உயிரியல் தீர்வுகள்',
+    dd_prevention: 'நீண்ட கால தடுப்பு',
+    dd_scan_another: 'மற்றொரு இலையை ஸ்கேன் செய்',
+    dd_pipeline_title: 'மாதிரி கட்டமைப்பு & செயல்முறை',
+    dd_healthy_title: 'ஆரோக்கியமான பயிர் — நோய் இல்லை',
+    dd_healthy_desc: 'உங்கள் இலை நல்ல பச்சையம் மற்றும் ஆரோக்கியத்துடன் உள்ளது; எந்த நோய்த் தொற்றும் இல்லை.',
+
+    // Dashboard
+    db_welcome: 'வரவேற்கிறோம்',
+    db_authenticated: 'அங்கீகரிக்கப்பட்டது',
+    db_sms_verified: 'SMS சரிபார்க்கப்பட்டது',
+    db_phone_label: 'தொலைபேசி',
+    db_sign_out: 'வெளியேறு',
+    db_tools_title: 'ஸ்மார்ட் விவசாய கருவிகள் & சேவைகள்',
+    db_open_tool: 'கருவியைத் திற →',
+    db_ai_title: 'AI விவசாய உதவியாளர்',
+    db_ai_desc: 'உங்கள் மொழியில் விவசாயம், பூச்சி அல்லது உரம் பற்றி எதுவும் கேளுங்கள்',
+    db_crop_title: 'பயிர் பரிந்துரை',
+    db_crop_desc: 'உங்கள் மண் மற்றும் பருவத்திற்கு ஏற்ற பயிர் பரிந்துரைகளைப் பெறுங்கள்',
+    db_disease_title: 'நோய் கண்டறிதல்',
+    db_disease_desc: 'இலைப் படத்தைப் பதிவேற்றி உடனடியாக நோயும் தீர்வும் அறியுங்கள்',
+    db_weather_title: 'வானிலை ஆலோசனை',
+    db_weather_desc: 'உங்கள் பண்ணைக்கான 7-நாள் வெப்பநிலை, மழை மற்றும் காற்று முன்னறிவிப்பு',
+    db_schemes_title: 'அரசு திட்டங்கள்',
+    db_schemes_desc: 'மானியங்கள், நிதி உதவிகள் மற்றும் PM-KISAN தகவல்களைப் பாருங்கள்',
+    db_prediction_title: 'உருளைக்கிழங்கு மகசூல் கணிப்பு',
+    db_prediction_desc: 'உருளைக்கிழங்கு கருகல் நோயைக் கண்டறிந்து அறுவடை ஆலோசனை பெறுங்கள்',
+    db_weather_today: 'இன்றைய வானிலை',
+    db_crop_matches: 'பொருத்தமான பயிர்கள்',
+    db_health_alerts: 'ஆரோக்கிய எச்சரிக்கைகள்',
+    db_scan_leaf_btn: 'கேமரா மூலம் இலையை ஸ்கேன் செய் →',
+    db_ai_suggested: 'AI பரிந்துரை',
+    db_early_blight_risk: 'ஆரம்ப கருகல் நோய் அபாயம்',
+    db_early_blight_sub: 'தக்காளி பயிர் • அதிக ஈரப்பதம்',
+    db_rust_fungus_risk: 'துரு பூஞ்சை எச்சரிக்கை',
+    db_rust_fungus_sub: 'கோதுமை பயிர் • மிதமானது',
+    db_humidity: 'ஈரப்பதம்',
+    db_wind: 'காற்று',
+    db_uv_index: 'UV குறியீடு',
+
+    // Weather
+    w_title: 'வேளாண் வானிலை ரேடார்',
+    w_subtitle: 'இந்திய விவசாயத்திற்காக வடிவமைக்கப்பட்ட 7-நாள் உள்ளூர் வானிலை முன்னறிவிப்பு.',
+    w_today: 'இன்றைய பண்ணை வானிலை',
+    w_forecast_7day: '7-நாள் வேளாண் முன்னறிவிப்பு',
+    w_temp: 'வெப்பநிலை',
+    w_humidity: 'காற்று ஈரப்பதம்',
+    w_wind: 'காற்றின் வேகம்',
+    w_precipitation: 'மழைப்பொழிவு',
+    w_farming_advisory: 'இன்றைய வேளாண் ஆலோசனை',
+
+    // Prediction
+    pred_title: 'உருளைக்கிழங்கு பயிர் நோய் & மகசூல் கணிப்பு',
+    pred_subtitle: 'உருளைக்கிழங்கு இலை நோய்கள் மற்றும் அறுவடை பாதுகாப்பிற்கான ஆழ்ந்த கற்றல் அமைப்பு.',
+    pred_upload_title: 'உருளைக்கிழங்கு இலையைப் பதிவேற்று',
+    pred_select_sample: 'மாதிரி படத்தைத் தேர்ந்தெடு',
+    pred_diagnose: 'நோய் & மகசூல் தாக்கத்தைக் கணி',
+    pred_result_title: 'நோய் கணிப்பு முடிவு',
+
+    // Fertilizer
+    fa_title: 'ஸ்மார்ட் உர அளவு ஆலோசகர்',
+    fa_subtitle: 'மண் சத்து குறைபாடு மற்றும் பயிர் நிலைக்கு ஏற்ப அறிவியல் N-P-K உரச் சமநிலை.',
+    fa_soil_type: 'மண் வகை',
+    fa_crop_type: 'இலக்கு பயிர்',
+    fa_calculate: 'சிறந்த உரக் கலவையைக் கணக்கிடு',
+    fa_recommendation: 'உரப் பரிந்துரைத் திட்டம்',
+
+    // Planner
+    fp_title: 'பண்ணை செயல்பாடு & அட்டவணை திட்டமிடுபவர்',
+    fp_subtitle: 'விதைப்பு, நீர்ப்பாசனம், உரமிடுதல் மற்றும் அறுவடையை துல்லியமாகத் திட்டமிடுங்கள்.',
+    fp_seasonal_schedule: 'பருவகால விவசாய அட்டவணை',
+    fp_add_activity: 'பண்ணை செயல்பாடு சேர்',
+
+    // Schemes
+    gs_title: 'அரசு வேளாண் திட்டங்கள் & மானியங்கள்',
+    gs_subtitle: 'மத்திய மற்றும் மாநில அரசு விவசாயி நலத் திட்டங்கள், மானியங்கள் மற்றும் கடன் வசதிகளை அறியுங்கள்.',
+    gs_search: 'திட்டங்களைத் தேடுங்கள்...',
+    gs_all_schemes: 'அனைத்து திட்டங்கள்',
+    gs_subsidies: 'மானியங்கள் & கருவிகள்',
+    gs_insurance: 'பயிர் காப்பீடு',
+    gs_financial_support: 'நிதி உதவி',
+    gs_apply_now: 'அதிகாரப்பூர்வ தளம் / விண்ணப்பிக்க →',
+    gs_eligibility: 'தகுதி வரம்புகள்',
+    gs_benefits: 'நேரடி நன்மைகள்',
+
+    // How to Use
+    htu_title: 'SmartFarm AI-ஐ எவ்வாறு பயன்படுத்துவது',
+    htu_subtitle: 'விவசாயிகள் அதிக மகசூல் பெற உதவும் படிப்படியான காட்சி வழிகாட்டி.',
+    htu_quick_steps: 'பண்ணை செயல்முறை வழிகாட்டி',
+
+    // Login
+    login_title: 'தொலைபேசி எண் மூலம் உள்நுழைக',
+    login_subtitle: 'Twilio மூலம் பாதுகாப்பான SMS OTP பெற உங்கள் மொபைல் எண்ணை உள்ளிடவும். கடவுச்சொல் தேவையில்லை.',
+    login_step1: 'படி 1 / 2',
+    login_step2: 'படி 2 / 2',
+    login_step1_sub: 'SMS OTP பெற உங்கள் பெயர் மற்றும் தொலைபேசி எண்ணை உள்ளிடவும்.',
+    login_step2_sub: 'உங்கள் தொலைபேசிக்கு வந்த 6-இலக்க குறியீட்டை உள்ளிடவும்.',
+    login_full_name: 'உங்கள் முழுப் பெயர்',
+    login_phone: 'மொபைல் தொலைபேசி எண்',
+    login_send_otp: 'OTP அனுப்பு',
+    login_verify_otp: 'சரிபார்த்து உள்நுழைக',
+    login_resend_otp: 'OTP மீண்டும் அனுப்பு',
+  },
+
+  te: {
+    // Nav
+    nav_home: 'హోమ్',
+    nav_disease_detection: 'వ్యాధి గుర్తింపు',
+    nav_crop_recommendation: 'పంట సిఫార్సు',
+    nav_weather: 'వాతావరణం',
+    nav_farm_planner: 'వ్యవసాయ ప్రణాళిక',
+    nav_fertilizer_advisor: 'ఎరువుల సలహాదారు',
+    nav_govt_schemes: 'ప్రభుత్వ పథకాలు',
+    nav_about_us: 'మా గురించి',
+    nav_sign_in: 'సైన్ ఇన్',
+    nav_dashboard: 'డాష్‌బోర్డ్',
+    nav_log_out: 'లాగ్ అవుట్',
+    nav_prediction: 'అంచనా',
+    nav_how_to_use: 'వాడే విధానం',
+
+    sec_overview: 'అవలోకనం',
+    sec_tools: 'సాధనాలు',
+    sec_main: 'ప్రధానం',
+    sec_farm_tools: 'వ్యవసాయ సాధనాలు',
+    sec_information: 'సమాచారం',
+    brand_tagline: 'స్మార్ట్ వ్యవసాయ సహాయకుడు',
+    brand_sub: 'మీ సులభమైన వ్యవసాయ సహాయకుడు',
+    my_account: 'నా ఖాతా',
+
+    help_how_to_use: 'వాడే విధానం',
+    help_panel_title: 'SmartFarm AI ని ఎలా ఉపయోగించాలి',
+
+    ai_welcome:
+      'నమస్తే! 🌱 నేను కృషి మిత్ర, మీ AI వ్యవసాయ సహాయకుడిని.\n\nపంటలు, తెగుళ్ళు, నేల, ఎరువుల మోతాదు, వాతావరణం లేదా ప్రభుత్వ పథకాల గురించి ఏదైనా అడగండి.',
+    ai_suggestions: [
+      '🌾 ఖరీఫ్ సీజన్ కోసం పంట సూచన',
+      '🐛 ఆకులు పసుపు రంగులోకి మారుతున్నాయి, ఏం చేయాలి?',
+      '🧪 గోధుమ పంటకు ఉత్తమ ఎరువు',
+      '🌦️ వ్యవసాయం కోసం వర్షం అంచనా',
+    ],
+    ai_input_placeholder: 'కృషి మిత్రను ఏదైనా అడగండి...',
+    ai_typing: 'కృషి మిత్ర సమాధానం సిద్ధం చేస్తోంది...',
+    ai_disclaimer: 'AI తప్పులు చేయవచ్చు. ముఖ్యమైన సలహాలను స్థానిక వ్యవసాయ నిపుణులతో సరిచూసుకోండి.',
+    ai_new_chat: 'కొత్త చాట్',
+    ai_tooltip: 'కృషి మిత్రను అడగండి 🤖',
+    ai_system_lang_instruction:
+      'దయచేసి తెలుగు భాషలో సమాధానం ఇవ్వండి. రైతులకు అర్థమయ్యే సరళమైన, ఆచరణాత్మక తెలుగులో చెప్పండి.',
+
+    search_placeholder: 'పథకాలను వెతకండి...',
+    loading_text: 'లోడ్ అవుతోంది...',
+    back_to_home: 'హోమ్‌కు తిరిగి వెళ్ళండి',
+
+    // Disease Detection
+    dd_badge: 'AI మొక్కల రోగనిర్ధారణ • MobileNetV3 ఆర్కిటెక్చర్',
+    dd_title_prefix: 'మొక్క ఆకు',
+    dd_title_highlight: 'వ్యాధి గుర్తింపు',
+    dd_subtitle:
+      'బాక్టీరియల్ బ్లైట్, ఆకు ముడత వైరస్ మరియు ఫ్యూసేరియం ఎండు తెగులును వెంటనే గుర్తించడానికి ఆకులను స్కాన్ చేయండి. నివారణ చర్యలు మరియు మోతాదులు పొందండి.',
+    dd_tab_upload: 'ఫోటో అప్‌లోడ్ చేయండి',
+    dd_tab_camera: 'లైవ్ కెమెరా',
+    dd_tab_samples: 'డెమో నమూనాలు',
+    dd_drop_title: 'ఆకు ఫోటో అప్‌లోడ్ చేయడానికి క్లిక్ చేయండి లేదా ఇక్కడ వేయండి',
+    dd_drop_sub: 'JPG, PNG, WebP గరిష్టంగా 10MB (ఒక ఆకు స్పష్టంగా కనిపించాలి)',
+    dd_select_btn: 'ఆకు చిత్రాన్ని ఎంచుకోండి',
+    dd_diagnose_btn: 'మొక్క వ్యాధిని నిర్ధారించండి',
+    dd_analyzing_btn: 'ఆకును విశ్లేషిస్తోంది...',
+    dd_change_photo: 'ఫోటో మార్చండి',
+    dd_awaiting_title: 'ఆకు పరిశీలన కోసం వేచి ఉంది',
+    dd_awaiting_desc:
+      'మీ పరికరం నుండి ఫోటోను అప్‌లోడ్ చేయండి, కెమెరాతో లైవ్ ఫోటో తీయండి లేదా డెమో నమూనాను ఎంచుకుని తక్షణ వ్యాధి నిర్ధారణ చూడండి.',
+    dd_sample_blight: 'బాక్టీరియల్ బ్లైట్',
+    dd_sample_curl: 'ఆకు ముడత వైరస్',
+    dd_sample_wilt: 'ఫ్యూసేరియం ఎండు తెగులు',
+    dd_sample_healthy: 'ఆరోగ్యకరమైన ఆకు',
+    dd_camera_start: 'కెమెరా ప్రారంభించండి',
+    dd_camera_capture: 'ఫోటో తీయండి',
+    dd_camera_stop: 'కెమెరా ఆపండి',
+    dd_diagnosis_result: 'నిర్ధారణ ఫలితం',
+    dd_confidence: 'ఖచ్చితత్వ స్కోరు',
+    dd_severity: 'తీవ్రత స్థాయి',
+    dd_detected_disease: 'గుర్తించిన వ్యాధి',
+    dd_symptoms: 'గుర్తించిన లక్షణాలు',
+    dd_immediate_actions: 'రైతు తీసుకోవలసిన తక్షణ చర్యలు',
+    dd_chemical_control: 'రసాయన నియంత్రణ & మోతాదులు',
+    dd_organic_control: 'సేంద్రీయ & జీవ నివారణలు',
+    dd_prevention: 'దీర్ఘకాలిక నివారణ',
+    dd_scan_another: 'మరొక ఆకును స్కాన్ చేయండి',
+    dd_pipeline_title: 'మోడల్ ఆర్కిటెక్చర్ & పైప్‌లైన్',
+    dd_healthy_title: 'ఆరోగ్యకరమైన పంట — ఏ వ్యాధి కనుగొనబడలేదు',
+    dd_healthy_desc: 'మీ ఆకు పూర్తి ఆరోగ్యంగా ఉంది మరియు ఎటువంటి తెగులు లక్షణాలు లేవు.',
+
+    // Dashboard
+    db_welcome: 'స్వాగతం',
+    db_authenticated: 'ధృవీకరించబడింది',
+    db_sms_verified: 'SMS ధృవీకరించబడింది',
+    db_phone_label: 'ఫోన్',
+    db_sign_out: 'సైన్ అవుట్',
+    db_tools_title: 'స్మార్ట్ వ్యవసాయ సాధనాలు & సేవలు',
+    db_open_tool: 'సాధనం తెరవండి →',
+    db_ai_title: 'AI వ్యవసాయ సహాయకుడు',
+    db_ai_desc: 'మీ భాషలో వ్యవసాయం, తెగుళ్ళు లేదా ఎరువుల గురించి ఏదైనా అడగండి',
+    db_crop_title: 'పంట సిఫార్సు',
+    db_crop_desc: 'మీ నేల రకం మరియు సీజన్‌కు తగిన ఉత్తమ పంట సూచనలు పొందండి',
+    db_disease_title: 'వ్యాధి గుర్తింపు',
+    db_disease_desc: 'పంట ఆకు ఫోటోలను అప్‌లోడ్ చేసి వెంటనే వ్యాధులు & నివారణ తెలుసుకోండి',
+    db_weather_title: 'వాతావరణ సలహా',
+    db_weather_desc: 'మీ పొలం కోసం 7-రోజుల ఉష్ణోగ్రత, వర్షం మరియు గాలి అంచనా',
+    db_schemes_title: 'ప్రభుత్వ పథకాలు',
+    db_schemes_desc: 'అందుబాటులో ఉన్న సబ్సిడీలు, ఆర్థిక సహాయం మరియు PM-KISAN వివరాలు చూడండి',
+    db_prediction_title: 'బంగాళాదుంప దిగుబడి అంచనా',
+    db_prediction_desc: 'బంగాళాదుంపలో ముందస్తు & ఆలస్య ఆకుమాడు గుర్తించి కోత సలహా పొందండి',
+    db_weather_today: 'నేటి వాతావరణం',
+    db_crop_matches: 'తగిన పంటలు',
+    db_health_alerts: 'ఆరోగ్య హెచ్చరికలు',
+    db_scan_leaf_btn: 'కెమెరాతో ఆకును స్కాన్ చేయండి →',
+    db_ai_suggested: 'AI సూచన',
+    db_early_blight_risk: 'ముందస్తు ఆకుమాడు ప్రమాదం',
+    db_early_blight_sub: 'టమాటా పంట • అధిక తేమ',
+    db_rust_fungus_risk: 'తుప్పు శిలీంధ్ర హెచ్చరిక',
+    db_rust_fungus_sub: 'గోధుమ పంట • మధ్యస్థం',
+    db_humidity: 'తేమ',
+    db_wind: 'గాలి',
+    db_uv_index: 'UV సూచిక',
+
+    // Weather
+    w_title: 'వ్యవసాయ వాతావరణ రాడార్',
+    w_subtitle: 'భారతీయ వ్యవసాయ పనుల కోసం రూపొందించిన 7-రోజుల స్థానిక వాతావరణ అంచనా.',
+    w_today: 'నేటి పొలం వాతావరణం',
+    w_forecast_7day: '7-రోజుల వ్యవసాయ అంచనా',
+    w_temp: 'ఉష్ణోగ్రత',
+    w_humidity: 'గాలి తేమ',
+    w_wind: 'గాలి వేగం',
+    w_precipitation: 'వర్షపాతం',
+    w_farming_advisory: 'నేటి వ్యవసాయ సలహా',
+
+    // Prediction
+    pred_title: 'బంగాళాదుంప పంట వ్యాధి & దిగుబడి అంచనా',
+    pred_subtitle: 'బంగాళాదుంప ఆకు వ్యాధులు మరియు కోత భద్రత కోసం డీప్ లెర్నింగ్ వ్యవస్థ.',
+    pred_upload_title: 'బంగాళాదుంప ఆకు అప్‌లోడ్ చేయండి',
+    pred_select_sample: 'డెమో నమూనా ఎంచుకోండి',
+    pred_diagnose: 'వ్యాధి & దిగుబడి ప్రభావాన్ని అంచనా వేయండి',
+    pred_result_title: 'నిర్ధారణ అంచనా ఫలితం',
+
+    // Fertilizer
+    fa_title: 'స్మార్ట్ ఎరువుల మోతాదు సలహాదారు',
+    fa_subtitle: 'నేల పోషక లోపం మరియు పంట దశ ఆధారంగా శాస్త్రీయ N-P-K సమతుల్యత.',
+    fa_soil_type: 'నేల రకం',
+    fa_crop_type: 'లక్ష్య పంట',
+    fa_calculate: 'సరైన ఎరువుల మిశ్రమాన్ని లెక్కించండి',
+    fa_recommendation: 'ఎరువుల సిఫార్సు ప్రణాళిక',
+
+    // Planner
+    fp_title: 'పొలం పని & షెడ్యూల్ ప్రణాళిక',
+    fp_subtitle: 'విత్తడం, నీటిపారుదల, ఎరువులు మరియు కోతను ఖచ్చితంగా ప్లాన్ చేయండి.',
+    fp_seasonal_schedule: 'సీజనల్ వ్యవసాయ షెడ్యూల్',
+    fp_add_activity: 'పొలం పని జోడించండి',
+
+    // Schemes
+    gs_title: 'ప్రభుత్వ వ్యవసాయ పథకాలు & సబ్సిడీలు',
+    gs_subtitle: 'కేంద్ర మరియు రాష్ట్ర ప్రభుత్వ రైతు సహాయ పథకాలు, గ్రాంట్లు మరియు రుణ సౌకర్యాలను తెలుసుకోండి.',
+    gs_search: 'కీవర్డ్ ద్వారా పథకాలను వెతకండి...',
+    gs_all_schemes: 'అన్ని పథకాలు',
+    gs_subsidies: 'సబ్సిడీలు & పరికరాలు',
+    gs_insurance: 'పంట బీమా',
+    gs_financial_support: 'ఆర్థిక సహాయం',
+    gs_apply_now: 'అధికారిక పోర్టల్ / దరఖాస్తు →',
+    gs_eligibility: 'అర్హత ప్రమాణాలు',
+    gs_benefits: 'నేరుగా ప్రయోజనాలు',
+
+    // How to Use
+    htu_title: 'SmartFarm AI ని ఎలా ఉపయోగించాలి',
+    htu_subtitle: 'రైతులు అధిక దిగుబడి సాధించడానికి దశల వారీ దృశ్య మార్గదర్శి.',
+    htu_quick_steps: 'వ్యవసాయ పని విధానం గైడ్',
+
+    // Login
+    login_title: 'ఫోన్ నంబర్‌తో సైన్ ఇన్ చేయండి',
+    login_subtitle: 'Twilio ద్వారా సురక్షిత SMS OTP పొందడానికి మీ మొబైల్ నంబర్‌ను నమోదు చేయండి. పాస్‌వర్డ్ అవసరం లేదు.',
+    login_step1: 'దశ 1 / 2',
+    login_step2: 'దశ 2 / 2',
+    login_step1_sub: 'SMS OTP పొందడానికి మీ పేరు మరియు ఫోన్ నంబర్‌ను నమోదు చేయండి.',
+    login_step2_sub: 'దయచేసి మీ ఫోన్‌కు పంపిన 6-అంకెల కోడ్‌ను నమోదు చేయండి.',
+    login_full_name: 'మీ పూర్తి పేరు',
+    login_phone: 'మొబైల్ ఫోన్ నంబర్',
+    login_send_otp: 'OTP పంపండి',
+    login_verify_otp: 'ధృవీకరించి సైన్ ఇన్ చేయండి',
+    login_resend_otp: 'OTP మళ్ళీ పంపండి',
+  },
+}
+
+function extractLangDict(dict: MultiLangDict, lang: ExtraLang): Record<string, string> {
+  const out: Record<string, string> = {}
+  for (const [k, v] of Object.entries(dict)) {
+    if (v[lang]) out[k] = v[lang]
+  }
+  return out
+}
+
+function buildDomainLocale(lang: ExtraLang): Record<string, string> {
+  return {
+    ...extractLangDict(COMMON_DOMAIN_PHRASES, lang),
+    ...extractLangDict(PLANNER_AND_DISEASE_PHRASES, lang),
+    ...extractLangDict(DISEASE_AND_RECOMMEND_PHRASES, lang),
+    ...extractLangDict(DISEASE_EXTRA_PHRASES, lang),
+    ...extractLangDict(FERTILIZER_SERVICE_PHRASES, lang),
+    ...extractLangDict(CROP_EXTRA_PHRASES, lang),
+  }
+}
+
+const LOCALE_PHRASES: Partial<Record<LangCode, Record<string, string>>> = {
+  hi: buildDomainLocale('hi'),
+  mr: buildDomainLocale('mr'),
+  gu: { ...GU_PHRASES, ...buildDomainLocale('gu') },
+  pa: { ...PA_PHRASES, ...buildDomainLocale('pa') },
+  ta: { ...TA_PHRASES, ...buildDomainLocale('ta') },
+  te: { ...TE_PHRASES, ...buildDomainLocale('te') },
+}
+
+export function tr(lang: LangCode, enText: string, hiText?: string, mrText?: string): string {
+  if (lang === 'en') return enText
+  if (lang === 'hi') return hiText ?? LOCALE_PHRASES.hi?.[enText] ?? enText
+  if (lang === 'mr') return mrText ?? LOCALE_PHRASES.mr?.[enText] ?? enText
+  return LOCALE_PHRASES[lang]?.[enText] ?? enText
+}
+
+export function trFormat(
+  lang: LangCode,
+  templateEn: string,
+  vars: Record<string, string | number>,
+  hiTemplate?: string,
+  mrTemplate?: string
+): string {
+  let out = tr(lang, templateEn, hiTemplate, mrTemplate)
+  for (const [key, val] of Object.entries(vars)) {
+    out = out.split(`{${key}}`).join(String(val))
+  }
+  return out
+}
+
+export function getDateLocale(lang: LangCode): string {
+  switch (lang) {
+    case 'hi':
+      return 'hi-IN'
+    case 'mr':
+      return 'mr-IN'
+    case 'gu':
+      return 'gu-IN'
+    case 'pa':
+      return 'pa-IN'
+    case 'ta':
+      return 'ta-IN'
+    case 'te':
+      return 'te-IN'
+    default:
+      return 'en-IN'
+  }
+}
+
+export function pickLang<T>(lang: LangCode, map: Partial<Record<LangCode, T>> & { en: T }): T {
+  return map[lang] ?? map.en
 }
 
 export function t(lang: LangCode, key: keyof Translations): string {
@@ -756,6 +1574,14 @@ export function getLangLabel(lang: LangCode): string {
       return 'हिंदी'
     case 'mr':
       return 'मराठी'
+    case 'gu':
+      return 'ગુજરાતી'
+    case 'pa':
+      return 'ਪੰਜਾਬੀ'
+    case 'ta':
+      return 'தமிழ்'
+    case 'te':
+      return 'తెలుగు'
     default:
       return 'English'
   }
@@ -763,8 +1589,12 @@ export function getLangLabel(lang: LangCode): string {
 
 export const LANG_OPTIONS: { code: LangCode; label: string; flag: string }[] = [
   { code: 'en', label: 'English', flag: '🇬🇧' },
-  { code: 'hi', label: 'हिंदी', flag: '🇮🇳' },
-  { code: 'mr', label: 'मराठी', flag: '🇮🇳' },
+  { code: 'hi', label: 'Hindi (हिंदी)', flag: '🇮🇳' },
+  { code: 'mr', label: 'Marathi (मराठी)', flag: '🇮🇳' },
+  { code: 'gu', label: 'Gujarati (ગુજરાતી)', flag: '🇮🇳' },
+  { code: 'pa', label: 'Punjabi (ਪੰਜਾਬੀ)', flag: '🇮🇳' },
+  { code: 'ta', label: 'Tamil (தமிழ்)', flag: '🇮🇳' },
+  { code: 'te', label: 'Telugu (తెలుగు)', flag: '🇮🇳' },
 ]
 
 export default translations

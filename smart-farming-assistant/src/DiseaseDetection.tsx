@@ -8,8 +8,8 @@ import {
   RotateCcw, ExternalLink, Download
 } from 'lucide-react'
 import axios from 'axios'
-import { useLanguage } from './context/LanguageContext'
-import { t } from './lib/i18n'
+import { useLanguage, type LangCode } from './context/LanguageContext'
+import { t, tr, trFormat } from './lib/i18n'
 
 // Backend endpoint
 const API_BASE = `${import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000'}/api/disease`
@@ -51,9 +51,13 @@ export interface DetectionResponse {
   ai_prompt: string
 }
 
+type SampleLeafKey = 'healthy' | 'bacterial_blight' | 'curl_virus' | 'fussarium_wilt'
+
 // Built-in curated SVG data URIs for instant testing without needing external image downloads
-const SAMPLE_LEAF_IMAGES = {
-  healthy: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">
+function getSampleLeafImages(lang: LangCode): Record<SampleLeafKey, string> {
+  const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  return {
+    healthy: `data:image/svg+xml;utf8,<svg data-sample="healthy" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">
     <rect width="300" height="300" fill="%23f0fdf4"/>
     <defs>
       <radialGradient id="hgrad" cx="50%" cy="50%" r="50%">
@@ -67,9 +71,9 @@ const SAMPLE_LEAF_IMAGES = {
     <path d="M154 130 Q 90 140 85 160" stroke="%2386efac" stroke-width="2.5" fill="none"/>
     <path d="M156 170 Q 205 180 215 205" stroke="%2386efac" stroke-width="2" fill="none"/>
     <circle cx="150" cy="270" r="6" fill="%2315803d"/>
-    <text x="150" y="285" font-family="sans-serif" font-size="12" fill="%2315803d" font-weight="bold" text-anchor="middle">Healthy Cotton Leaf</text>
+    <text x="150" y="285" font-family="sans-serif" font-size="12" fill="%2315803d" font-weight="bold" text-anchor="middle">${esc(tr(lang, 'Healthy Cotton Leaf'))}</text>
   </svg>`,
-  bacterial_blight: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">
+    bacterial_blight: `data:image/svg+xml;utf8,<svg data-sample="bacterial_blight" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">
     <rect width="300" height="300" fill="%23fef2f2"/>
     <defs>
       <radialGradient id="bgrad" cx="50%" cy="50%" r="50%">
@@ -85,9 +89,9 @@ const SAMPLE_LEAF_IMAGES = {
     <polygon points="160,180 185,175 180,195 155,190" fill="%23451a03" stroke="%2378350f" stroke-width="1.5"/>
     <circle cx="130" cy="100" r="18" fill="%23fef08a" opacity="0.3"/>
     <circle cx="180" cy="125" r="18" fill="%23fef08a" opacity="0.3"/>
-    <text x="150" y="285" font-family="sans-serif" font-size="12" fill="%23991b1b" font-weight="bold" text-anchor="middle">Bacterial Angular Blight</text>
+    <text x="150" y="285" font-family="sans-serif" font-size="12" fill="%23991b1b" font-weight="bold" text-anchor="middle">${esc(tr(lang, 'Bacterial Angular Blight'))}</text>
   </svg>`,
-  curl_virus: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">
+    curl_virus: `data:image/svg+xml;utf8,<svg data-sample="curl_virus" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">
     <rect width="300" height="300" fill="%23fffbeb"/>
     <defs>
       <radialGradient id="cgrad" cx="40%" cy="40%" r="60%">
@@ -102,9 +106,9 @@ const SAMPLE_LEAF_IMAGES = {
     <path d="M148 140 Q 90 130 75 160" stroke="%23ca8a04" stroke-width="4" fill="none"/>
     <path d="M80 150 C 95 140 95 160 80 170 Z" fill="%2365a30d"/>
     <path d="M220 180 C 205 170 205 190 220 200 Z" fill="%2365a30d"/>
-    <text x="150" y="285" font-family="sans-serif" font-size="12" fill="%23b45309" font-weight="bold" text-anchor="middle">Leaf Curl Enations & Wrinkles</text>
+    <text x="150" y="285" font-family="sans-serif" font-size="12" fill="%23b45309" font-weight="bold" text-anchor="middle">${esc(tr(lang, 'Leaf Curl Enations & Wrinkles'))}</text>
   </svg>`,
-  fussarium_wilt: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">
+    fussarium_wilt: `data:image/svg+xml;utf8,<svg data-sample="fussarium_wilt" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">
     <rect width="300" height="300" fill="%23fff7ed"/>
     <defs>
       <linearGradient id="wgrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -118,8 +122,9 @@ const SAMPLE_LEAF_IMAGES = {
     <path d="M155 100 Q 220 120 240 160" stroke="%2378350f" stroke-width="3" fill="none"/>
     <path d="M155 150 Q 90 170 80 200" stroke="%23a16207" stroke-width="3" fill="none"/>
     <path d="M80 110 C 90 150 120 130 100 110 Z" fill="%2378350f"/>
-    <text x="150" y="285" font-family="sans-serif" font-size="12" fill="%23c2410c" font-weight="bold" text-anchor="middle">Fusarium Vascular Chlorosis</text>
+    <text x="150" y="285" font-family="sans-serif" font-size="12" fill="%23c2410c" font-weight="bold" text-anchor="middle">${esc(tr(lang, 'Fusarium Vascular Chlorosis'))}</text>
   </svg>`
+  }
 }
 
 // Fallback dataset in case backend is offline
@@ -311,6 +316,7 @@ export default function DiseaseDetection() {
   const navigate = useNavigate()
   const { lang } = useLanguage()
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [sampleKey, setSampleKey] = useState<SampleLeafKey | null>(null)
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [analyzing, setAnalyzing] = useState(false)
   const [analysisStep, setAnalysisStep] = useState('')
@@ -373,6 +379,7 @@ export default function DiseaseDetection() {
     if (!ctx) return
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
     const dataUrl = canvas.toDataURL('image/jpeg', 0.9)
+    setSampleKey(null)
     setSelectedImage(dataUrl)
     setImageFile(null)
     stopCamera()
@@ -383,6 +390,7 @@ export default function DiseaseDetection() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
+      setSampleKey(null)
       setImageFile(file)
       const reader = new FileReader()
       reader.onload = (event) => {
@@ -398,6 +406,7 @@ export default function DiseaseDetection() {
     e.preventDefault()
     const file = e.dataTransfer.files?.[0]
     if (file && file.type.startsWith('image/')) {
+      setSampleKey(null)
       setImageFile(file)
       const reader = new FileReader()
       reader.onload = (event) => {
@@ -409,12 +418,15 @@ export default function DiseaseDetection() {
   }
 
   // Select sample image
-  const selectSample = (key: keyof typeof SAMPLE_LEAF_IMAGES) => {
-    const sampleUri = SAMPLE_LEAF_IMAGES[key]
+  const selectSample = (key: SampleLeafKey) => {
+    const sampleUri = getSampleLeafImages(lang)[key]
+    setSampleKey(key)
     setSelectedImage(sampleUri)
     setImageFile(null)
     setResult(null)
   }
+
+  const displayedImage = sampleKey ? getSampleLeafImages(lang)[sampleKey] : selectedImage
 
   // Execute Disease Detection
   const runDetection = async () => {
@@ -459,10 +471,11 @@ export default function DiseaseDetection() {
     } catch {
       // Offline fallback: determine class from sample or run botanical heuristic
       let predictedKey: string = 'healthy'
-      if (selectedImage?.includes('Bacterial Angular Blight')) predictedKey = 'bacterial_blight'
-      else if (selectedImage?.includes('Leaf Curl')) predictedKey = 'curl_virus'
-      else if (selectedImage?.includes('Fusarium')) predictedKey = 'fussarium_wilt'
-      else if (selectedImage?.includes('Healthy Cotton')) predictedKey = 'healthy'
+      if (sampleKey) predictedKey = sampleKey
+      else if (selectedImage?.includes('data-sample="bacterial_blight"') || selectedImage?.includes('Bacterial Angular Blight')) predictedKey = 'bacterial_blight'
+      else if (selectedImage?.includes('data-sample="curl_virus"') || selectedImage?.includes('Leaf Curl')) predictedKey = 'curl_virus'
+      else if (selectedImage?.includes('data-sample="fussarium_wilt"') || selectedImage?.includes('Fusarium')) predictedKey = 'fussarium_wilt'
+      else if (selectedImage?.includes('data-sample="healthy"') || selectedImage?.includes('Healthy Cotton')) predictedKey = 'healthy'
       else {
         // Generic photo analysis fallback
         const keys = ['bacterial_blight', 'curl_virus', 'fussarium_wilt', 'healthy']
@@ -494,9 +507,18 @@ export default function DiseaseDetection() {
   // Navigate to AI Assistant with context
   const askAIAssistant = () => {
     if (!result) return
+    const localizedPrompt = trFormat(
+      lang,
+      'My cotton leaf was scanned and diagnosed with {name} ({vernacular}). The pathogen is {pathogen}. Please tell me the best steps to treat this immediately and save my yield.',
+      {
+        name: tr(lang, result.details.name),
+        vernacular: tr(lang, result.details.vernacular_name),
+        pathogen: tr(lang, result.details.pathogen),
+      }
+    )
     navigate('/ai-assistant', {
       state: {
-        initialQuery: result.ai_prompt
+        initialQuery: localizedPrompt
       }
     })
   }
@@ -504,6 +526,7 @@ export default function DiseaseDetection() {
   // Reset scanner
   const resetScanner = () => {
     setSelectedImage(null)
+    setSampleKey(null)
     setImageFile(null)
     setResult(null)
     setAnalyzing(false)
@@ -520,32 +543,32 @@ export default function DiseaseDetection() {
         return {
           bg: 'bg-emerald-50 text-emerald-700 border-emerald-200',
           icon: <CheckCircle2 className="w-4 h-4 text-emerald-600" />,
-          label: 'Healthy / No Threat'
+          label: tr(lang, 'Healthy / No Threat')
         }
       case 'Low':
         return {
           bg: 'bg-blue-50 text-blue-700 border-blue-200',
           icon: <Info className="w-4 h-4 text-blue-600" />,
-          label: 'Mild / Monitor'
+          label: tr(lang, 'Mild / Monitor')
         }
       case 'Moderate':
         return {
           bg: 'bg-amber-50 text-amber-700 border-amber-200',
           icon: <AlertTriangle className="w-4 h-4 text-amber-600" />,
-          label: 'Moderate Severity'
+          label: tr(lang, 'Moderate Severity')
         }
       case 'High':
         return {
           bg: 'bg-orange-50 text-orange-700 border-orange-200',
           icon: <AlertTriangle className="w-4 h-4 text-orange-600" />,
-          label: 'High Severity'
+          label: tr(lang, 'High Severity')
         }
       case 'Critical':
       default:
         return {
           bg: 'bg-rose-50 text-rose-700 border-rose-200',
           icon: <ShieldAlert className="w-4 h-4 text-rose-600" />,
-          label: 'Critical / Urgent Action'
+          label: tr(lang, 'Critical / Urgent Action')
         }
     }
   }
@@ -652,8 +675,8 @@ export default function DiseaseDetection() {
                 ) : (
                   <div className="relative rounded-xl overflow-hidden border border-gray-200 bg-gray-950 flex items-center justify-center min-h-[260px]">
                     <img
-                      src={selectedImage}
-                      alt="Uploaded plant leaf"
+                      src={displayedImage ?? ''}
+                      alt={tr(lang, 'Uploaded plant leaf')}
                       className="max-h-[300px] w-full object-contain"
                     />
 
@@ -684,12 +707,12 @@ export default function DiseaseDetection() {
                 {cameraError ? (
                   <div className="p-6 text-center text-rose-300 text-xs">
                     <AlertTriangle className="w-8 h-8 mx-auto mb-2 text-rose-400" />
-                    {cameraError}
+                    {tr(lang, cameraError)}
                     <button
                       onClick={startCamera}
                       className="mt-3 block mx-auto px-3 py-1.5 bg-white text-gray-800 rounded-lg font-medium"
                     >
-                      Retry Camera
+                      {tr(lang, 'Retry Camera')}
                     </button>
                   </div>
                 ) : (
@@ -705,7 +728,7 @@ export default function DiseaseDetection() {
                     {/* Camera Viewfinder Reticle */}
                     <div className="absolute inset-6 border-2 border-dashed border-white/40 pointer-events-none rounded-lg flex items-center justify-center">
                       <span className="text-[11px] text-white/80 bg-black/50 px-2 py-0.5 rounded">
-                        Center leaf inside reticle
+                        {tr(lang, 'Center leaf inside reticle')}
                       </span>
                     </div>
 
@@ -729,7 +752,7 @@ export default function DiseaseDetection() {
             {activeTab === 'samples' && (
               <div className="flex flex-col gap-2.5">
                 <p className="text-xs text-gray-500 mb-1">
-                  {lang === 'hi' ? 'तुरंत जांचने के लिए नमूना पत्ती चुनें:' : lang === 'mr' ? 'त्वरित निदानासाठी नमुना पान निवडा:' : 'Choose a sample leaf dataset image to test diagnosis instantly:'}
+                  {tr(lang, 'Choose a sample leaf dataset image to test diagnosis instantly:', 'तुरंत जांचने के लिए नमूना पत्ती चुनें:', 'त्वरित निदानासाठी नमुना पान निवडा:')}
                 </p>
                 <div className="grid grid-cols-2 gap-2">
                   <button
@@ -741,7 +764,7 @@ export default function DiseaseDetection() {
                     </div>
                     <div>
                       <div className="text-xs font-bold text-emerald-900 group-hover:text-emerald-700">{t(lang, 'dd_sample_healthy')}</div>
-                      <div className="text-[10px] text-emerald-600">{lang === 'hi' ? 'कोई रोग नहीं' : lang === 'mr' ? 'कोणताही रोग नाही' : 'No disease detected'}</div>
+                      <div className="text-[10px] text-emerald-600">{tr(lang, 'No disease detected', 'कोई रोग नहीं', 'कोणताही रोग नाही')}</div>
                     </div>
                   </button>
 
@@ -754,7 +777,7 @@ export default function DiseaseDetection() {
                     </div>
                     <div>
                       <div className="text-xs font-bold text-rose-900 group-hover:text-rose-700">{t(lang, 'dd_sample_blight')}</div>
-                      <div className="text-[10px] text-rose-600">{lang === 'hi' ? 'कोणीय धब्बे' : lang === 'mr' ? 'कोनीय ठिपके' : 'Angular spots'}</div>
+                      <div className="text-[10px] text-rose-600">{tr(lang, 'Angular spots', 'कोणीय धब्बे', 'कोनीय ठिपके')}</div>
                     </div>
                   </button>
 
@@ -767,7 +790,7 @@ export default function DiseaseDetection() {
                     </div>
                     <div>
                       <div className="text-xs font-bold text-amber-900 group-hover:text-amber-700">{t(lang, 'dd_sample_curl')}</div>
-                      <div className="text-[10px] text-amber-600">{lang === 'hi' ? 'मुड़ी हुई पत्तियाँ' : lang === 'mr' ? 'वाकलेली पाने' : 'Curled leaf margins'}</div>
+                      <div className="text-[10px] text-amber-600">{tr(lang, 'Curled leaf margins', 'मुड़ी हुई पत्तियाँ', 'वाकलेली पाने')}</div>
                     </div>
                   </button>
 
@@ -780,7 +803,7 @@ export default function DiseaseDetection() {
                     </div>
                     <div>
                       <div className="text-xs font-bold text-orange-900 group-hover:text-orange-700">{t(lang, 'dd_sample_wilt')}</div>
-                      <div className="text-[10px] text-orange-600">{lang === 'hi' ? 'उकठा / पीलापन' : lang === 'mr' ? 'सुकणे / पिवळेपणा' : 'Vascular wilt'}</div>
+                      <div className="text-[10px] text-orange-600">{tr(lang, 'Vascular wilt', 'उकठा / पीलापन', 'सुकणे / पिवळेपणा')}</div>
                     </div>
                   </button>
                 </div>
@@ -814,7 +837,7 @@ export default function DiseaseDetection() {
               {analyzing && (
                 <div className="mt-2 text-center">
                   <p className="text-xs text-[#2E7D32] font-medium animate-pulse">
-                    {analysisStep}
+                    {tr(lang, analysisStep)}
                   </p>
                 </div>
               )}
@@ -830,20 +853,20 @@ export default function DiseaseDetection() {
             </div>
             <div className="grid grid-cols-2 gap-2 text-[11px]">
               <div className="bg-gray-50 p-2 rounded-lg">
-                <span className="text-gray-400 block">{lang === 'hi' ? 'बैकबोन' : lang === 'mr' ? 'बॅकबोन' : 'Backbone'}</span>
-                <span className="font-medium text-gray-700">MobileNetV3-Large</span>
+                <span className="text-gray-400 block">{tr(lang, 'Backbone', 'बैकबोन', 'बॅकबोन')}</span>
+                <span className="font-medium text-gray-700">{tr(lang, 'MobileNetV3-Large')}</span>
               </div>
               <div className="bg-gray-50 p-2 rounded-lg">
-                <span className="text-gray-400 block">{lang === 'hi' ? 'इनपुट आकार' : lang === 'mr' ? 'इनपुट आकार' : 'Input Format'}</span>
-                <span className="font-medium text-gray-700">224x224 RGB</span>
+                <span className="text-gray-400 block">{tr(lang, 'Input Format', 'इनपुट आकार', 'इनपुट आकार')}</span>
+                <span className="font-medium text-gray-700">{tr(lang, '224x224 RGB')}</span>
               </div>
               <div className="bg-gray-50 p-2 rounded-lg">
-                <span className="text-gray-400 block">{lang === 'hi' ? 'सटीकता' : lang === 'mr' ? 'अचूकता' : 'Validation Acc.'}</span>
+                <span className="text-gray-400 block">{tr(lang, 'Validation Acc.', 'सटीकता', 'अचूकता')}</span>
                 <span className="font-medium text-emerald-700 font-bold">98.83%</span>
               </div>
               <div className="bg-gray-50 p-2 rounded-lg">
-                <span className="text-gray-400 block">{lang === 'hi' ? 'आउटपुट' : lang === 'mr' ? 'आउटपुट' : 'Output'}</span>
-                <span className="font-medium text-gray-700">ONNX / PyTorch</span>
+                <span className="text-gray-400 block">{tr(lang, 'Output', 'आउटपुट', 'आउटपुट')}</span>
+                <span className="font-medium text-gray-700">{tr(lang, 'ONNX / PyTorch')}</span>
               </div>
             </div>
           </div>
@@ -890,18 +913,18 @@ export default function DiseaseDetection() {
                           {getSeverityBadge(result.details.severity).label}
                         </span>
                         <span className="text-xs text-gray-400 font-mono">
-                          Engine: {result.engine}
+                          {tr(lang, 'Engine:')} {tr(lang, result.engine)}
                         </span>
                       </div>
 
                       <h2 className="text-2xl font-black text-gray-900 tracking-tight">
-                        {result.details.name}
+                        {tr(lang, result.details.name)}
                       </h2>
                       <p className="text-sm font-medium text-[#2E7D32] mt-0.5">
-                        {result.details.vernacular_name}
+                        {tr(lang, result.details.vernacular_name)}
                       </p>
                       <p className="text-xs text-gray-500 mt-1">
-                        <strong>Pathogen:</strong> {result.details.pathogen}
+                        <strong>{tr(lang, 'Pathogen:')}</strong> {tr(lang, result.details.pathogen)}
                       </p>
                     </div>
 
@@ -917,19 +940,19 @@ export default function DiseaseDetection() {
                   </div>
 
                   <p className="text-xs text-gray-600 mt-4 leading-relaxed bg-gray-50 p-3 rounded-xl border border-gray-100">
-                    {result.details.description}
+                    {tr(lang, result.details.description)}
                   </p>
 
                   {/* Top-3 Probability Distribution Bars */}
                   <div className="mt-4 pt-3 border-t border-gray-100">
                     <span className="text-[11px] font-bold text-gray-700 block mb-2">
-                      {lang === 'hi' ? 'संभाव्यता वितरण:' : lang === 'mr' ? 'संभाव्यता वितरण:' : 'Top Diagnostic Probabilities (Softmax):'}
+                      {tr(lang, 'Top Diagnostic Probabilities (Softmax):', 'संभाव्यता वितरण:', 'संभाव्यता वितरण:')}
                     </span>
                     <div className="space-y-1.5">
                       {result.top3.map((pred, i) => (
                         <div key={i} className="flex items-center gap-3 text-xs">
                           <span className="w-28 truncate font-medium text-gray-600 capitalize">
-                            {pred.class_name.replace('_', ' ')}
+                            {tr(lang, pred.class_name.replace('_', ' '))}
                           </span>
                           <div className="flex-1 bg-gray-100 h-2 rounded-full overflow-hidden">
                             <motion.div
@@ -961,7 +984,7 @@ export default function DiseaseDetection() {
                           : 'border-transparent hover:text-gray-900'
                       }`}
                     >
-                      {lang === 'hi' ? 'तत्काल उपाय और लक्षण' : lang === 'mr' ? 'तातडीच्या उपाययोजना आणि लक्षणे' : 'Urgent Actions & Symptoms'}
+                      {tr(lang, 'Urgent Actions & Symptoms', 'तत्काल उपाय और लक्षण', 'तातडीच्या उपाययोजना आणि लक्षणे')}
                     </button>
                     {result.details.chemical_control.length > 0 && (
                       <button
@@ -972,7 +995,7 @@ export default function DiseaseDetection() {
                             : 'border-transparent hover:text-gray-900'
                         }`}
                       >
-                        {lang === 'hi' ? 'रासायनिक उपचार' : lang === 'mr' ? 'रासायनिक उपचार' : 'Chemical Treatments'}
+                        {tr(lang, 'Chemical Treatments', 'रासायनिक उपचार', 'रासायनिक उपचार')}
                       </button>
                     )}
                     <button
@@ -983,7 +1006,7 @@ export default function DiseaseDetection() {
                           : 'border-transparent hover:text-gray-900'
                       }`}
                     >
-                      {lang === 'hi' ? 'जैविक व प्राकृतिक' : lang === 'mr' ? 'सेंद्रिय व जैविक' : 'Organic & Biological'}
+                      {tr(lang, 'Organic & Biological', 'जैविक व प्राकृतिक', 'सेंद्रिय व जैविक')}
                     </button>
                     <button
                       onClick={() => setTreatmentTab('prevention')}
@@ -993,7 +1016,7 @@ export default function DiseaseDetection() {
                           : 'border-transparent hover:text-gray-900'
                       }`}
                     >
-                      {lang === 'hi' ? 'दीर्घकालिक रोकथाम' : lang === 'mr' ? 'दीर्घकालीन प्रतिबंध' : 'Long-Term Prevention'}
+                      {tr(lang, 'Long-Term Prevention', 'दीर्घकालिक रोकथाम', 'दीर्घकालीन प्रतिबंध')}
                     </button>
                   </div>
 
@@ -1004,13 +1027,13 @@ export default function DiseaseDetection() {
                         <div>
                           <h4 className="text-xs font-bold uppercase tracking-wider text-rose-700 flex items-center gap-1.5 mb-2">
                             <AlertTriangle className="w-3.5 h-3.5" />
-                            {lang === 'hi' ? 'तत्काल आपातकालीन कदम' : lang === 'mr' ? 'तातडीने करावयाची कृती' : 'Immediate Emergency Actions'}
+                            {tr(lang, 'Immediate Emergency Actions', 'तत्काल आपातकालीन कदम', 'तातडीने करावयाची कृती')}
                           </h4>
                           <ul className="space-y-2">
                             {result.details.immediate_actions.map((act, idx) => (
                               <li key={idx} className="flex items-start gap-2 text-xs text-gray-700 bg-rose-50/50 p-2 rounded-lg border border-rose-100">
                                 <span className="font-bold text-rose-600 mt-0.5">•</span>
-                                <span>{act}</span>
+                                <span>{tr(lang, act)}</span>
                               </li>
                             ))}
                           </ul>
@@ -1019,13 +1042,13 @@ export default function DiseaseDetection() {
                         <div>
                           <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700 flex items-center gap-1.5 mb-2">
                             <Eye className="w-3.5 h-3.5 text-gray-500" />
-                            {lang === 'hi' ? 'दिखाई देने वाले लक्षण' : lang === 'mr' ? 'निरीक्षण केलेली लक्षणे' : 'Observed Botanical Symptoms'}
+                            {tr(lang, 'Observed Botanical Symptoms', 'दिखाई देने वाले लक्षण', 'निरीक्षण केलेली लक्षणे')}
                           </h4>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             {result.details.symptoms.map((sym, idx) => (
                               <div key={idx} className="text-xs text-gray-600 bg-gray-50 p-2.5 rounded-lg border border-gray-100 flex items-start gap-1.5">
                                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                                <span>{sym}</span>
+                                <span>{tr(lang, sym)}</span>
                               </div>
                             ))}
                           </div>
@@ -1038,28 +1061,28 @@ export default function DiseaseDetection() {
                       <div className="space-y-3">
                         <h4 className="text-xs font-bold uppercase tracking-wider text-blue-700 flex items-center gap-1.5 mb-2">
                           <Pill className="w-3.5 h-3.5" />
-                          {lang === 'hi' ? 'अनुशंसित रासायनिक उपचार' : lang === 'mr' ? 'शिफारस केलेले रासायनिक उपचार' : 'Recommended Chemical Fungicides / Bactericides'}
+                          {tr(lang, 'Recommended Chemical Fungicides / Bactericides', 'अनुशंसित रासायनिक उपचार', 'शिफारस केलेले रासायनिक उपचार')}
                         </h4>
                         {result.details.chemical_control.map((chem, idx) => (
                           <div key={idx} className="p-3 bg-blue-50/50 rounded-xl border border-blue-100 text-xs space-y-1">
                             <div className="font-bold text-blue-950 flex items-center justify-between">
-                              <span>{chem.product}</span>
+                              <span>{tr(lang, chem.product ?? '')}</span>
                               <span className="text-[10px] px-2 py-0.5 bg-blue-200/60 text-blue-800 rounded-md font-mono">
-                                Standard Prescription
+                                {tr(lang, 'Standard Prescription')}
                               </span>
                             </div>
                             <div className="text-gray-700">
-                              <strong>{lang === 'hi' ? 'खुराक:' : lang === 'mr' ? 'मात्रा:' : 'Dosage:'}</strong> {chem.dosage}
+                              <strong>{tr(lang, 'Dosage:', 'खुराक:', 'मात्रा:')}</strong> {tr(lang, chem.dosage)}
                             </div>
                             {chem.application && (
                               <div className="text-gray-600">
-                                <strong>{lang === 'hi' ? 'प्रयोग विधि:' : lang === 'mr' ? 'वापरण्याची पद्धत:' : 'Application:'}</strong> {chem.application}
+                                <strong>{tr(lang, 'Application:', 'प्रयोग विधि:', 'वापरण्याची पद्धत:')}</strong> {tr(lang, chem.application ?? '')}
                               </div>
                             )}
                           </div>
                         ))}
                         <p className="text-[11px] text-gray-400 italic">
-                          {lang === 'hi' ? '* सावधानी: कीटनाशक का छिड़काव करते समय सुरक्षात्मक उपकरण पहनें और स्थानीय कृषि विज्ञान केंद्र से सलाह लें।' : lang === 'mr' ? '* दक्षता: कीटकनाशक वापरताना संरक्षणात्मक साधने वापरा आणि स्थानिक कृषी विज्ञान केंद्राचा सल्ला घ्या.' : '* Caution: Always wear protective gear and follow instructions on manufacturer label. Verify suitability with your local Krishi Vigyan Kendra (KVK).'}
+                          {tr(lang, '* Caution: Always wear protective gear and follow instructions on manufacturer label. Verify suitability with your local Krishi Vigyan Kendra (KVK).', '* सावधानी: कीटनाशक का छिड़काव करते समय सुरक्षात्मक उपकरण पहनें और स्थानीय कृषि विज्ञान केंद्र से सलाह लें।', '* दक्षता: कीटकनाशक वापरताना संरक्षणात्मक साधने वापरा आणि स्थानिक कृषी विज्ञान केंद्राचा सल्ला घ्या.')}
                         </p>
                       </div>
                     )}
@@ -1069,22 +1092,22 @@ export default function DiseaseDetection() {
                       <div className="space-y-3">
                         <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-700 flex items-center gap-1.5 mb-2">
                           <Leaf className="w-3.5 h-3.5" />
-                          {lang === 'hi' ? 'प्राकृतिक, जैविक और घरेलू उपचार' : lang === 'mr' ? 'नैसर्गिक, सेंद्रिय आणि जैविक उपाय' : 'Natural, Organic & Biological Controls'}
+                          {tr(lang, 'Natural, Organic & Biological Controls', 'प्राकृतिक, जैविक और घरेलू उपचार', 'नैसर्गिक, सेंद्रिय आणि जैविक उपाय')}
                         </h4>
                         {result.details.organic_control.map((org, idx) => (
                           <div key={idx} className="p-3 bg-[#E8F5E9]/50 rounded-xl border border-[#C8E6C9] text-xs space-y-1">
                             <div className="font-bold text-[#1B5E20] flex items-center justify-between">
-                              <span>{org.treatment}</span>
+                              <span>{tr(lang, org.treatment ?? '')}</span>
                               <span className="text-[10px] px-2 py-0.5 bg-[#C8E6C9] text-[#2E7D32] rounded-md font-semibold">
-                                {lang === 'hi' ? 'पर्यावरण अनुकूल' : lang === 'mr' ? 'पर्यावरणपूरक' : 'Eco-Friendly'}
+                                {tr(lang, 'Eco-Friendly', 'पर्यावरण अनुकूल', 'पर्यावरणपूरक')}
                               </span>
                             </div>
                             <div className="text-gray-700">
-                              <strong>{lang === 'hi' ? 'मात्रा / दर:' : lang === 'mr' ? 'प्रमाण / दर:' : 'Dosage / Rate:'}</strong> {org.dosage}
+                              <strong>{tr(lang, 'Dosage / Rate:', 'मात्रा / दर:', 'प्रमाण / दर:')}</strong> {tr(lang, org.dosage)}
                             </div>
                             {org.timing && (
                               <div className="text-gray-600">
-                                <strong>{lang === 'hi' ? 'समय / मार्गदर्शन:' : lang === 'mr' ? 'वेळ / मार्गदर्शन:' : 'Timing / Guidance:'}</strong> {org.timing}
+                                <strong>{tr(lang, 'Timing / Guidance:', 'समय / मार्गदर्शन:', 'वेळ / मार्गदर्शन:')}</strong> {tr(lang, org.timing ?? '')}
                               </div>
                             )}
                           </div>
@@ -1097,13 +1120,13 @@ export default function DiseaseDetection() {
                       <div className="space-y-3">
                         <h4 className="text-xs font-bold uppercase tracking-wider text-purple-700 flex items-center gap-1.5 mb-2">
                           <ShieldAlert className="w-3.5 h-3.5" />
-                          {lang === 'hi' ? 'कृषि एवं निवारक उपाय' : lang === 'mr' ? 'कृषी व प्रतिबंधात्मक उपाय' : 'Agronomic & Preventive Measures'}
+                          {tr(lang, 'Agronomic & Preventive Measures', 'कृषि एवं निवारक उपाय', 'कृषी व प्रतिबंधात्मक उपाय')}
                         </h4>
                         <div className="space-y-2">
                           {result.details.prevention.map((prev, idx) => (
                             <div key={idx} className="text-xs text-gray-700 bg-purple-50/40 p-2.5 rounded-lg border border-purple-100 flex items-start gap-2">
                               <span className="font-bold text-purple-600 mt-0.5">✓</span>
-                              <span>{prev}</span>
+                              <span>{tr(lang, prev)}</span>
                             </div>
                           ))}
                         </div>
@@ -1118,7 +1141,7 @@ export default function DiseaseDetection() {
                       className="px-4 py-2.5 bg-[#2E7D32] hover:bg-[#1B5E20] text-white text-xs font-bold rounded-xl flex items-center gap-2 shadow-xs transition"
                     >
                       <Sparkles className="w-4 h-4 text-emerald-200" />
-                      {lang === 'hi' ? 'कृषि मित्र AI से इस बारे में पूछें' : lang === 'mr' ? 'कृषी मित्र AI ला विचारा' : 'Ask Krishi Mitra AI About This'}
+                      {tr(lang, 'Ask Krishi Mitra AI About This', 'कृषि मित्र AI से इस बारे में पूछें', 'कृषी मित्र AI ला विचारा')}
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
 
@@ -1128,7 +1151,7 @@ export default function DiseaseDetection() {
                         className="px-3 py-2 bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 text-xs font-medium rounded-xl flex items-center gap-1.5 transition"
                       >
                         <Download className="w-3.5 h-3.5 text-gray-500" />
-                        {lang === 'hi' ? 'निदान सेव करें' : lang === 'mr' ? 'निदान सेव्ह करा' : 'Save Diagnosis'}
+                        {tr(lang, 'Save Diagnosis', 'निदान सेव करें', 'निदान सेव्ह करा')}
                       </button>
 
                       <button
@@ -1153,13 +1176,13 @@ export default function DiseaseDetection() {
       <div className="max-w-5xl mx-auto mt-16 pt-10 border-t border-gray-200/80">
         <div className="text-center mb-8">
           <span className="text-xs font-bold text-[#2E7D32] uppercase tracking-wider">
-            {lang === 'hi' ? 'खेत संदर्भ गाइड' : lang === 'mr' ? 'शेत संदर्भ मार्गदर्शक' : 'Field Reference Guide'}
+            {tr(lang, 'Field Reference Guide', 'खेत संदर्भ गाइड', 'शेत संदर्भ मार्गदर्शक')}
           </span>
           <h3 className="text-xl sm:text-2xl font-black text-gray-900 mt-1">
-            {lang === 'hi' ? 'मॉडल द्वारा पहचाने जाने वाले प्रमुख फसल पत्ती रोग' : lang === 'mr' ? 'मॉडेलद्वारे ओळखले जाणारे प्रमुख पीक रोग' : 'Common Cotton Leaf Diseases Recognized by the Model'}
+            {tr(lang, 'Common Cotton Leaf Diseases Recognized by the Model', 'मॉडल द्वारा पहचाने जाने वाले प्रमुख फसल पत्ती रोग', 'मॉडेलद्वारे ओळखले जाणारे प्रमुख पीक रोग')}
           </h3>
           <p className="text-xs text-gray-500 mt-1">
-            {lang === 'hi' ? 'सत्यापित कृषि रोग विज्ञान डेटासेट पर प्रशिक्षित।' : lang === 'mr' ? 'सत्यापित कृषी पॅथॉलॉजी डेटासेटवर प्रशिक्षित.' : 'Trained and benchmarked on verified agricultural pathology datasets.'}
+            {tr(lang, 'Trained and benchmarked on verified agricultural pathology datasets.', 'सत्यापित कृषि रोग विज्ञान डेटासेट पर प्रशिक्षित।', 'सत्यापित कृषी पॅथॉलॉजी डेटासेटवर प्रशिक्षित.')}
           </p>
         </div>
 
@@ -1168,7 +1191,7 @@ export default function DiseaseDetection() {
             <div
               key={key}
               onClick={() => {
-                selectSample(key as keyof typeof SAMPLE_LEAF_IMAGES)
+                selectSample(key as SampleLeafKey)
                 window.scrollTo({ top: 120, behavior: 'smooth' })
               }}
               className="bg-white rounded-xl p-4 border border-gray-200/80 hover:border-[#2E7D32] hover:shadow-md transition cursor-pointer flex flex-col justify-between group"
@@ -1176,23 +1199,23 @@ export default function DiseaseDetection() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${getSeverityBadge(info.severity).bg}`}>
-                    {info.severity}
+                    {tr(lang, info.severity)}
                   </span>
                   <ExternalLink className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#2E7D32] transition" />
                 </div>
                 <h4 className="text-sm font-bold text-gray-900 group-hover:text-[#2E7D32] transition">
-                  {info.name}
+                  {tr(lang, info.name)}
                 </h4>
                 <p className="text-[11px] text-gray-500 mt-0.5 line-clamp-1">
-                  {info.vernacular_name}
+                  {tr(lang, info.vernacular_name)}
                 </p>
                 <p className="text-xs text-gray-600 mt-2 line-clamp-3 leading-relaxed">
-                  {info.description}
+                  {tr(lang, info.description)}
                 </p>
               </div>
 
               <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-[#2E7D32] font-semibold">
-                <span>Test in Scanner</span>
+                <span>{tr(lang, 'Test in Scanner')}</span>
                 <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>

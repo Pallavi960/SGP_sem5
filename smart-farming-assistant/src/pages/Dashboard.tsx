@@ -25,7 +25,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useLanguage } from '../context/LanguageContext'
-import { t } from '../lib/i18n'
+import { t, tr } from '../lib/i18n'
 
 export default function Dashboard() {
   const { user, userPhone, userName, signOut } = useAuth()
@@ -38,7 +38,7 @@ export default function Dashboard() {
       icon: <Bot className="w-6 h-6 text-white" />,
       color: 'from-emerald-500 to-green-600',
       to: '/ai-assistant',
-      badge: 'Cohere AI',
+      badge: tr(lang, 'Cohere AI'),
     },
     {
       title: t(lang, 'db_crop_title'),
@@ -46,7 +46,7 @@ export default function Dashboard() {
       icon: <Sprout className="w-6 h-6 text-white" />,
       color: 'from-green-600 to-teal-700',
       to: '/crop-recommendation',
-      badge: lang === 'hi' ? 'मिट्टी व मौसम' : lang === 'mr' ? 'माती व हवामान' : 'Soil & Climate',
+      badge: tr(lang, 'Soil & Climate', 'मिट्टी व मौसम', 'माती व हवामान'),
     },
     {
       title: t(lang, 'db_disease_title'),
@@ -54,7 +54,7 @@ export default function Dashboard() {
       icon: <ShieldAlert className="w-6 h-6 text-white" />,
       color: 'from-amber-500 to-orange-600',
       to: '/disease-detection',
-      badge: lang === 'hi' ? 'पत्ती स्कैन' : lang === 'mr' ? 'पान स्कॅन' : 'Scan Leaf',
+      badge: tr(lang, 'Scan Leaf', 'पत्ती स्कैन', 'पान स्कॅन'),
     },
     {
       title: t(lang, 'db_weather_title'),
@@ -62,7 +62,7 @@ export default function Dashboard() {
       icon: <CloudRain className="w-6 h-6 text-white" />,
       color: 'from-blue-500 to-cyan-600',
       to: '/weather',
-      badge: lang === 'hi' ? 'लाइव रडार' : lang === 'mr' ? 'थेट रडार' : 'Live Radar',
+      badge: tr(lang, 'Live Radar', 'लाइव रडार', 'थेट रडार'),
     },
     {
       title: t(lang, 'db_schemes_title'),
@@ -70,7 +70,7 @@ export default function Dashboard() {
       icon: <Landmark className="w-6 h-6 text-white" />,
       color: 'from-purple-500 to-indigo-600',
       to: '/government-schemes',
-      badge: lang === 'hi' ? 'सब्सिडी' : lang === 'mr' ? 'अनुदान' : 'Subsidies',
+      badge: tr(lang, 'Subsidies', 'सब्सिडी', 'अनुदान'),
     },
   ]
 
@@ -116,7 +116,7 @@ export default function Dashboard() {
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-                  {t(lang, 'db_welcome')}, <span className="text-[#087f3e]">{userName || (lang === 'hi' ? 'किसान' : lang === 'mr' ? 'शेतकरी' : 'Farmer')}</span>! 👋
+                  {t(lang, 'db_welcome')}, <span className="text-[#087f3e]">{userName || (tr(lang, 'Farmer', 'किसान', 'शेतकरी'))}</span>! 👋
                 </h1>
                 <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#087f3e] bg-[#E8F5E9] border border-[#b8e5c1] px-2.5 py-0.5 rounded-full">
                   <Sparkles className="w-3 h-3" />
@@ -126,7 +126,7 @@ export default function Dashboard() {
               <p className="text-sm text-gray-500 mt-1 flex items-center gap-2 flex-wrap">
                 <span>{t(lang, 'db_phone_label')}:</span>
                 <span className="font-semibold text-gray-800 font-mono">
-                  {userPhone || user?.phone || (lang === 'hi' ? 'सत्यापित किसान' : lang === 'mr' ? 'प्रमाणित शेतकरी' : 'Verified Farmer')}
+                  {userPhone || user?.phone || (tr(lang, 'Verified Farmer', 'सत्यापित किसान', 'प्रमाणित शेतकरी'))}
                 </span>
                 <span className="text-gray-300 hidden sm:inline">•</span>
                 <span className="text-xs text-[#087f3e] font-semibold bg-[#E8F5E9] px-2 py-0.5 rounded-md">{t(lang, 'db_sms_verified')}</span>
@@ -205,22 +205,22 @@ export default function Dashboard() {
                   </div>
                   <span className="text-sm font-semibold text-gray-900">{t(lang, 'db_weather_today')}</span>
                 </div>
-                <span className="text-xs font-medium text-gray-400 bg-gray-50 px-2.5 py-1 rounded-full">Pune, MH</span>
+                <span className="text-xs font-medium text-gray-400 bg-gray-50 px-2.5 py-1 rounded-full">{tr(lang, 'Pune, MH')}</span>
               </div>
 
               <div className="mt-4 flex items-end gap-3">
                 <span className="text-4xl font-black text-gray-900">31°</span>
                 <div className="mb-1">
-                  <p className="text-xs font-semibold text-[#087f3e]">{lang === 'hi' ? 'आंशिक बादल' : lang === 'mr' ? 'अंशतः ढगाळ' : 'Partly Cloudy'}</p>
-                  <p className="text-[10px] text-gray-400">{lang === 'hi' ? 'महसूस 34°C' : lang === 'mr' ? 'जाणवणारे तापमान 34°C' : 'Feels like 34°C'}</p>
+                  <p className="text-xs font-semibold text-[#087f3e]">{tr(lang, 'Partly Cloudy', 'आंशिक बादल', 'अंशतः ढगाळ')}</p>
+                  <p className="text-[10px] text-gray-400">{tr(lang, 'Feels like 34°C', 'महसूस 34°C', 'जाणवणारे तापमान 34°C')}</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-3 gap-2 mt-4">
                 {[
                   { icon: <Droplets size={13} />, label: t(lang, 'db_humidity'), val: '72%' },
-                  { icon: <Wind size={13} />, label: t(lang, 'db_wind'), val: '14 km/h' },
-                  { icon: <Thermometer size={13} />, label: t(lang, 'db_uv_index'), val: lang === 'hi' ? 'उच्च' : lang === 'mr' ? 'जास्त' : 'High' },
+                  { icon: <Wind size={13} />, label: t(lang, 'db_wind'), val: tr(lang, '14 km/h') },
+                  { icon: <Thermometer size={13} />, label: t(lang, 'db_uv_index'), val: tr(lang, 'High', 'उच्च', 'जास्त') },
                 ].map((s) => (
                   <div key={s.label} className="flex flex-col items-center gap-1 bg-[#F9FBF9] rounded-xl py-2">
                     <span className="text-[#087f3e]">{s.icon}</span>
@@ -255,7 +255,7 @@ export default function Dashboard() {
             </div>
 
             <div className="mt-3 flex flex-col gap-3">
-              <p className="text-xs text-gray-400">{lang === 'hi' ? 'मिट्टी pH 6.8 · दोमट · पश्चिमी घाट' : lang === 'mr' ? 'माती pH 6.8 · पोयटा · पश्चिम घाट' : 'Based on soil pH 6.8 · Loamy · Western Ghats'}</p>
+              <p className="text-xs text-gray-400">{tr(lang, 'Based on soil pH 6.8 · Loamy · Western Ghats', 'मिट्टी pH 6.8 · दोमट · पश्चिमी घाट', 'माती pH 6.8 · पोयटा · पश्चिम घाट')}</p>
               {crops.map((c) => (
                 <div key={c.name} className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: c.color + '22' }}>
@@ -263,14 +263,14 @@ export default function Dashboard() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between mb-1">
-                      <span className="text-xs font-semibold text-gray-900">{c.name}</span>
+                      <span className="text-xs font-semibold text-gray-900">{tr(lang, c.name)}</span>
                       <span className="text-xs font-bold text-[#087f3e]">{c.match}%</span>
                     </div>
                     <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
                       <div className="h-full rounded-full" style={{ width: `${c.match}%`, background: c.color }} />
                     </div>
                   </div>
-                  <span className="text-[10px] text-gray-400 shrink-0">{c.season}</span>
+                  <span className="text-[10px] text-gray-400 shrink-0">{tr(lang, c.season)}</span>
                 </div>
               ))}
             </div>
@@ -286,7 +286,7 @@ export default function Dashboard() {
                   </div>
                   <span className="text-sm font-semibold text-gray-900">{t(lang, 'db_health_alerts')}</span>
                 </div>
-                <span className="text-[10px] font-semibold text-red-600 bg-red-50 px-2.5 py-1 rounded-full">1 Alert</span>
+                <span className="text-[10px] font-semibold text-red-600 bg-red-50 px-2.5 py-1 rounded-full">{tr(lang, '1 Alert')}</span>
               </div>
 
               <div className="mt-3 flex flex-col gap-2.5">
@@ -298,7 +298,7 @@ export default function Dashboard() {
                     <p className="text-xs font-semibold text-gray-900 truncate">{t(lang, 'db_early_blight_risk')}</p>
                     <p className="text-[10px] text-gray-500">{t(lang, 'db_early_blight_sub')}</p>
                   </div>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-red-700 bg-red-100 shrink-0">{lang === 'hi' ? 'उच्च' : lang === 'mr' ? 'जास्त' : 'High'}</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-red-700 bg-red-100 shrink-0">{tr(lang, 'High', 'उच्च', 'जास्त')}</span>
                 </div>
 
                 <div className="flex items-center gap-3 p-3 rounded-xl border border-amber-200/60 bg-amber-50/40">
@@ -309,7 +309,7 @@ export default function Dashboard() {
                     <p className="text-xs font-semibold text-gray-900 truncate">{t(lang, 'db_rust_fungus_risk')}</p>
                     <p className="text-[10px] text-gray-500">{t(lang, 'db_rust_fungus_sub')}</p>
                   </div>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-amber-700 bg-amber-100 shrink-0">{lang === 'hi' ? 'मध्यम' : lang === 'mr' ? 'मध्यम' : 'Medium'}</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-amber-700 bg-amber-100 shrink-0">{tr(lang, 'Medium', 'मध्यम', 'मध्यम')}</span>
                 </div>
               </div>
             </div>
@@ -333,9 +333,9 @@ export default function Dashboard() {
                 <div className="w-8 h-8 rounded-xl bg-[#E8F5E9] flex items-center justify-center text-[#087f3e]">
                   <TrendingUp size={16} />
                 </div>
-                <span className="text-sm font-semibold text-gray-900">Live MSP Rates</span>
+                <span className="text-sm font-semibold text-gray-900">{tr(lang, 'Live MSP Rates')}</span>
               </div>
-              <span className="text-[10px] text-gray-400 bg-gray-50 px-2.5 py-1 rounded-full font-medium">Govt. Mandi</span>
+              <span className="text-[10px] text-gray-400 bg-gray-50 px-2.5 py-1 rounded-full font-medium">{tr(lang, 'Govt. Mandi')}</span>
             </div>
 
             <div className="mt-2 flex flex-col divide-y divide-gray-50">
@@ -343,11 +343,11 @@ export default function Dashboard() {
                 <div key={p.crop} className="flex items-center justify-between py-2.5">
                   <div className="flex items-center gap-2">
                     <Leaf size={12} className="text-[#087f3e]" />
-                    <span className="text-xs font-semibold text-gray-900">{p.crop}</span>
+                    <span className="text-xs font-semibold text-gray-900">{tr(lang, p.crop)}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="text-xs font-bold text-gray-900">
-                      {p.price}<span className="text-gray-400 font-normal text-[10px]">{p.unit}</span>
+                      {p.price}<span className="text-gray-400 font-normal text-[10px]">{tr(lang, p.unit)}</span>
                     </span>
                     <span className={`flex items-center gap-0.5 text-[10px] font-bold ${p.up ? 'text-[#087f3e]' : 'text-red-500'}`}>
                       {p.up ? <ArrowUpRight size={11} /> : <ArrowDownRight size={11} />}
@@ -366,9 +366,9 @@ export default function Dashboard() {
                 <div className="w-8 h-8 rounded-xl bg-[#E8F5E9] flex items-center justify-center text-[#087f3e]">
                   <Activity size={16} />
                 </div>
-                <span className="text-sm font-semibold text-gray-900">Recent Farm Activity</span>
+                <span className="text-sm font-semibold text-gray-900">{tr(lang, 'Recent Farm Activity')}</span>
               </div>
-              <span className="text-[10px] text-gray-400">Live Feed</span>
+              <span className="text-[10px] text-gray-400">{tr(lang, 'Live Feed')}</span>
             </div>
 
             <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -386,8 +386,8 @@ export default function Dashboard() {
                     {a.icon}
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-gray-900">{a.text}</p>
-                    <p className="text-[10px] text-gray-400 mt-0.5">{a.time}</p>
+                    <p className="text-xs font-semibold text-gray-900">{tr(lang, a.text)}</p>
+                    <p className="text-[10px] text-gray-400 mt-0.5">{tr(lang, a.time)}</p>
                   </div>
                 </div>
               ))}

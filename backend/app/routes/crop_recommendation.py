@@ -18,6 +18,7 @@ class FarmerInput(BaseModel):
     farmingPreference: str
     budget: str
     mainGoal: str
+    lang: Optional[str] = "en"
 
 class CropRecommendation(BaseModel):
     cropName: str

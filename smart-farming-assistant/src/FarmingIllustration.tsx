@@ -1,6 +1,9 @@
 import { motion } from 'framer-motion'
+import { useLanguage } from './context/LanguageContext'
+import { tr } from './lib/i18n'
 
 export default function FarmingIllustration() {
+  const { lang } = useLanguage()
   return (
     <div className="relative w-full h-[480px] select-none">
 
@@ -134,7 +137,7 @@ export default function FarmingIllustration() {
           className="absolute top-24 right-8 bg-white rounded-2xl shadow-lg px-3 py-2 flex items-center gap-2 border border-green-100"
         >
           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          <span className="text-xs font-semibold text-gray-700">Soil: Optimal</span>
+          <span className="text-xs font-semibold text-gray-700">{tr(lang, 'Soil: Optimal')}</span>
         </motion.div>
 
         <motion.div
@@ -143,7 +146,7 @@ export default function FarmingIllustration() {
           className="absolute top-44 right-6 bg-white rounded-2xl shadow-lg px-3 py-2 flex items-center gap-2 border border-green-100"
         >
           <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
-          <span className="text-xs font-semibold text-gray-700">Humidity: 72%</span>
+          <span className="text-xs font-semibold text-gray-700">{tr(lang, 'Humidity: 72%')}</span>
         </motion.div>
 
         <motion.div
@@ -152,7 +155,7 @@ export default function FarmingIllustration() {
           className="absolute top-28 left-6 bg-white rounded-2xl shadow-lg px-3 py-2 flex items-center gap-2 border border-green-100"
         >
           <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-          <span className="text-xs font-semibold text-gray-700">Rain: 12mm</span>
+          <span className="text-xs font-semibold text-gray-700">{tr(lang, 'Rain: 12mm')}</span>
         </motion.div>
 
         {/* Connection lines SVG */}

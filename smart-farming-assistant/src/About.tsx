@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Sprout, ShieldCheck, Cpu, Users, ArrowRight } from 'lucide-react'
 import { useLanguage } from './context/LanguageContext'
+import { tr } from './lib/i18n'
 
 export default function About() {
   const { lang } = useLanguage()
@@ -9,43 +10,27 @@ export default function About() {
   const values = [
     {
       icon: Cpu,
-      title: lang === 'hi' ? 'एआई तकनीक' : lang === 'mr' ? 'एआय तंत्रज्ञान' : 'AI-Driven Innovation',
+      title: tr(lang, 'AI-Driven Innovation', 'एआई तकनीक', 'एआय तंत्रज्ञान'),
       desc:
-        lang === 'hi'
-          ? 'कंप्यूटर विज़न और मशीन लर्निंग द्वारा फसलों के रोगों का त्वरित और सटीक विश्लेषण।'
-          : lang === 'mr'
-          ? 'संगणक दृष्टी आणि मशीन लर्निंगद्वारे पिकांच्या रोगांचे जलद आणि अचूक विश्लेषण.'
-          : 'High-precision crop pathology and weather prediction powered by modern neural networks.',
+        tr(lang, 'High-precision crop pathology and weather prediction powered by modern neural networks.', 'कंप्यूटर विज़न और मशीन लर्निंग द्वारा फसलों के रोगों का त्वरित और सटीक विश्लेषण।', 'संगणक दृष्टी आणि मशीन लर्निंगद्वारे पिकांच्या रोगांचे जलद आणि अचूक विश्लेषण.'),
     },
     {
       icon: Users,
-      title: lang === 'hi' ? 'किसान-प्रथम दृष्टिकोण' : lang === 'mr' ? 'शेतकरी-प्रथम दृष्टिकोन' : 'Farmer-First Design',
+      title: tr(lang, 'Farmer-First Design', 'किसान-प्रथम दृष्टिकोण', 'शेतकरी-प्रथम दृष्टिकोन'),
       desc:
-        lang === 'hi'
-          ? 'भारतीय किसानों के लिए उनकी अपनी भाषा (हिंदी, मराठी, अंग्रेजी) में सरल और सुलभ मंच।'
-          : lang === 'mr'
-          ? 'भारतीय शेतकऱ्यांसाठी त्यांच्या स्वतःच्या भाषेत (मराठी, हिंदी, इंग्रजी) सोपा आणि सुलभ मंच.'
-          : 'Designed for accessibility with regional language support and clear visual indicators.',
+        tr(lang, 'Designed for accessibility with regional language support and clear visual indicators.', 'भारतीय किसानों के लिए उनकी अपनी भाषा (हिंदी, मराठी, अंग्रेजी) में सरल और सुलभ मंच।', 'भारतीय शेतकऱ्यांसाठी त्यांच्या स्वतःच्या भाषेत (मराठी, हिंदी, इंग्रजी) सोपा आणि सुलभ मंच.'),
     },
     {
       icon: ShieldCheck,
-      title: lang === 'hi' ? 'सटीक और विश्वसनीय' : lang === 'mr' ? 'अचूक आणि विश्वासार्ह' : 'Verified & Trusted',
+      title: tr(lang, 'Verified & Trusted', 'सटीक और विश्वसनीय', 'अचूक आणि विश्वासार्ह'),
       desc:
-        lang === 'hi'
-          ? 'कृषि विज्ञान केंद्रों और विश्वविद्यालयों द्वारा अनुमोदित उपचार और खुराक मानक।'
-          : lang === 'mr'
-          ? 'कृषी विज्ञान केंद्र व कृषी विद्यापीठांनी प्रमाणित केलेले उपचार आणि खत प्रमाण.'
-          : 'Treatment recommendations aligned with official agricultural university standards.',
+        tr(lang, 'Treatment recommendations aligned with official agricultural university standards.', 'कृषि विज्ञान केंद्रों और विश्वविद्यालयों द्वारा अनुमोदित उपचार और खुराक मानक।', 'कृषी विज्ञान केंद्र व कृषी विद्यापीठांनी प्रमाणित केलेले उपचार आणि खत प्रमाण.'),
     },
     {
       icon: Sprout,
-      title: lang === 'hi' ? 'सतत कृषि विकास' : lang === 'mr' ? 'शाश्वत शेती विकास' : 'Sustainable Agriculture',
+      title: tr(lang, 'Sustainable Agriculture', 'सतत कृषि विकास', 'शाश्वत शेती विकास'),
       desc:
-        lang === 'hi'
-          ? 'रासायनिक खादों का संतुलित उपयोग और जैविक उपचारों को प्रोत्साहन।'
-          : lang === 'mr'
-          ? 'रासायनिक खतांचा संतुलित वापर आणि सेंद्रिय उपायांना प्रोत्साहन देणे.'
-          : 'Promoting optimal fertilizer dosages, soil preservation, and integrated pest management.',
+        tr(lang, 'Promoting optimal fertilizer dosages, soil preservation, and integrated pest management.', 'रासायनिक खादों का संतुलित उपयोग और जैविक उपचारों को प्रोत्साहन।', 'रासायनिक खतांचा संतुलित वापर आणि सेंद्रिय उपायांना प्रोत्साहन देणे.'),
     },
   ]
 
@@ -56,21 +41,13 @@ export default function About() {
         <div className="max-w-4xl mx-auto text-center">
           <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E8F5E9] border border-[#A5D6A7] text-[#2E7D32] text-xs font-semibold mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-[#4CAF50] animate-pulse" />
-            {lang === 'hi' ? 'स्मार्टफार्म एआई के बारे में' : lang === 'mr' ? 'स्मार्टफार्म एआय बद्दल' : 'About SmartFarm AI'}
+            {tr(lang, 'About SmartFarm AI', 'स्मार्टफार्म एआई के बारे में', 'स्मार्टफार्म एआय बद्दल')}
           </span>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-[#1F2937]">
-            {lang === 'hi'
-              ? 'भारतीय कृषि को आधुनिक तकनीक से सशक्त बनाना'
-              : lang === 'mr'
-              ? 'भारतीय शेतीला आधुनिक तंत्रज्ञानाने सक्षम करणे'
-              : 'Empowering Indian Agriculture with Intelligence'}
+            {tr(lang, 'Empowering Indian Agriculture with Intelligence', 'भारतीय कृषि को आधुनिक तकनीक से सशक्त बनाना', 'भारतीय शेतीला आधुनिक तंत्रज्ञानाने सक्षम करणे')}
           </h1>
           <p className="mt-4 text-base text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            {lang === 'hi'
-              ? 'स्मार्टफार्म एआई एक एकीकृत कृषि मंच है जो छोटे और मध्यम किसानों को रोग पहचान, मौसम पूर्वानुमान, खाद योजना और सरकारी योजनाओं का सीधा लाभ पहुंचाता है।'
-              : lang === 'mr'
-              ? 'स्मार्टफार्म एआय हा एकात्मिक कृषी मंच आहे जो अल्पभूधारक व मध्यम शेतकऱ्यांना रोग निदान, हवामान अंदाज, खत नियोजन आणि शासकीय योजनांचा थेट लाभ देतो.'
-              : 'SmartFarm AI bridges the gap between deep agricultural science and practical field execution, giving farmers timely, actionable advice directly on their devices.'}
+            {tr(lang, 'SmartFarm AI bridges the gap between deep agricultural science and practical field execution, giving farmers timely, actionable advice directly on their devices.', 'स्मार्टफार्म एआई एक एकीकृत कृषि मंच है जो छोटे और मध्यम किसानों को रोग पहचान, मौसम पूर्वानुमान, खाद योजना और सरकारी योजनाओं का सीधा लाभ पहुंचाता है।', 'स्मार्टफार्म एआय हा एकात्मिक कृषी मंच आहे जो अल्पभूधारक व मध्यम शेतकऱ्यांना रोग निदान, हवामान अंदाज, खत नियोजन आणि शासकीय योजनांचा थेट लाभ देतो.')}
           </p>
         </div>
       </section>
@@ -104,7 +81,7 @@ export default function About() {
             to="/disease-detection"
             className="inline-flex items-center gap-2 px-6 py-3 bg-[#2E7D32] hover:bg-[#1B5E20] text-white text-sm font-semibold rounded-xl shadow-md transition-colors"
           >
-            {lang === 'hi' ? 'रोग पहचान आज़माएं' : lang === 'mr' ? 'रोग निदान वापरून पहा' : 'Try Disease Detection'}{' '}
+            {tr(lang, 'Try Disease Detection', 'रोग पहचान आज़माएं', 'रोग निदान वापरून पहा')}{' '}
             <ArrowRight size={16} />
           </Link>
         </div>

@@ -5,7 +5,8 @@ import {
   ArrowUpRight, ArrowDownRight, CheckCircle2,
   AlertTriangle, Info, Leaf,
 } from 'lucide-react'
-import { useLanguage } from './context/LanguageContext'
+import { useLanguage, type LangCode } from './context/LanguageContext'
+import { tr } from './lib/i18n'
 
 /* ── helpers ── */
 const fadeUp = (delay = 0) => ({
@@ -44,7 +45,7 @@ function CardHeader({ icon, title, badge }: { icon: React.ReactNode; title: stri
 }
 
 /* ── Weather Card ── */
-function WeatherCard({ lang }: { lang: 'en' | 'hi' | 'mr' }) {
+function WeatherCard({ lang }: { lang: LangCode }) {
   const hourly = [
     { time: '6AM', icon: <Sun size={14} />, temp: 22 },
     { time: '9AM', icon: <Cloud size={14} />, temp: 25 },
@@ -56,7 +57,7 @@ function WeatherCard({ lang }: { lang: 'en' | 'hi' | 'mr' }) {
     <CardShell>
       <CardHeader
         icon={<Sun size={16} />}
-        title={lang === 'hi' ? 'आज का मौसम' : lang === 'mr' ? 'आजचे हवामान' : 'Weather Today'}
+        title={tr(lang, 'Weather Today', 'आज का मौसम', 'आजचे हवामान')}
         badge={
           <span className="text-xs font-medium text-gray-400 bg-gray-50 px-2.5 py-1 rounded-full">
             Pune, MH
@@ -68,18 +69,18 @@ function WeatherCard({ lang }: { lang: 'en' | 'hi' | 'mr' }) {
           <span className="text-5xl font-bold text-[#1F2937]">31°</span>
           <div className="mb-1.5">
             <p className="text-sm font-medium text-[#2E7D32]">
-              {lang === 'hi' ? 'आंशिक बादल' : lang === 'mr' ? 'अंशतः ढगाळ' : 'Partly Cloudy'}
+              {tr(lang, 'Partly Cloudy', 'आंशिक बादल', 'अंशतः ढगाळ')}
             </p>
             <p className="text-xs text-gray-400">
-              {lang === 'hi' ? 'अनुभव 34°C जैसा' : lang === 'mr' ? 'भास 34°C सारखा' : 'Feels like 34°C'}
+              {tr(lang, 'Feels like 34°C', 'अनुभव 34°C जैसा', 'भास 34°C सारखा')}
             </p>
           </div>
         </div>
         <div className="grid grid-cols-3 gap-2 mt-4 mb-4">
           {[
-            { icon: <Droplets size={13} />, label: lang === 'hi' ? 'आर्द्रता' : lang === 'mr' ? 'आर्द्रता' : 'Humidity', val: '72%' },
-            { icon: <Wind size={13} />, label: lang === 'hi' ? 'हवा' : lang === 'mr' ? 'वारा' : 'Wind', val: '14 km/h' },
-            { icon: <Thermometer size={13} />, label: lang === 'hi' ? 'यूवी इंडेक्स' : lang === 'mr' ? 'यूव्ही निर्देशांक' : 'UV Index', val: lang === 'hi' ? 'उच्च' : lang === 'mr' ? 'जास्त' : 'High' },
+            { icon: <Droplets size={13} />, label: tr(lang, 'Humidity', 'आर्द्रता', 'आर्द्रता'), val: '72%' },
+            { icon: <Wind size={13} />, label: tr(lang, 'Wind', 'हवा', 'वारा'), val: '14 km/h' },
+            { icon: <Thermometer size={13} />, label: tr(lang, 'UV Index', 'यूवी इंडेक्स', 'यूव्ही निर्देशांक'), val: tr(lang, 'High', 'उच्च', 'जास्त') },
           ].map((s) => (
             <div key={s.label} className="flex flex-col items-center gap-1 bg-[#F9FBF9] rounded-xl py-2.5">
               <span className="text-[#4CAF50]">{s.icon}</span>
@@ -103,47 +104,47 @@ function WeatherCard({ lang }: { lang: 'en' | 'hi' | 'mr' }) {
 }
 
 /* ── Crop Recommendation Card ── */
-function CropCard({ lang }: { lang: 'en' | 'hi' | 'mr' }) {
+function CropCard({ lang }: { lang: LangCode }) {
   const crops = [
     {
-      name: lang === 'hi' ? 'गेहूं' : lang === 'mr' ? 'गहू' : 'Wheat',
+      name: tr(lang, 'Wheat', 'गेहूं', 'गहू'),
       match: 94,
       color: '#FDD835',
-      season: lang === 'hi' ? 'रबी' : lang === 'mr' ? 'रब्बी' : 'Rabi',
+      season: tr(lang, 'Rabi', 'रबी', 'रब्बी'),
     },
     {
-      name: lang === 'hi' ? 'टमाटर' : lang === 'mr' ? 'टोमॅटो' : 'Tomato',
+      name: tr(lang, 'Tomato', 'टमाटर', 'टोमॅटो'),
       match: 88,
       color: '#EF5350',
-      season: lang === 'hi' ? 'खरीफ' : lang === 'mr' ? 'खरीप' : 'Kharif',
+      season: tr(lang, 'Kharif', 'खरीफ', 'खरीप'),
     },
     {
-      name: lang === 'hi' ? 'सोयाबीन' : lang === 'mr' ? 'सोयाबीन' : 'Soybean',
+      name: tr(lang, 'Soybean', 'सोयाबीन', 'सोयाबीन'),
       match: 81,
       color: '#66BB6A',
-      season: lang === 'hi' ? 'खरीफ' : lang === 'mr' ? 'खरीप' : 'Kharif',
+      season: tr(lang, 'Kharif', 'खरीफ', 'खरीप'),
     },
     {
-      name: lang === 'hi' ? 'मक्का' : lang === 'mr' ? 'मका' : 'Maize',
+      name: tr(lang, 'Maize', 'मक्का', 'मका'),
       match: 76,
       color: '#FFA726',
-      season: lang === 'hi' ? 'रबी' : lang === 'mr' ? 'रब्बी' : 'Rabi',
+      season: tr(lang, 'Rabi', 'रबी', 'रब्बी'),
     },
   ]
   return (
     <CardShell>
       <CardHeader
         icon={<Sprout size={16} />}
-        title={lang === 'hi' ? 'फसल अनुशंसा' : lang === 'mr' ? 'पीक शिफारस' : 'Crop Recommendation'}
+        title={tr(lang, 'Crop Recommendation', 'फसल अनुशंसा', 'पीक शिफारस')}
         badge={
           <span className="text-[10px] font-semibold text-[#2E7D32] bg-[#E8F5E9] px-2.5 py-1 rounded-full">
-            {lang === 'hi' ? 'एआई सुझाव' : lang === 'mr' ? 'एआय शिफारस' : 'AI Suggested'}
+            {tr(lang, 'AI Suggested', 'एआई सुझाव', 'एआय शिफारस')}
           </span>
         }
       />
       <div className="px-5 pb-5 flex flex-col gap-3">
         <p className="text-xs text-gray-400">
-          {lang === 'hi' ? 'मिट्टी pH 6.8 · दोमट · पुणे क्षेत्र' : lang === 'mr' ? 'माती सामू 6.8 · गाळाची माती · पुणे परिसर' : 'Based on soil pH 6.8 · Loamy · Pune region'}
+          {tr(lang, 'Based on soil pH 6.8 · Loamy · Pune region', 'मिट्टी pH 6.8 · दोमट · पुणे क्षेत्र', 'माती सामू 6.8 · गाळाची माती · पुणे परिसर')}
         </p>
         {crops.map((c, i) => (
           <motion.div
@@ -182,26 +183,26 @@ function CropCard({ lang }: { lang: 'en' | 'hi' | 'mr' }) {
 }
 
 /* ── Disease Detection Card ── */
-function DiseaseCard({ lang }: { lang: 'en' | 'hi' | 'mr' }) {
+function DiseaseCard({ lang }: { lang: LangCode }) {
   const alerts = [
     {
-      crop: lang === 'hi' ? 'टमाटर' : lang === 'mr' ? 'टोमॅटो' : 'Tomato',
-      disease: lang === 'hi' ? 'अगेती झुलसा' : lang === 'mr' ? 'लवकर येणारा करपा' : 'Early Blight',
-      severity: lang === 'hi' ? 'उच्च' : lang === 'mr' ? 'तीव्र' : 'High',
+      crop: tr(lang, 'Tomato', 'टमाटर', 'टोमॅटो'),
+      disease: tr(lang, 'Early Blight', 'अगेती झुलसा', 'लवकर येणारा करपा'),
+      severity: tr(lang, 'High', 'उच्च', 'तीव्र'),
       color: '#EF5350',
       icon: <AlertTriangle size={13} />,
     },
     {
-      crop: lang === 'hi' ? 'गेहूं' : lang === 'mr' ? 'गहू' : 'Wheat',
-      disease: lang === 'hi' ? 'रतुआ फफूंद' : lang === 'mr' ? 'तांबेरा बुरशी' : 'Rust Fungus',
-      severity: lang === 'hi' ? 'मध्यम' : lang === 'mr' ? 'मध्यम' : 'Medium',
+      crop: tr(lang, 'Wheat', 'गेहूं', 'गहू'),
+      disease: tr(lang, 'Rust Fungus', 'रतुआ फफूंद', 'तांबेरा बुरशी'),
+      severity: tr(lang, 'Medium', 'मध्यम', 'मध्यम'),
       color: '#FFA726',
       icon: <AlertTriangle size={13} />,
     },
     {
-      crop: lang === 'hi' ? 'मक्का' : lang === 'mr' ? 'मका' : 'Maize',
-      disease: lang === 'hi' ? 'पत्ती धब्बा' : lang === 'mr' ? 'पानांवरील ठिपके' : 'Leaf Spot',
-      severity: lang === 'hi' ? 'कम' : lang === 'mr' ? 'कमी' : 'Low',
+      crop: tr(lang, 'Maize', 'मक्का', 'मका'),
+      disease: tr(lang, 'Leaf Spot', 'पत्ती धब्बा', 'पानांवरील ठिपके'),
+      severity: tr(lang, 'Low', 'कम', 'कमी'),
       color: '#66BB6A',
       icon: <Info size={13} />,
     },
@@ -210,11 +211,11 @@ function DiseaseCard({ lang }: { lang: 'en' | 'hi' | 'mr' }) {
     <CardShell>
       <CardHeader
         icon={<ShieldAlert size={16} />}
-        title={lang === 'hi' ? 'रोग पहचान' : lang === 'mr' ? 'रोग ओळख' : 'Disease Detection'}
+        title={tr(lang, 'Disease Detection', 'रोग पहचान', 'रोग ओळख')}
         badge={
           <span className="flex items-center gap-1 text-[10px] font-semibold text-red-500 bg-red-50 px-2.5 py-1 rounded-full">
             <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
-            {lang === 'hi' ? '1 गंभीर अलर्ट' : lang === 'mr' ? '1 गंभीर चेतावणी' : '1 Critical'}
+            {tr(lang, '1 Critical', '1 गंभीर अलर्ट', '1 गंभीर चेतावणी')}
           </span>
         }
       />
@@ -241,7 +242,7 @@ function DiseaseCard({ lang }: { lang: 'en' | 'hi' | 'mr' }) {
           </div>
         ))}
         <button className="mt-1 w-full text-xs font-semibold text-[#2E7D32] bg-[#E8F5E9] hover:bg-[#C8E6C9] py-2.5 rounded-xl transition-colors duration-200">
-          {lang === 'hi' ? 'नई पत्ती स्कैन करें →' : lang === 'mr' ? 'नवीन पान स्कॅन करा →' : 'Scan New Image →'}
+          {tr(lang, 'Scan New Image →', 'नई पत्ती स्कैन करें →', 'नवीन पान स्कॅन करा →')}
         </button>
       </div>
     </CardShell>
@@ -249,22 +250,22 @@ function DiseaseCard({ lang }: { lang: 'en' | 'hi' | 'mr' }) {
 }
 
 /* ── Market Prices Card ── */
-function MarketCard({ lang }: { lang: 'en' | 'hi' | 'mr' }) {
+function MarketCard({ lang }: { lang: LangCode }) {
   const prices = [
-    { crop: lang === 'hi' ? 'गेहूं' : lang === 'mr' ? 'गहू' : 'Wheat', price: '₹2,150', unit: '/qtl', change: '+2.4%', up: true },
-    { crop: lang === 'hi' ? 'चावल' : lang === 'mr' ? 'तांदूळ' : 'Rice', price: '₹3,400', unit: '/qtl', change: '-1.1%', up: false },
-    { crop: lang === 'hi' ? 'सोयाबीन' : lang === 'mr' ? 'सोयाबीन' : 'Soybean', price: '₹4,800', unit: '/qtl', change: '+5.2%', up: true },
-    { crop: lang === 'hi' ? 'मक्का' : lang === 'mr' ? 'मका' : 'Maize', price: '₹1,890', unit: '/qtl', change: '+0.8%', up: true },
-    { crop: lang === 'hi' ? 'कपास' : lang === 'mr' ? 'कापूस' : 'Cotton', price: '₹6,200', unit: '/qtl', change: '-2.3%', up: false },
+    { crop: tr(lang, 'Wheat', 'गेहूं', 'गहू'), price: '₹2,150', unit: '/qtl', change: '+2.4%', up: true },
+    { crop: tr(lang, 'Rice', 'चावल', 'तांदूळ'), price: '₹3,400', unit: '/qtl', change: '-1.1%', up: false },
+    { crop: tr(lang, 'Soybean', 'सोयाबीन', 'सोयाबीन'), price: '₹4,800', unit: '/qtl', change: '+5.2%', up: true },
+    { crop: tr(lang, 'Maize', 'मक्का', 'मका'), price: '₹1,890', unit: '/qtl', change: '+0.8%', up: true },
+    { crop: tr(lang, 'Cotton', 'कपास', 'कापूस'), price: '₹6,200', unit: '/qtl', change: '-2.3%', up: false },
   ]
   return (
     <CardShell>
       <CardHeader
         icon={<TrendingUp size={16} />}
-        title={lang === 'hi' ? 'मंडी भाव' : lang === 'mr' ? 'बाजारभाव' : 'Market Prices'}
+        title={tr(lang, 'Market Prices', 'मंडी भाव', 'बाजारभाव')}
         badge={
           <span className="text-[10px] text-gray-400 bg-gray-50 px-2.5 py-1 rounded-full font-medium">
-            {lang === 'hi' ? 'ताजा MSP' : lang === 'mr' ? 'थेट हमीभाव' : 'Live MSP'}
+            {tr(lang, 'Live MSP', 'ताजा MSP', 'थेट हमीभाव')}
           </span>
         }
       />
@@ -296,53 +297,53 @@ function MarketCard({ lang }: { lang: 'en' | 'hi' | 'mr' }) {
 }
 
 /* ── Recent Activity Card ── */
-function ActivityCard({ lang }: { lang: 'en' | 'hi' | 'mr' }) {
+function ActivityCard({ lang }: { lang: LangCode }) {
   const activities = [
     {
       icon: <CheckCircle2 size={14} />,
       color: '#4CAF50',
-      text: lang === 'hi' ? 'मिट्टी जांच रिपोर्ट अपलोड की गई' : lang === 'mr' ? 'माती परीक्षण अहवाल अपलोड केला' : 'Soil test report uploaded',
-      time: lang === 'hi' ? '2 मिनट पहले' : lang === 'mr' ? '२ मिनिटांपूर्वी' : '2 min ago',
+      text: tr(lang, 'Soil test report uploaded', 'मिट्टी जांच रिपोर्ट अपलोड की गई', 'माती परीक्षण अहवाल अपलोड केला'),
+      time: tr(lang, '2 min ago', '2 मिनट पहले', '२ मिनिटांपूर्वी'),
     },
     {
       icon: <ShieldAlert size={14} />,
       color: '#EF5350',
-      text: lang === 'hi' ? 'रोग अलर्ट: टमाटर में अगेती झुलसा' : lang === 'mr' ? 'रोग चेतावणी: टोमॅटोवर लवकर येणारा करपा' : 'Disease alert: Early Blight on Tomato',
-      time: lang === 'hi' ? '18 मिनट पहले' : lang === 'mr' ? '१८ मिनिटांपूर्वी' : '18 min ago',
+      text: tr(lang, 'Disease alert: Early Blight on Tomato', 'रोग अलर्ट: टमाटर में अगेती झुलसा', 'रोग चेतावणी: टोमॅटोवर लवकर येणारा करपा'),
+      time: tr(lang, '18 min ago', '18 मिनट पहले', '१८ मिनिटांपूर्वी'),
     },
     {
       icon: <Sprout size={14} />,
       color: '#2E7D32',
-      text: lang === 'hi' ? 'रबी मौसम के लिए फसल अनुशंसा अपडेट' : lang === 'mr' ? 'रब्बी हंगामासाठी पीक शिफारस अद्यतनित' : 'Crop recommendation updated for Rabi season',
-      time: lang === 'hi' ? '1 घंटा पहले' : lang === 'mr' ? '१ तासापूर्वी' : '1 hr ago',
+      text: tr(lang, 'Crop recommendation updated for Rabi season', 'रबी मौसम के लिए फसल अनुशंसा अपडेट', 'रब्बी हंगामासाठी पीक शिफारस अद्यतनित'),
+      time: tr(lang, '1 hr ago', '1 घंटा पहले', '१ तासापूर्वी'),
     },
     {
       icon: <Cloud size={14} />,
       color: '#42A5F5',
-      text: lang === 'hi' ? 'बारिश का पूर्वानुमान: कल 12mm वर्षा संभव' : lang === 'mr' ? 'पाऊस अंदाज: उद्या १२ मिमी पाऊस अपेक्षित' : 'Rain forecast: 12mm expected tomorrow',
-      time: lang === 'hi' ? '3 घंटे पहले' : lang === 'mr' ? '३ तासांपूर्वी' : '3 hr ago',
+      text: tr(lang, 'Rain forecast: 12mm expected tomorrow', 'बारिश का पूर्वानुमान: कल 12mm वर्षा संभव', 'पाऊस अंदाज: उद्या १२ मिमी पाऊस अपेक्षित'),
+      time: tr(lang, '3 hr ago', '3 घंटे पहले', '३ तासांपूर्वी'),
     },
     {
       icon: <TrendingUp size={14} />,
       color: '#FFA726',
-      text: lang === 'hi' ? 'गेहूं के MSP में ₹150/क्विंटल की वृद्धि' : lang === 'mr' ? 'गव्हाच्या हमीभावात ₹१५०/क्विंटल वाढ' : 'Wheat MSP increased by ₹150/qtl',
-      time: lang === 'hi' ? '5 घंटे पहले' : lang === 'mr' ? '५ तासांपूर्वी' : '5 hr ago',
+      text: tr(lang, 'Wheat MSP increased by ₹150/qtl', 'गेहूं के MSP में ₹150/क्विंटल की वृद्धि', 'गव्हाच्या हमीभावात ₹१५०/क्विंटल वाढ'),
+      time: tr(lang, '5 hr ago', '5 घंटे पहले', '५ तासांपूर्वी'),
     },
     {
       icon: <Info size={14} />,
       color: '#AB47BC',
-      text: lang === 'hi' ? 'सरकारी योजना: PM-KISAN की किस्त जारी' : lang === 'mr' ? 'शासकीय योजना: PM-KISAN चा हप्ता जमा' : 'New govt. scheme: PM-KISAN installment released',
-      time: lang === 'hi' ? '1 दिन पहले' : lang === 'mr' ? '१ दिवसापूर्वी' : '1 day ago',
+      text: tr(lang, 'New govt. scheme: PM-KISAN installment released', 'सरकारी योजना: PM-KISAN की किस्त जारी', 'शासकीय योजना: PM-KISAN चा हप्ता जमा'),
+      time: tr(lang, '1 day ago', '1 दिन पहले', '१ दिवसापूर्वी'),
     },
   ]
   return (
     <CardShell className="lg:col-span-2">
       <CardHeader
         icon={<Activity size={16} />}
-        title={lang === 'hi' ? 'हालिया गतिविधियां' : lang === 'mr' ? 'अलीकडील घडामोडी' : 'Recent Activity'}
+        title={tr(lang, 'Recent Activity', 'हालिया गतिविधियां', 'अलीकडील घडामोडी')}
         badge={
           <span className="text-[10px] font-medium text-gray-400">
-            {lang === 'hi' ? 'आज' : lang === 'mr' ? 'आज' : 'Today'}
+            {tr(lang, 'Today', 'आज', 'आज')}
           </span>
         }
       />
@@ -394,20 +395,16 @@ export default function DashboardPreview() {
         >
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E8F5E9] border border-[#A5D6A7] text-[#2E7D32] text-xs font-semibold mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-[#4CAF50] animate-pulse" />
-            {lang === 'hi' ? 'लाइव डैशबोर्ड पूर्वावलोकन' : lang === 'mr' ? 'थेट डॅशबोर्ड पूर्वावलोकन' : 'Live Dashboard Preview'}
+            {tr(lang, 'Live Dashboard Preview', 'लाइव डैशबोर्ड पूर्वावलोकन', 'थेट डॅशबोर्ड पूर्वावलोकन')}
           </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1F2937] tracking-tight">
-            {lang === 'hi' ? 'सब कुछ एक ' : lang === 'mr' ? 'सर्वकाही एकाच ' : 'Everything at a '}
+            {tr(lang, 'Everything at a ', 'सब कुछ एक ', 'सर्वकाही एकाच ')}
             <span className="text-[#2E7D32]">
-              {lang === 'hi' ? 'नज़र में' : lang === 'mr' ? 'दृष्टिक्षेपात' : 'Glance'}
+              {tr(lang, 'Glance', 'नज़र में', 'दृष्टिक्षेपात')}
             </span>
           </h2>
           <p className="mt-3 text-gray-500 text-base max-w-xl mx-auto">
-            {lang === 'hi'
-              ? 'एक एकीकृत डैशबोर्ड जो किसानों को मौसम, फसल, रोग और मंडी की रीयल-टाइम जानकारी देता है।'
-              : lang === 'mr'
-              ? 'एक एकात्मिक डॅशबोर्ड जो शेतकऱ्यांना हवामान, पीक, रोग आणि बाजाराची रिअल-टाइम माहिती देतो.'
-              : 'A unified dashboard giving farmers real-time insights on weather, crops, diseases, and markets.'}
+            {tr(lang, 'A unified dashboard giving farmers real-time insights on weather, crops, diseases, and markets.', 'एक एकीकृत डैशबोर्ड जो किसानों को मौसम, फसल, रोग और मंडी की रीयल-टाइम जानकारी देता है।', 'एक एकात्मिक डॅशबोर्ड जो शेतकऱ्यांना हवामान, पीक, रोग आणि बाजाराची रिअल-टाइम माहिती देतो.')}
           </p>
         </motion.div>
 

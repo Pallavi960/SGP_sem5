@@ -1,3 +1,6 @@
+import type { LangCode } from '../context/LanguageContext'
+import { getDateLocale, tr, trFormat } from '../lib/i18n'
+
 export interface FarmActivity {
   id: string
   stage: 'Sowing' | 'Irrigation' | 'Fertilization' | 'Pest Monitoring' | 'Harvest' | 'Custom'
@@ -527,7 +530,12 @@ export const INDIAN_STATES = [
   'Other / Global',
 ]
 
-export function computeActivityDate(sowingDateStr: string, dayOffset: number, customDate?: string): { dateStr: string; displayStr: string; isPast: boolean; isToday: boolean; daysRemaining: number } {
+export function computeActivityDate(
+  sowingDateStr: string,
+  dayOffset: number,
+  customDate?: string,
+  lang: LangCode = 'en'
+): { dateStr: string; displayStr: string; isPast: boolean; isToday: boolean; daysRemaining: number } {
   const targetDate = customDate ? new Date(customDate) : new Date(new Date(sowingDateStr).getTime() + dayOffset * 24 * 60 * 60 * 1000)
   const today = new Date()
   today.setHours(0, 0, 0, 0)
@@ -537,7 +545,7 @@ export function computeActivityDate(sowingDateStr: string, dayOffset: number, cu
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 
   const dateStr = targetDate.toISOString().slice(0, 10)
-  const displayStr = targetDate.toLocaleDateString('en-IN', {
+  const displayStr = targetDate.toLocaleDateString(getDateLocale(lang), {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
@@ -550,6 +558,41 @@ export function computeActivityDate(sowingDateStr: string, dayOffset: number, cu
     isToday: diffDays === 0,
     daysRemaining: diffDays,
   }
+}
+
+export function translatePlannerText(lang: LangCode, text: string): string {
+  if (!text || lang === 'en') return text
+  const direct = tr(lang, text)
+  if (direct !== text) return direct
+
+  const tillMatch = text.match(/^Tillage, basal nutrient application, and seed\/sapling planting for (.+)\.$/)
+  if (tillMatch) {
+    return trFormat(
+      lang,
+      'Tillage, basal nutrient application, and seed/sapling planting for {cropName}.',
+      { cropName: tr(lang, tillMatch[1]) }
+    )
+  }
+
+  const harvestMatch = text.match(/^Harvest (.+) upon full physiological maturity when moisture level is optimal\.$/)
+  if (harvestMatch) {
+    return trFormat(
+      lang,
+      'Harvest {cropName} upon full physiological maturity when moisture level is optimal.',
+      { cropName: tr(lang, harvestMatch[1]) }
+    )
+  }
+
+  const schedMatch = text.match(/^Customized agricultural schedule for (.+) \((Kharif|Rabi|Zaid) season\)\.$/)
+  if (schedMatch) {
+    return trFormat(
+      lang,
+      'Customized agricultural schedule for {cropName} ({season} season).',
+      { cropName: tr(lang, schedMatch[1]), season: tr(lang, schedMatch[2]) }
+    )
+  }
+
+  return text
 }
 
 export function generateCustomPlan(cropName: string, season: 'Kharif' | 'Rabi' | 'Zaid'): CropTemplate {

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   FlaskConical,
@@ -11,6 +11,7 @@ import {
   HelpCircle,
   Leaf,
   ShieldCheck,
+  ExternalLink,
 } from 'lucide-react'
 import {
   calculateFertilizerRecommendation,
@@ -20,9 +21,9 @@ import {
   type NutrientLevel,
   type AreaUnit,
   type FertilizerInput,
-  type FertilizerRecommendationResult,
 } from './services/fertilizerService'
 import { useLanguage } from './context/LanguageContext'
+import { tr, trFormat, pickLang } from './lib/i18n'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -83,26 +84,29 @@ export default function FertilizerAdvisor() {
   const [areaUnit, setAreaUnit] = useState<AreaUnit>('Acres')
   const [organicMode, setOrganicMode] = useState<boolean>(false)
 
-  // Result state
-  const [result, setResult] = useState<FertilizerRecommendationResult>(() =>
-    calculateFertilizerRecommendation({
-      crop: 'Wheat',
-      stage: 'Vegetative / Tillering',
-      soilType: 'Alluvial Soil',
-      soilPh: 6.8,
-      nitrogenLevel: 'Low',
-      phosphorusLevel: 'Medium',
-      potassiumLevel: 'High',
-      area: 2.5,
-      areaUnit: 'Acres',
-      organicMode: false,
-    })
+  const DEFAULT_INPUT: FertilizerInput = {
+    crop: 'Wheat',
+    stage: 'Vegetative / Tillering',
+    soilType: 'Alluvial Soil',
+    soilPh: 6.8,
+    nitrogenLevel: 'Low',
+    phosphorusLevel: 'Medium',
+    potassiumLevel: 'High',
+    area: 2.5,
+    areaUnit: 'Acres',
+    organicMode: false,
+  }
+
+  // Submitted input drives reactive localized result
+  const [submittedInput, setSubmittedInput] = useState<FertilizerInput>(DEFAULT_INPUT)
+  const result = useMemo(
+    () => calculateFertilizerRecommendation(submittedInput, lang),
+    [submittedInput, lang]
   )
-  const soilNutrients = result.soilStatusSummary.split(' • ')
 
   const handleCalculate = (e?: React.FormEvent) => {
     if (e) e.preventDefault()
-    const input: FertilizerInput = {
+    setSubmittedInput({
       crop,
       stage,
       soilType,
@@ -113,9 +117,7 @@ export default function FertilizerAdvisor() {
       area: Number(area) || 1,
       areaUnit,
       organicMode,
-    }
-    const res = calculateFertilizerRecommendation(input)
-    setResult(res)
+    })
   }
 
   const handleReset = () => {
@@ -129,26 +131,76 @@ export default function FertilizerAdvisor() {
     setArea(2.5)
     setAreaUnit('Acres')
     setOrganicMode(false)
-    const defaultRes = calculateFertilizerRecommendation({
-      crop: 'Wheat',
-      stage: 'Vegetative / Tillering',
-      soilType: 'Alluvial Soil',
-      soilPh: 6.8,
-      nitrogenLevel: 'Low',
-      phosphorusLevel: 'Medium',
-      potassiumLevel: 'High',
-      area: 2.5,
-      areaUnit: 'Acres',
-      organicMode: false,
-    })
-    setResult(defaultRes)
+    setSubmittedInput(DEFAULT_INPUT)
   }
 
   const getNutrientLabel = (lvl: NutrientLevel) => {
-    if (lvl === 'Low') return lang === 'hi' ? 'कम' : lang === 'mr' ? 'कमी' : 'Low'
-    if (lvl === 'Medium') return lang === 'hi' ? 'मध्यम' : lang === 'mr' ? 'मध्यम' : 'Medium'
-    return lang === 'hi' ? 'अधिक' : lang === 'mr' ? 'जास्त' : 'High'
+    if (lvl === 'Low') return tr(lang, 'Low', 'कम', 'कमी')
+    if (lvl === 'Medium') return tr(lang, 'Medium', 'मध्यम', 'मध्यम')
+    return tr(lang, 'High', 'अधिक', 'जास्त')
   }
+
+  const buildGoogleAiUrl = (query: string) =>
+    `https://www.google.com/search?q=${encodeURIComponent(query)}&udm=50`
+
+  const buildPhAiUrl = (phVal: number, cropLabel: string, soilLabel: string) =>
+    buildGoogleAiUrl(
+      trFormat(
+        lang,
+        'What is Soil pH (currently {ph}) for {crop} in {soil}? Explain in simple words for a farmer how pH affects crop growth and how to balance acidic or alkaline soil.',
+        { ph: phVal, crop: cropLabel, soil: soilLabel }
+      )
+    )
+
+  const buildNutrientAiUrl = (nutrientLabel: string, cropLabel: string, levelLabel: string) =>
+    buildGoogleAiUrl(
+      trFormat(
+        lang,
+        'What is {nutrient} in soil for {crop} farming? Explain in simple words for a farmer what happens when {nutrient} is {level}, how to read it on a Soil Health Card, and which fertilizers improve it.',
+        { nutrient: nutrientLabel, crop: cropLabel, level: levelLabel }
+      )
+    )
+
+  const buildFertilizerAiUrl = (
+    fertName: string,
+    grade: string,
+    cropLabel: string,
+    stageLabel: string
+  ) =>
+    buildGoogleAiUrl(
+      trFormat(
+        lang,
+        'Explain what {fertilizer} ({grade}) fertilizer is, why it is used for {crop} at {stage} stage, and how a farmer should apply it safely.',
+        { fertilizer: fertName, grade, crop: cropLabel, stage: stageLabel }
+      )
+    )
+
+  const soilTestNutrients = [
+    {
+      key: 'N',
+      label: tr(lang, 'Nitrogen (N)', 'नाइट्रोजन (N)', 'नत्र (N)'),
+      dotClass: 'bg-blue-500',
+      activeClass: 'bg-blue-50 border-blue-300 text-blue-700 font-bold shadow-xs',
+      value: nitrogenLevel,
+      setter: setNitrogenLevel,
+    },
+    {
+      key: 'P',
+      label: tr(lang, 'Phosphorus (P)', 'फास्फोरस (P)', 'स्फुरद (P)'),
+      dotClass: 'bg-amber-500',
+      activeClass: 'bg-amber-50 border-amber-300 text-amber-700 font-bold shadow-xs',
+      value: phosphorusLevel,
+      setter: setPhosphorusLevel,
+    },
+    {
+      key: 'K',
+      label: tr(lang, 'Potassium (K)', 'पोटेशियम (K)', 'पालाश (K)'),
+      dotClass: 'bg-purple-500',
+      activeClass: 'bg-purple-50 border-purple-300 text-purple-700 font-bold shadow-xs',
+      value: potassiumLevel,
+      setter: setPotassiumLevel,
+    },
+  ] as const
 
   return (
     <div className="bg-[#f9fbf9] min-h-screen py-6 px-4 sm:px-6 sm:py-8 lg:px-8">
@@ -162,17 +214,13 @@ export default function FertilizerAdvisor() {
               </div>
               <div>
                 <span className="text-sm font-semibold text-[#087f3e]">
-                  {lang === 'hi' ? 'मृदा पोषण' : lang === 'mr' ? 'माती पोषण' : 'Soil nutrition'}
+                  {tr(lang, 'Soil nutrition', 'मृदा पोषण', 'माती पोषण')}
                 </span>
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">
-                  {lang === 'hi' ? 'उर्वरक एवं खाद सलाहकार' : lang === 'mr' ? 'खत सल्लागार आणि शिफारस' : 'Fertilizer recommendation'}
+                  {tr(lang, 'Fertilizer recommendation', 'उर्वरक एवं खाद सलाहकार', 'खत सल्लागार आणि शिफारस')}
                 </h1>
                 <p className="text-base text-gray-600 mt-2 max-w-2xl leading-relaxed">
-                  {lang === 'hi'
-                    ? 'अपने खेत के लिए सटीक उर्वरक योजना प्राप्त करने हेतु फसल और मिट्टी की जानकारी दें।'
-                    : lang === 'mr'
-                    ? 'आपल्या शेतासाठी अचूक खत नियोजन मिळवण्यासाठी पीक आणि मातीची माहिती द्या.'
-                    : 'Tell us about your crop and soil to get a clear fertilizer plan for your field.'}
+                  {tr(lang, 'Tell us about your crop and soil to get a clear fertilizer plan for your field.', 'अपने खेत के लिए सटीक उर्वरक योजना प्राप्त करने हेतु फसल और मिट्टी की जानकारी दें।', 'आपल्या शेतासाठी अचूक खत नियोजन मिळवण्यासाठी पीक आणि मातीची माहिती द्या.')}
                 </p>
               </div>
             </div>
@@ -185,7 +233,7 @@ export default function FertilizerAdvisor() {
                 className="inline-flex min-h-11 items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-700 hover:text-red-600 hover:bg-red-50 hover:border-red-200 transition-colors"
               >
                 <RotateCcw size={16} aria-hidden="true" />
-                <span>{lang === 'hi' ? 'फॉर्म रीसेट करें' : lang === 'mr' ? 'फॉर्म रीसेट करा' : 'Reset Form'}</span>
+                <span>{tr(lang, 'Reset Form', 'फॉर्म रीसेट करें', 'फॉर्म रीसेट करा')}</span>
               </button>
             </div>
           </div>
@@ -203,7 +251,7 @@ export default function FertilizerAdvisor() {
                 <div className="flex items-center gap-2">
                   <Layers className="w-5 h-5 text-[#087f3e]" aria-hidden="true" />
                   <h2 className="text-lg font-bold text-gray-900">
-                    {lang === 'hi' ? 'फसल और मिट्टी का विवरण भरें' : lang === 'mr' ? 'पीक आणि मातीचा तपशील भरा' : 'Tell us about your crop and soil'}
+                    {tr(lang, 'Tell us about your crop and soil', 'फसल और मिट्टी का विवरण भरें', 'पीक आणि मातीचा तपशील भरा')}
                   </h2>
                 </div>
               </div>
@@ -211,11 +259,11 @@ export default function FertilizerAdvisor() {
               {/* Crop Selection */}
               <div className="space-y-4">
                 <h3 className="text-base font-bold text-gray-900">
-                  {lang === 'hi' ? '१. आपकी फसल' : lang === 'mr' ? '१. तुमचे पीक' : '1. Your crop'}
+                  {tr(lang, '1. Your crop', '१. आपकी फसल', '१. तुमचे पीक')}
                 </h3>
                 <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  {lang === 'hi' ? 'फसल' : lang === 'mr' ? 'पीक' : 'Crop'}
+                  {tr(lang, 'Crop', 'फसल', 'पीक')}
                 </label>
                 <select
                   value={crop}
@@ -224,7 +272,7 @@ export default function FertilizerAdvisor() {
                 >
                   {CROPS.map((c) => (
                     <option key={c} value={c}>
-                      🌾 {c}
+                      🌾 {tr(lang, c)}
                     </option>
                   ))}
                 </select>
@@ -233,7 +281,7 @@ export default function FertilizerAdvisor() {
               {/* Crop Growth Stage */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  {lang === 'hi' ? 'वृद्धि चरण' : lang === 'mr' ? 'वाढीची अवस्था' : 'Growth stage'}
+                  {tr(lang, 'Growth stage', 'वृद्धि चरण', 'वाढीची अवस्था')}
                 </label>
                 <select
                   value={stage}
@@ -242,7 +290,7 @@ export default function FertilizerAdvisor() {
                 >
                   {STAGES.map((s) => (
                     <option key={s} value={s}>
-                      🌱 {s}
+                      🌱 {tr(lang, s)}
                     </option>
                   ))}
                 </select>
@@ -252,11 +300,11 @@ export default function FertilizerAdvisor() {
               {/* Soil Type */}
               <div className="space-y-4 border-t border-gray-100 pt-5">
                 <h3 className="text-base font-bold text-gray-900">
-                  {lang === 'hi' ? '२. आपकी मिट्टी' : lang === 'mr' ? '२. तुमची माती' : '2. Your soil'}
+                  {tr(lang, '2. Your soil', '२. आपकी मिट्टी', '२. तुमची माती')}
                 </h3>
                 <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  {lang === 'hi' ? 'मिट्टी का प्रकार' : lang === 'mr' ? 'मातीचा प्रकार' : 'Soil type'}
+                  {tr(lang, 'Soil type', 'मिट्टी का प्रकार', 'मातीचा प्रकार')}
                 </label>
                 <select
                   value={soilType}
@@ -265,7 +313,7 @@ export default function FertilizerAdvisor() {
                 >
                   {SOILS.map((st) => (
                     <option key={st} value={st}>
-                      🧪 {st}
+                      🧪 {tr(lang, st)}
                     </option>
                   ))}
                 </select>
@@ -273,16 +321,28 @@ export default function FertilizerAdvisor() {
 
               {/* Soil pH */}
               <div>
-                <div className="flex items-center justify-between mb-2 gap-3">
-                  <label className="text-sm font-semibold text-gray-700">
-                    {lang === 'hi' ? 'मृदा pH मान:' : lang === 'mr' ? 'मातीचा सामू (pH):' : 'Soil pH:'} <span className="text-[#087f3e] font-bold">{soilPh}</span>
-                  </label>
+                <div className="flex flex-wrap items-center justify-between mb-2 gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <label className="text-sm font-semibold text-gray-700">
+                      {tr(lang, 'Soil pH:', 'मृदा pH मान:', 'मातीचा सामू (pH):')} <span className="text-[#087f3e] font-bold">{soilPh}</span>
+                    </label>
+                    <a
+                      href={buildPhAiUrl(soilPh, tr(lang, crop), tr(lang, soilType))}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-[#087f3e] border border-emerald-200 hover:bg-emerald-100 transition-colors"
+                    >
+                      <Sparkles size={11} aria-hidden="true" />
+                      <span>{tr(lang, 'More info · Google AI')}</span>
+                      <ExternalLink size={10} aria-hidden="true" />
+                    </a>
+                  </div>
                   <span className="text-sm text-gray-600">
                     {soilPh < 6.0
-                      ? (lang === 'hi' ? 'अम्लीय 🔴' : lang === 'mr' ? 'आम्लयुक्त 🔴' : 'Acidic 🔴')
+                      ? (tr(lang, 'Acidic 🔴', 'अम्लीय 🔴', 'आम्लयुक्त 🔴'))
                       : soilPh > 7.8
-                      ? (lang === 'hi' ? 'क्षारीय 🔵' : lang === 'mr' ? 'अल्कधर्मी 🔵' : 'Alkaline 🔵')
-                      : (lang === 'hi' ? 'अनुकूल 🟢' : lang === 'mr' ? 'योग्य 🟢' : 'Optimal 🟢')}
+                      ? (tr(lang, 'Alkaline 🔵', 'क्षारीय 🔵', 'अल्कधर्मी 🔵'))
+                      : (tr(lang, 'Optimal 🟢', 'अनुकूल 🟢', 'योग्य 🟢'))}
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
@@ -312,93 +372,61 @@ export default function FertilizerAdvisor() {
               <div className="space-y-4 pt-5 border-t border-gray-100">
                 <div className="flex items-center justify-between">
                   <h3 className="text-base font-bold text-gray-900">
-                    {lang === 'hi' ? '३. मृदा परीक्षण रिपोर्ट' : lang === 'mr' ? '३. माती चाचणी अहवाल' : '3. Your soil test'}
+                    {tr(lang, '3. Your soil test', '३. मृदा परीक्षण रिपोर्ट', '३. माती चाचणी अहवाल')}
                   </h3>
                   <span className="text-xs text-gray-500">
-                    {lang === 'hi' ? 'सॉइल हेल्थ कार्ड का उपयोग करें' : lang === 'mr' ? 'मृदा आरोग्य पत्रिकेचा वापर करा' : 'Use your Soil Health Card'}
+                    {tr(lang, 'Use your Soil Health Card', 'सॉइल हेल्थ कार्ड का उपयोग करें', 'मृदा आरोग्य पत्रिकेचा वापर करा')}
                   </span>
                 </div>
 
-                {/* Nitrogen */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-blue-500" />
-                    {lang === 'hi' ? 'नाइट्रोजन (N)' : lang === 'mr' ? 'नत्र (N)' : 'Nitrogen (N)'}
-                  </span>
-                  <div className="grid grid-cols-3 gap-2">
-                    {NUTRIENT_LEVELS.map((lvl) => (
-                      <button
-                        key={lvl}
-                        type="button"
-                        onClick={() => setNitrogenLevel(lvl)}
-                        className={`min-h-10 px-3 py-2 text-sm font-medium rounded-lg border transition-all ${
-                          nitrogenLevel === lvl
-                            ? 'bg-blue-50 border-blue-300 text-blue-700 font-bold shadow-xs'
-                            : 'bg-white border-gray-200 text-gray-500 hover:bg-gray-50'
-                        }`}
+                {soilTestNutrients.map((row) => (
+                  <div
+                    key={row.key}
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-2"
+                  >
+                    <div className="flex flex-col items-start gap-1">
+                      <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                        <span className={`w-2 h-2 rounded-full ${row.dotClass}`} />
+                        {row.label}
+                      </span>
+                      <a
+                        href={buildNutrientAiUrl(row.label, tr(lang, crop), getNutrientLabel(row.value))}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-[#087f3e] border border-emerald-200 hover:bg-emerald-100 transition-colors"
                       >
-                        {getNutrientLabel(lvl)}
-                      </button>
-                    ))}
+                        <Sparkles size={11} aria-hidden="true" />
+                        <span>{tr(lang, 'More info · Google AI')}</span>
+                        <ExternalLink size={10} aria-hidden="true" />
+                      </a>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 shrink-0">
+                      {NUTRIENT_LEVELS.map((lvl) => (
+                        <button
+                          key={lvl}
+                          type="button"
+                          onClick={() => row.setter(lvl)}
+                          className={`min-h-10 px-3 py-2 text-sm font-medium rounded-lg border transition-all ${
+                            row.value === lvl
+                              ? row.activeClass
+                              : 'bg-white border-gray-200 text-gray-500 hover:bg-gray-50'
+                          }`}
+                        >
+                          {getNutrientLabel(lvl)}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
-
-                {/* Phosphorus */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-amber-500" />
-                    {lang === 'hi' ? 'फास्फोरस (P)' : lang === 'mr' ? 'स्फुरद (P)' : 'Phosphorus (P)'}
-                  </span>
-                  <div className="grid grid-cols-3 gap-2">
-                    {NUTRIENT_LEVELS.map((lvl) => (
-                      <button
-                        key={lvl}
-                        type="button"
-                        onClick={() => setPhosphorusLevel(lvl)}
-                        className={`min-h-10 px-3 py-2 text-sm font-medium rounded-lg border transition-all ${
-                          phosphorusLevel === lvl
-                            ? 'bg-amber-50 border-amber-300 text-amber-700 font-bold shadow-xs'
-                            : 'bg-white border-gray-200 text-gray-500 hover:bg-gray-50'
-                        }`}
-                      >
-                        {getNutrientLabel(lvl)}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Potassium */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-purple-500" />
-                    {lang === 'hi' ? 'पोटेशियम (K)' : lang === 'mr' ? 'पालाश (K)' : 'Potassium (K)'}
-                  </span>
-                  <div className="grid grid-cols-3 gap-2">
-                    {NUTRIENT_LEVELS.map((lvl) => (
-                      <button
-                        key={lvl}
-                        type="button"
-                        onClick={() => setPotassiumLevel(lvl)}
-                        className={`min-h-10 px-3 py-2 text-sm font-medium rounded-lg border transition-all ${
-                          potassiumLevel === lvl
-                            ? 'bg-purple-50 border-purple-300 text-purple-700 font-bold shadow-xs'
-                            : 'bg-white border-gray-200 text-gray-500 hover:bg-gray-50'
-                        }`}
-                      >
-                        {getNutrientLabel(lvl)}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                ))}
               </div>
 
               {/* Field Size & Unit */}
               <div className="pt-5 border-t border-gray-100">
                 <h3 className="text-base font-bold text-gray-900 mb-3">
-                  {lang === 'hi' ? '४. खेत का आकार' : lang === 'mr' ? '४. शेताचा आकार' : '4. Your field size'}
+                  {tr(lang, '4. Your field size', '४. खेत का आकार', '४. शेताचा आकार')}
                 </h3>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  {lang === 'hi' ? 'आपके पास कितनी जमीन है?' : lang === 'mr' ? 'तुमच्याकडे किती जमीन आहे?' : 'How much land do you have?'}
+                  {tr(lang, 'How much land do you have?', 'आपके पास कितनी जमीन है?', 'तुमच्याकडे किती जमीन आहे?')}
                 </label>
                 <div className="flex gap-2">
                   <input
@@ -408,7 +436,7 @@ export default function FertilizerAdvisor() {
                     step="0.1"
                     value={area}
                     onChange={(e) => setArea(parseFloat(e.target.value) || 1)}
-                    placeholder="Area"
+                    placeholder={tr(lang, 'Area')}
                     className="flex-1 min-h-12 min-w-0 px-3.5 py-3 text-base border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#A5D6A7] focus:border-[#2E7D32]"
                   />
                   <select
@@ -418,7 +446,7 @@ export default function FertilizerAdvisor() {
                   >
                     {AREA_UNITS.map((u) => (
                       <option key={u} value={u}>
-                        {u}
+                        {tr(lang, u)}
                       </option>
                     ))}
                   </select>
@@ -432,7 +460,7 @@ export default function FertilizerAdvisor() {
               >
                 <Sparkles size={18} aria-hidden="true" />
                 <span>
-                  {lang === 'hi' ? 'खाद की अनुशंसित मात्रा की गणना करें' : lang === 'mr' ? 'खतांच्या शिफारसीची गणना करा' : 'Calculate Fertilizer Recommendation'}
+                  {tr(lang, 'Calculate Fertilizer Recommendation', 'खाद की अनुशंसित मात्रा की गणना करें', 'खतांच्या शिफारसीची गणना करा')}
                 </span>
               </button>
             </form>
@@ -450,7 +478,7 @@ export default function FertilizerAdvisor() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-5">
                 <div>
                   <span className="text-sm font-bold text-[#087f3e] uppercase tracking-wide">
-                    {lang === 'hi' ? 'आपकी उर्वरक अनुशंसा' : lang === 'mr' ? 'तुमची खत शिफारस' : 'Your fertilizer recommendation'}
+                    {tr(lang, 'Your fertilizer recommendation', 'आपकी उर्वरक अनुशंसा', 'तुमची खत शिफारस')}
                   </span>
                   <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mt-1">
                     🌾 {result.crop}
@@ -458,7 +486,15 @@ export default function FertilizerAdvisor() {
                   <p className="text-base text-gray-600 mt-1">{result.stage}</p>
                 </div>
                 <div className="px-4 py-2.5 rounded-xl bg-[#f0faf2] border border-[#c8e6c9] text-sm font-semibold text-[#087f3e]">
-                  {lang === 'hi' ? `खेत के लिए: ${area} ${areaUnit}` : lang === 'mr' ? `शेतासाठी: ${area} ${areaUnit}` : `For your field: ${area} ${areaUnit}`}
+                  {pickLang(lang, {
+                    en: `For your field: ${submittedInput.area} ${tr(lang, submittedInput.areaUnit)}`,
+                    hi: `खेत के लिए: ${submittedInput.area} ${tr(lang, submittedInput.areaUnit)}`,
+                    mr: `शेतासाठी: ${submittedInput.area} ${tr(lang, submittedInput.areaUnit)}`,
+                    gu: `તમારા ખેતર માટે: ${submittedInput.area} ${tr(lang, submittedInput.areaUnit)}`,
+                    pa: `ਤੁਹਾਡੇ ਖੇਤ ਲਈ: ${submittedInput.area} ${tr(lang, submittedInput.areaUnit)}`,
+                    ta: `உங்கள் வயலுக்கு: ${submittedInput.area} ${tr(lang, submittedInput.areaUnit)}`,
+                    te: `మీ పొలం కోసం: ${submittedInput.area} ${tr(lang, submittedInput.areaUnit)}`,
+                  })}
                 </div>
               </div>
 
@@ -466,36 +502,63 @@ export default function FertilizerAdvisor() {
               <div className="grid sm:grid-cols-2 gap-x-6 gap-y-4">
                 <div>
                   <span className="text-sm text-gray-500 block">
-                    {lang === 'hi' ? 'मिट्टी का प्रकार' : lang === 'mr' ? 'मातीचा प्रकार' : 'Soil type'}
+                    {tr(lang, 'Soil type', 'मिट्टी का प्रकार', 'मातीचा प्रकार')}
                   </span>
                   <span className="text-base font-semibold text-gray-900">{result.soilType}</span>
                 </div>
                 <div>
                   <span className="text-sm text-gray-500 block">
-                    {lang === 'hi' ? 'मृदा pH मान' : lang === 'mr' ? 'मातीचा सामू (pH)' : 'Soil pH'}
+                    {tr(lang, 'Soil pH', 'मृदा pH मान', 'मातीचा सामू (pH)')}
                   </span>
-                  <span className="text-base font-semibold text-gray-900">
-                    {result.soilPh} ({result.phCategory})
-                  </span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-base font-semibold text-gray-900">
+                      {result.soilPh} ({result.phCategory})
+                    </span>
+                    <a
+                      href={buildPhAiUrl(result.soilPh, result.crop, result.soilType)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-[#087f3e] border border-emerald-200 hover:bg-emerald-100 transition-colors"
+                    >
+                      <Sparkles size={11} aria-hidden="true" />
+                      <span>{tr(lang, 'Ask Google AI')}</span>
+                      <ExternalLink size={10} aria-hidden="true" />
+                    </a>
+                  </div>
                 </div>
                 <div className="sm:col-span-2 border-t border-gray-100 pt-4">
                   <span className="text-sm font-semibold text-gray-700 block mb-3">
-                    {lang === 'hi' ? 'मृदा पोषक तत्व' : lang === 'mr' ? 'मातीतील पोषक घटक' : 'Soil nutrients'}
+                    {tr(lang, 'Soil nutrients', 'मृदा पोषक तत्व', 'मातीतील पोषक घटक')}
                   </span>
                   <div className="grid sm:grid-cols-3 gap-3">
-                    {soilNutrients.map((nutrient) => {
-                      const [name, level] = nutrient.split(': ')
-                      const levelColor = level === 'Low'
-                        ? 'text-amber-700 bg-amber-50'
-                        : level === 'High'
-                        ? 'text-emerald-700 bg-emerald-50'
-                        : 'text-blue-700 bg-blue-50'
+                    {result.nutrientItems.map((item) => {
+                      const levelColor =
+                        item.rawLevel === 'Low'
+                          ? 'text-amber-700 bg-amber-50'
+                          : item.rawLevel === 'High'
+                          ? 'text-emerald-700 bg-emerald-50'
+                          : 'text-blue-700 bg-blue-50'
                       return (
-                        <div key={name} className="flex items-center justify-between gap-2">
-                          <span className="text-sm text-gray-700">{name}</span>
-                          <span className={`px-2.5 py-1 rounded-full text-sm font-semibold ${levelColor}`}>
-                            {level === 'Low' ? (lang === 'hi' ? 'कम' : lang === 'mr' ? 'कमी' : 'Low') : level === 'Medium' ? (lang === 'hi' ? 'मध्यम' : lang === 'mr' ? 'मध्यम' : 'Medium') : (lang === 'hi' ? 'अधिक' : lang === 'mr' ? 'जास्त' : 'High')}
-                          </span>
+                        <div
+                          key={item.key}
+                          className="bg-gray-50/70 border border-gray-100 rounded-xl px-3 py-2.5 flex flex-col gap-1.5"
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-sm text-gray-700 font-medium">{item.label}</span>
+                            <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${levelColor}`}>
+                              {item.levelLabel}
+                            </span>
+                          </div>
+                          <a
+                            href={buildNutrientAiUrl(item.label, result.crop, item.levelLabel)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-xs font-semibold text-[#087f3e] hover:underline self-start"
+                          >
+                            <Sparkles size={11} aria-hidden="true" />
+                            <span>{tr(lang, 'Ask Google AI')}</span>
+                            <ExternalLink size={10} aria-hidden="true" />
+                          </a>
                         </div>
                       )
                     })}
@@ -519,14 +582,14 @@ export default function FertilizerAdvisor() {
               <div className="flex items-center gap-2">
               <FlaskConical className="w-5 h-5 text-[#087f3e]" aria-hidden="true" />
               <h3 className="text-lg font-bold text-gray-900">
-                {lang === 'hi' ? 'कौन सा उर्वरक और कितनी मात्रा' : lang === 'mr' ? 'कोणते खत आणि किती प्रमाण' : 'What fertilizer to use'}
+                {tr(lang, 'What fertilizer to use', 'कौन सा उर्वरक और कितनी मात्रा', 'कोणते खत आणि किती प्रमाण')}
                 </h3>
               </div>
 
               {result.primaryFertilizers.length === 0 ? (
                 <div className="bg-white rounded-2xl border border-gray-100 p-6 text-center text-gray-600">
                   <p className="text-base font-medium">
-                    {lang === 'hi' ? 'इस परिपक्वता अवस्था में किसी रासायनिक उर्वरक की आवश्यकता नहीं है।' : lang === 'mr' ? 'या परिपक्व अवस्थेत कोणत्याही रासायनिक खतांची गरज नाही.' : 'No chemical fertilizers required at this pre-harvest / maturity stage.'}
+                    {tr(lang, 'No chemical fertilizers required at this pre-harvest / maturity stage.', 'इस परिपक्वता अवस्था में किसी रासायनिक उर्वरक की आवश्यकता नहीं है।', 'या परिपक्व अवस्थेत कोणत्याही रासायनिक खतांची गरज नाही.')}
                   </p>
                 </div>
               ) : (
@@ -545,7 +608,7 @@ export default function FertilizerAdvisor() {
                           <span className="text-lg sm:text-xl font-bold text-gray-900 block">{fert.name}</span>
                           <p className="text-sm text-gray-700 mt-4 leading-relaxed">
                             <strong className="text-gray-900 block mb-1">
-                              {lang === 'hi' ? 'कब और कैसे प्रयोग करें' : lang === 'mr' ? 'केव्हा आणि कसे वापरावे' : 'When and how to apply'}
+                              {tr(lang, 'When and how to apply', 'कब और कैसे प्रयोग करें', 'केव्हा आणि कसे वापरावे')}
                             </strong>
                             {fert.timingAndMethod}
                           </p>
@@ -554,7 +617,15 @@ export default function FertilizerAdvisor() {
                         {/* Quantity Pill */}
                         <div className="bg-[#E8F5E9] border border-[#A5D6A7] rounded-xl p-4 sm:min-w-44 text-left sm:text-right shrink-0">
                           <span className="text-sm text-gray-700 font-semibold block">
-                            {lang === 'hi' ? `कुल (${area} ${areaUnit})` : lang === 'mr' ? `एकूण (${area} ${areaUnit})` : `Total for ${area} ${areaUnit}`}
+                            {pickLang(lang, {
+                              en: `Total for ${submittedInput.area} ${tr(lang, submittedInput.areaUnit)}`,
+                              hi: `कुल (${submittedInput.area} ${tr(lang, submittedInput.areaUnit)})`,
+                              mr: `एकूण (${submittedInput.area} ${tr(lang, submittedInput.areaUnit)})`,
+                              gu: `કુલ (${submittedInput.area} ${tr(lang, submittedInput.areaUnit)})`,
+                              pa: `ਕੁੱਲ (${submittedInput.area} ${tr(lang, submittedInput.areaUnit)})`,
+                              ta: `மொத்தம் (${submittedInput.area} ${tr(lang, submittedInput.areaUnit)})`,
+                              te: `మొత్తం (${submittedInput.area} ${tr(lang, submittedInput.areaUnit)})`,
+                            })}
                           </span>
                           <span className="text-2xl sm:text-3xl font-extrabold text-[#087f3e] block mt-1">
                             {fert.totalQuantity}
@@ -564,15 +635,27 @@ export default function FertilizerAdvisor() {
                           </span>
                         </div>
                       </div>
-                      <details className="mt-4 border-t border-gray-100 pt-3">
-                        <summary className="cursor-pointer text-sm font-semibold text-[#087f3e]">
-                          {lang === 'hi' ? 'और अधिक जानकारी' : lang === 'mr' ? 'अधिक तपशील' : 'More details'}
-                        </summary>
-                        <div className="mt-3 space-y-1 text-sm text-gray-600">
-                          <p>{fert.commercialName}</p>
-                          <p>{lang === 'hi' ? 'पोषक संरचना:' : lang === 'mr' ? 'घटक रचना:' : 'Nutrient composition:'} {fert.nutrientGrade}</p>
-                        </div>
-                      </details>
+                      <div className="mt-4 border-t border-gray-100 pt-3 flex flex-wrap items-start justify-between gap-3">
+                        <details className="flex-1 min-w-44">
+                          <summary className="cursor-pointer text-sm font-semibold text-[#087f3e]">
+                            {tr(lang, 'More details', 'और अधिक जानकारी', 'अधिक तपशील')}
+                          </summary>
+                          <div className="mt-3 space-y-1 text-sm text-gray-600">
+                            <p>{fert.commercialName}</p>
+                            <p>{tr(lang, 'Nutrient composition:', 'पोषक संरचना:', 'घटक रचना:')} {fert.nutrientGrade}</p>
+                          </div>
+                        </details>
+                        <a
+                          href={buildFertilizerAiUrl(fert.name, fert.nutrientGrade, result.crop, result.stage)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#f0faf2] text-[#087f3e] border border-[#c8e6c9] hover:bg-[#E8F5E9] transition-colors shrink-0"
+                        >
+                          <Sparkles size={13} aria-hidden="true" />
+                          <span>{tr(lang, 'Explain in Google AI')}</span>
+                          <ExternalLink size={12} aria-hidden="true" />
+                        </a>
+                      </div>
                     </motion.div>
                   ))}
                 </div>
@@ -589,7 +672,7 @@ export default function FertilizerAdvisor() {
               <div className="flex items-center gap-2">
                 <HelpCircle className="w-5 h-5 text-[#087f3e]" aria-hidden="true" />
                 <h3 className="text-lg font-bold text-gray-900">
-                  {lang === 'hi' ? 'यह उर्वरक क्यों अनुशंसित है?' : lang === 'mr' ? 'हेच खत का वापरावे?' : 'Why this fertilizer?'}
+                  {tr(lang, 'Why this fertilizer?', 'यह उर्वरक क्यों अनुशंसित है?', 'हेच खत का वापरावे?')}
                 </h3>
               </div>
               <p className="text-base text-gray-700 leading-relaxed">
@@ -599,7 +682,7 @@ export default function FertilizerAdvisor() {
               {/* Recommended Action Bullet Points */}
               <div className="space-y-3 pt-2">
                 <span className="text-base font-bold text-gray-900">
-                  {lang === 'hi' ? 'आपको क्या करना चाहिए' : lang === 'mr' ? 'तुम्ही काय करावे' : 'What you should do'}
+                  {tr(lang, 'What you should do', 'आपको क्या करना चाहिए', 'तुम्ही काय करावे')}
                 </span>
                 <ul className="space-y-3">
                   {result.recommendedAction.map((act, i) => (
@@ -619,7 +702,7 @@ export default function FertilizerAdvisor() {
                 <div className="flex items-center gap-2 text-[#087f3e]">
                   <Sparkles size={18} aria-hidden="true" />
                   <h4 className="text-base font-bold text-gray-900">
-                    {lang === 'hi' ? 'सूक्ष्म पोषक तत्व बूस्टर' : lang === 'mr' ? 'सूक्ष्म पोषक घटक' : 'Micronutrient Booster'}
+                    {tr(lang, 'Micronutrient Booster', 'सूक्ष्म पोषक तत्व बूस्टर', 'सूक्ष्म पोषक घटक')}
                   </h4>
                 </div>
                 <p className="text-sm text-gray-700 leading-relaxed">
@@ -632,15 +715,11 @@ export default function FertilizerAdvisor() {
                 <div className="flex items-center gap-2 text-emerald-700">
                   <Leaf size={18} aria-hidden="true" />
                   <h4 className="text-base font-bold text-gray-900">
-                    {lang === 'hi' ? 'मिट्टी के स्वास्थ्य में सुधार' : lang === 'mr' ? 'मातीचे आरोग्य सुधारा' : 'Improve soil health'}
+                    {tr(lang, 'Improve soil health', 'मिट्टी के स्वास्थ्य में सुधार', 'मातीचे आरोग्य सुधारा')}
                   </h4>
                 </div>
                 <p className="text-sm text-gray-700 leading-relaxed">
-                  {lang === 'hi'
-                    ? 'मृदा जैविक कार्बन और सूक्ष्मजीव स्वास्थ्य को बढ़ाने के लिए 4-5 टन गोबर खाद (FYM) या 1.5 टन वर्मीकम्पोस्ट का प्रयोग करें।'
-                    : lang === 'mr'
-                    ? 'मातीतील सेंद्रिय कर्ब आणि सूक्ष्मजीव वाढवण्यासाठी ४-५ टन शेणखत किंवा १.५ टन गांडूळ खत वापरा.'
-                    : 'Supplement with 4-5 tonnes FYM or 1.5 tonnes Vermicompost + Azotobacter/PSB seed inoculation to enhance soil organic carbon and microbial vitality.'}
+                  {tr(lang, 'Supplement with 4-5 tonnes FYM or 1.5 tonnes Vermicompost + Azotobacter/PSB seed inoculation to enhance soil organic carbon and microbial vitality.', 'मृदा जैविक कार्बन और सूक्ष्मजीव स्वास्थ्य को बढ़ाने के लिए 4-5 टन गोबर खाद (FYM) या 1.5 टन वर्मीकम्पोस्ट का प्रयोग करें।', 'मातीतील सेंद्रिय कर्ब आणि सूक्ष्मजीव वाढवण्यासाठी ४-५ टन शेणखत किंवा १.५ टन गांडूळ खत वापरा.')}
                 </p>
               </div>
             </div>
@@ -650,7 +729,7 @@ export default function FertilizerAdvisor() {
               <div className="flex items-center gap-2 text-gray-700">
                 <ShieldCheck size={18} className="text-[#087f3e]" aria-hidden="true" />
                 <h4 className="text-base font-bold text-gray-900">
-                  {lang === 'hi' ? 'सुरक्षित प्रयोग के नियम' : lang === 'mr' ? 'सुरक्षित वापराचे नियम' : 'Safe application'}
+                  {tr(lang, 'Safe application', 'सुरक्षित प्रयोग के नियम', 'सुरक्षित वापराचे नियम')}
                 </h4>
               </div>
               <ul className="grid sm:grid-cols-2 gap-3">

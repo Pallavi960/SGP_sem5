@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getWeatherIcon } from './hooks/useWeather'
-import { useLanguage } from './context/LanguageContext'
+import { useLanguage, type LangCode } from './context/LanguageContext'
+import { tr, pickLang } from './lib/i18n'
 
 const WMO_LABEL_EN: Record<number, string> = {
   0: 'Clear Sky', 1: 'Mainly Clear', 2: 'Partly Cloudy', 3: 'Cloudy',
@@ -32,14 +33,69 @@ const WMO_LABEL_MR: Record<number, string> = {
   95: 'वादळी पाऊस', 96: 'विजांसह पाऊस', 99: 'तीव्र वादळ',
 }
 
-const DAYS_EN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-const DAYS_HI = ['रवि', 'सोम', 'मंगल', 'बुध', 'गुरु', 'शुक्र', 'शनि']
-const DAYS_MR = ['रवि', 'सोम', 'मंगळ', 'बुध', 'गुरु', 'शुक्र', 'शनि']
+const WMO_LABEL_GU: Record<number, string> = {
+  0: 'સ્વચ્છ આકાશ', 1: 'મુખ્યત્વે સ્વચ્છ', 2: 'આંશિક વાદળછાયું', 3: 'વાદળછાયું',
+  45: 'ધુમ્મસ', 48: 'ગાઢ ધુમ્મસ',
+  51: 'હળવો ઝરમર વરસાદ', 53: 'ઝરમર વરસાદ', 55: 'ભારે ઝરમર વરસાદ',
+  61: 'હળવો વરસાદ', 63: 'વરસાદ', 65: 'ભારે વરસાદ',
+  71: 'હળવી હિમવર્ષા', 73: 'હિમવર્ષા', 75: 'ભારે હિમવર્ષા',
+  80: 'હળવા ઝાપટા', 81: 'વરસાદી ઝાપટા', 82: 'ભારે ઝાપટા',
+  95: 'ગાજવીજ સાથે વરસાદ', 96: 'વીજળી સાથે વરસાદ', 99: 'ભારે વાવાઝોડું',
+}
 
-function getWmoLabel(code: number, lang: string): string {
-  if (lang === 'hi') return WMO_LABEL_HI[code] ?? 'सामान्य मौसम'
-  if (lang === 'mr') return WMO_LABEL_MR[code] ?? 'सामान्य हवामान'
-  return WMO_LABEL_EN[code] ?? 'Unknown'
+const WMO_LABEL_PA: Record<number, string> = {
+  0: 'ਸਾਫ਼ ਅਸਮਾਨ', 1: 'ਮੁੱਖ ਤੌਰ ਤੇ ਸਾਫ਼', 2: 'ਅੰਸ਼ਿਕ ਬੱਦਲਵਾਈ', 3: 'ਬੱਦਲਵਾਈ',
+  45: 'ਧੁੰਦ', 48: 'ਸੰਘਣੀ ਧੁੰਦ',
+  51: 'ਹਲਕੀ ਬੂੰਦਾਬਾਂਦੀ', 53: 'ਬੂੰਦਾਬਾਂਦੀ', 55: 'ਤੇਜ਼ ਬੂੰਦਾਬਾਂਦੀ',
+  61: 'ਹਲਕਾ ਮੀਂਹ', 63: 'ਮੀਂਹ', 65: 'ਭਾਰੀ ਮੀਂਹ',
+  71: 'ਹਲਕੀ ਬਰਫ਼ਬਾਰੀ', 73: 'ਬਰਫ਼ਬਾਰੀ', 75: 'ਭਾਰੀ ਬਰਫ਼ਬਾਰੀ',
+  80: 'ਹਲਕੀਆਂ ਬੌਛਾਰਾਂ', 81: 'ਮੀਂਹ ਦੀਆਂ ਬੌਛਾਰਾਂ', 82: 'ਤੇਜ਼ ਬੌਛਾਰਾਂ',
+  95: 'ਗਰਜ ਨਾਲ ਮੀਂਹ', 96: 'ਬਿਜਲੀ ਨਾਲ ਮੀਂਹ', 99: 'ਭਿਆਨਕ ਤੂਫ਼ਾਨ',
+}
+
+const WMO_LABEL_TA: Record<number, string> = {
+  0: 'தெளிவான வானம்', 1: 'பெரும்பாலும் தெளிவு', 2: 'பகுதி மேகமூட்டம்', 3: 'மேகமூட்டம்',
+  45: 'பனிமூட்டம்', 48: 'அடர் பனிமூட்டம்',
+  51: 'லேசான தூறல்', 53: 'தூறல்', 55: 'கனத்த தூறல்',
+  61: 'லேசான மழை', 63: 'மழை', 65: 'கனமழை',
+  71: 'லேசான பனிப்பொழிவு', 73: 'பனிப்பொழிவு', 75: 'கனத்த பனிப்பொழிவு',
+  80: 'லேசான மழைத்தூறல்', 81: 'மழைச்சாரல்', 82: 'பலத்த மழைச்சாரல்',
+  95: 'இடியுடன் கூடிய மழை', 96: 'மின்னலுடன் கூடிய மழை', 99: 'கடும் புயல்',
+}
+
+const WMO_LABEL_TE: Record<number, string> = {
+  0: 'నిర్మలమైన ఆకాశం', 1: 'ప్రధానంగా నిర్మలం', 2: 'పాక్షిక మేఘావృతం', 3: 'మేఘావృతం',
+  45: 'పొగమంచు', 48: 'దట్టమైన పొగమంచు',
+  51: 'తేలికపాటి జల్లులు', 53: 'జల్లులు', 55: 'భారీ జల్లులు',
+  61: 'తేలికపాటి వర్షం', 63: 'వర్షం', 65: 'భారీ వర్షం',
+  71: 'తేలికపాటి మంచు', 73: 'మంచు', 75: 'భారీ మంచు',
+  80: 'తేలికపాటి వర్షపు జల్లులు', 81: 'వర్షపు జల్లులు', 82: 'భారీ వర్షపు జల్లులు',
+  95: 'ఉరుములతో కూడిన వర్షం', 96: 'పిడుగులతో వర్షం', 99: 'తీవ్రమైన తుఫాను',
+}
+
+const DAYS_BY_LANG: Record<LangCode, string[]> = {
+  en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  hi: ['रवि', 'सोम', 'मंगल', 'बुध', 'गुरु', 'शुक्र', 'शनि'],
+  mr: ['रवि', 'सोम', 'मंगळ', 'बुध', 'गुरु', 'शुक्र', 'शनि'],
+  gu: ['રવિ', 'સોમ', 'મંગળ', 'બુધ', 'ગુરુ', 'શુક્ર', 'શનિ'],
+  pa: ['ਐਤ', 'ਸੋਮ', 'ਮੰਗਲ', 'ਬੁੱਧ', 'ਵੀਰ', 'ਸ਼ੁੱਕਰ', 'ਸ਼ਨੀ'],
+  ta: ['ஞாயி', 'திங்', 'செவ்', 'புத', 'வியா', 'வெள்', 'சனி'],
+  te: ['ఆది', 'సోమ', 'మంగళ', 'బుధ', 'గురు', 'శుక్ర', 'శని'],
+}
+
+const WMO_MAPS: Record<LangCode, { labels: Record<number, string>; fallback: string }> = {
+  en: { labels: WMO_LABEL_EN, fallback: 'Unknown' },
+  hi: { labels: WMO_LABEL_HI, fallback: 'सामान्य मौसम' },
+  mr: { labels: WMO_LABEL_MR, fallback: 'सामान्य हवामान' },
+  gu: { labels: WMO_LABEL_GU, fallback: 'સામાન્ય હવામાન' },
+  pa: { labels: WMO_LABEL_PA, fallback: 'ਆਮ ਮੌਸਮ' },
+  ta: { labels: WMO_LABEL_TA, fallback: 'சாதாரண வானிலை' },
+  te: { labels: WMO_LABEL_TE, fallback: 'సాధారణ వాతావరణం' },
+}
+
+function getWmoLabel(code: number, lang: LangCode): string {
+  const entry = WMO_MAPS[lang] ?? WMO_MAPS.en
+  return entry.labels[code] ?? entry.fallback
 }
 
 interface Current {
@@ -74,7 +130,7 @@ export default function Weather() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const daysList = lang === 'hi' ? DAYS_HI : lang === 'mr' ? DAYS_MR : DAYS_EN
+  const daysList = pickLang(lang, DAYS_BY_LANG)
 
   useEffect(() => {
     if (!navigator.geolocation) { setError('denied'); setLoading(false); return }
@@ -90,7 +146,7 @@ export default function Weather() {
           )
           const wj = await weatherRes.json()
 
-          let city = lang === 'hi' ? 'आपका स्थान' : lang === 'mr' ? 'तुमचे ठिकाण' : 'Your Location'
+          let city = tr(lang, 'Your Location', 'आपका स्थान', 'तुमचे ठिकाण')
           try {
             const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
             const gj = await geoRes.json()
@@ -128,7 +184,7 @@ export default function Weather() {
             const d = new Date(date)
             const isToday = i === 0
             const dayLabel = isToday
-              ? (lang === 'hi' ? 'आज' : lang === 'mr' ? 'आज' : 'Today')
+              ? (tr(lang, 'Today', 'आज', 'आज'))
               : daysList[d.getDay()]
             return {
               date,
@@ -154,7 +210,7 @@ export default function Weather() {
     <div className="flex flex-col items-center justify-center py-32 gap-3">
       <div className="text-5xl animate-bounce">🌤️</div>
       <p className="text-gray-500 text-sm">
-        {lang === 'hi' ? 'मौसम की ताजा जानकारी प्राप्त हो रही है...' : lang === 'mr' ? 'थेट हवामानाचा अंदाज आणत आहे...' : 'Fetching live weather...'}
+        {tr(lang, 'Fetching live weather...', 'मौसम की ताजा जानकारी प्राप्त हो रही है...', 'थेट हवामानाचा अंदाज आणत आहे...')}
       </p>
     </div>
   )
@@ -163,10 +219,10 @@ export default function Weather() {
     <div className="flex flex-col items-center justify-center py-32 gap-3">
       <div className="text-5xl">📍</div>
       <p className="text-gray-600 font-medium">
-        {lang === 'hi' ? 'स्थान अनुमति अस्वीकृत' : lang === 'mr' ? 'स्थान परवानगी नाकारली' : 'Location access denied'}
+        {tr(lang, 'Location access denied', 'स्थान अनुमति अस्वीकृत', 'स्थान परवानगी नाकारली')}
       </p>
       <p className="text-gray-400 text-sm">
-        {lang === 'hi' ? 'मौसम देखने के लिए कृपया स्थान की अनुमति दें' : lang === 'mr' ? 'हवामान पाहण्यासाठी कृपया स्थानाची परवानगी द्या' : 'Please allow location permission to see weather'}
+        {tr(lang, 'Please allow location permission to see weather', 'मौसम देखने के लिए कृपया स्थान की अनुमति दें', 'हवामान पाहण्यासाठी कृपया स्थानाची परवानगी द्या')}
       </p>
     </div>
   )
@@ -175,10 +231,10 @@ export default function Weather() {
     <div className="flex flex-col items-center justify-center py-32 gap-3">
       <div className="text-5xl">🌐</div>
       <p className="text-gray-600 font-medium">
-        {lang === 'hi' ? 'मौसम डेटा प्राप्त करने में असमर्थ' : lang === 'mr' ? 'हवामान माहिती आणण्यात अडचण' : 'Unable to fetch weather data'}
+        {tr(lang, 'Unable to fetch weather data', 'मौसम डेटा प्राप्त करने में असमर्थ', 'हवामान माहिती आणण्यात अडचण')}
       </p>
       <p className="text-gray-400 text-sm">
-        {lang === 'hi' ? 'इंटरनेट कनेक्शन जांचें और पुनः प्रयास करें' : lang === 'mr' ? 'इंटरनेट तपासा आणि पुन्हा प्रयत्न करा' : 'Check your internet connection and try again'}
+        {tr(lang, 'Check your internet connection and try again', 'इंटरनेट कनेक्शन जांचें और पुनः प्रयास करें', 'इंटरनेट तपासा आणि पुन्हा प्रयत्न करा')}
       </p>
     </div>
   )
@@ -203,16 +259,16 @@ export default function Weather() {
           <div className="text-8xl">{getWeatherIcon(current!.weathercode)}</div>
         </div>
         <div className="flex gap-6 mt-5 text-sm opacity-90">
-          <span>💧 {lang === 'hi' ? 'नमी' : lang === 'mr' ? 'आर्द्रता' : 'Humidity'}: {current!.humidity}%</span>
-          <span>💨 {lang === 'hi' ? 'हवा' : lang === 'mr' ? 'वारा' : 'Wind'}: {current!.windspeed} km/h</span>
-          <span>🌧️ {lang === 'hi' ? 'वर्षा' : lang === 'mr' ? 'पाऊस' : 'Precipitation'}: {current!.precipitation} mm</span>
+          <span>💧 {tr(lang, 'Humidity', 'नमी', 'आर्द्रता')}: {current!.humidity}%</span>
+          <span>💨 {tr(lang, 'Wind', 'हवा', 'वारा')}: {current!.windspeed} km/h</span>
+          <span>🌧️ {tr(lang, 'Precipitation', 'वर्षा', 'पाऊस')}: {current!.precipitation} mm</span>
         </div>
       </div>
 
       {/* Hourly Forecast */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">
-          {lang === 'hi' ? '24 घंटे का पूर्वानुमान' : lang === 'mr' ? '24 तासांचा अंदाज' : '24-Hour Forecast'}
+          {tr(lang, '24-Hour Forecast', '24 घंटे का पूर्वानुमान', '24 तासांचा अंदाज')}
         </h2>
         <div className="overflow-x-auto">
           <div className="flex gap-3 min-w-max pb-2">
@@ -241,7 +297,7 @@ export default function Weather() {
       {/* 7-Day Forecast */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">
-          {lang === 'hi' ? '7 दिनों का पूर्वानुमान' : lang === 'mr' ? '7 दिवसांचा अंदाज' : '7-Day Forecast'}
+          {tr(lang, '7-Day Forecast', '7 दिनों का पूर्वानुमान', '7 दिवसांचा अंदाज')}
         </h2>
         <div className="divide-y divide-gray-50">
           {daily.map((d, i) => (
@@ -260,7 +316,7 @@ export default function Weather() {
       </div>
 
       <p className="text-center text-xs text-gray-300">
-        {lang === 'hi' ? 'Open-Meteo द्वारा संचालित • पेज लोड पर अपडेट होता है' : lang === 'mr' ? 'Open-Meteo द्वारे समर्थित • पेज लोड झाल्यावर अपडेट होते' : 'Powered by Open-Meteo • Updates on page load'}
+        {tr(lang, 'Powered by Open-Meteo • Updates on page load', 'Open-Meteo द्वारा संचालित • पेज लोड पर अपडेट होता है', 'Open-Meteo द्वारे समर्थित • पेज लोड झाल्यावर अपडेट होते')}
       </p>
     </div>
   )

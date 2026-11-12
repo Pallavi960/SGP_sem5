@@ -5,7 +5,7 @@ import logo from './assets/logo.png'
 import { useWeather, getWeatherIcon } from './hooks/useWeather'
 import { useAuth } from './context/AuthContext'
 import { useLanguage } from './context/LanguageContext'
-import { t, LANG_OPTIONS } from './lib/i18n'
+import { t, tr, LANG_OPTIONS } from './lib/i18n'
 import type { LangCode } from './context/LanguageContext'
 
 function getNavLinks(lang: LangCode) {
@@ -24,11 +24,12 @@ function getNavLinks(lang: LangCode) {
 /* ─── Weather Widget ─────────────────────────────────────────── */
 function WeatherWidget() {
   const { weather, loading } = useWeather()
+  const { lang } = useLanguage()
 
   if (loading) return (
     <div className="flex items-center gap-1.5 px-[13px] py-[5px] h-[42px] bg-[#238636]/[0.04] border border-[#238636]/10 rounded-[10px] text-xs text-gray-400 animate-pulse select-none">
       <span>🌡️</span>
-      <span>Loading…</span>
+      <span>{tr(lang, 'Loading…')}</span>
     </div>
   )
 
@@ -82,12 +83,12 @@ function LanguageSelector() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-[calc(100%+6px)] w-40 bg-white border border-gray-200 rounded-xl shadow-lg py-1.5 z-50">
+        <div className="absolute right-0 top-[calc(100%+6px)] w-48 max-h-72 overflow-y-auto bg-white border border-gray-200 rounded-xl shadow-lg py-1 z-50">
           {LANG_OPTIONS.map((opt) => (
             <button
               key={opt.code}
               onClick={() => { setLang(opt.code); setOpen(false) }}
-              className={`w-full text-left px-4 py-2 text-[13px] transition-colors duration-100 rounded-none first:rounded-t-xl last:rounded-b-xl ${
+              className={`block w-full text-left px-3 py-1.5 text-[12.5px] whitespace-nowrap transition-colors duration-100 first:rounded-t-lg last:rounded-b-lg ${
                 lang === opt.code
                   ? 'text-[#087f3e] bg-[#087f3e]/10 font-semibold'
                   : 'text-gray-600 hover:bg-gray-50'
@@ -117,6 +118,7 @@ const HELP_STEPS = [
 
 function HelpPanel() {
   const [open, setOpen] = useState(false)
+  const { lang } = useLanguage()
 
   useEffect(() => {
     if (!open) return
@@ -137,11 +139,11 @@ function HelpPanel() {
             ? 'text-[#087f3e] bg-[#f0faf2]'
             : 'text-[#4b5563] hover:text-gray-900 hover:bg-[#f5f7f5]'
         }`}
-        aria-label="How to Use"
+        aria-label={tr(lang, 'How to Use')}
         aria-expanded={open}
       >
         <HelpCircle size={14} className={open ? 'text-[#087f3e]' : 'text-gray-400'} strokeWidth={2} />
-        <span className="whitespace-nowrap hidden sm:inline">How to Use</span>
+        <span className="whitespace-nowrap hidden sm:inline">{tr(lang, 'How to Use')}</span>
       </button>
 
       {/* Panel */}
@@ -149,18 +151,18 @@ function HelpPanel() {
         <div
           className="absolute right-0 top-[calc(100%+8px)] w-[300px] sm:w-[320px] bg-white border border-gray-200 rounded-2xl shadow-xl z-50 overflow-hidden"
           role="dialog"
-          aria-label="How to Use SmartFarm AI"
+          aria-label={tr(lang, 'How to Use SmartFarm AI')}
         >
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-[#f7faf5]">
             <div className="flex items-center gap-2">
               <span className="text-base">🌾</span>
-              <span className="text-[13px] font-bold text-gray-900">How to Use SmartFarm AI</span>
+              <span className="text-[13px] font-bold text-gray-900">{tr(lang, 'How to Use SmartFarm AI')}</span>
             </div>
             <button
               onClick={() => setOpen(false)}
               className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-              aria-label="Close help panel"
+              aria-label={tr(lang, 'Close help panel')}
             >
               <X size={14} />
             </button>
@@ -168,7 +170,7 @@ function HelpPanel() {
 
           {/* Steps list */}
           <div className="overflow-y-auto max-h-[70vh] px-3 py-2">
-            <p className="text-[11.5px] text-gray-400 px-1 pt-1 pb-2">Follow these simple steps:</p>
+            <p className="text-[11.5px] text-gray-400 px-1 pt-1 pb-2">{tr(lang, 'Follow these simple steps:')}</p>
 
             {HELP_STEPS.map((step, i) => (
               <div key={i}>
@@ -182,11 +184,11 @@ function HelpPanel() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1">
                         <span className="text-[12.5px] font-semibold text-gray-800 group-hover:text-[#087f3e] transition-colors leading-tight">
-                          {i + 1}. {step.title}
+                          {i + 1}. {tr(lang, step.title)}
                         </span>
                         <ArrowRight size={10} className="text-gray-300 group-hover:text-[#087f3e] shrink-0 transition-colors" />
                       </div>
-                      <p className="text-[11.5px] text-gray-500 leading-snug mt-0.5">{step.desc}</p>
+                      <p className="text-[11.5px] text-gray-500 leading-snug mt-0.5">{tr(lang, step.desc)}</p>
                     </div>
                   </Link>
                 ) : (
@@ -194,9 +196,9 @@ function HelpPanel() {
                     <span className="text-[15px] shrink-0 mt-0.5">{step.emoji}</span>
                     <div className="flex-1 min-w-0">
                       <span className="text-[12.5px] font-semibold text-gray-800 leading-tight">
-                        {i + 1}. {step.title}
+                        {i + 1}. {tr(lang, step.title)}
                       </span>
-                      <p className="text-[11.5px] text-gray-500 leading-snug mt-0.5">{step.desc}</p>
+                      <p className="text-[11.5px] text-gray-500 leading-snug mt-0.5">{tr(lang, step.desc)}</p>
                     </div>
                   </div>
                 )}
@@ -217,7 +219,7 @@ function HelpPanel() {
                 onClick={() => setOpen(false)}
                 className="flex items-center justify-center gap-1.5 w-full py-2 rounded-xl bg-[#f0faf2] hover:bg-[#d4edda] text-[12px] font-semibold text-[#087f3e] transition-colors"
               >
-                View Full Guide
+                {tr(lang, 'View Full Guide')}
                 <ArrowRight size={12} />
               </Link>
             </div>
@@ -236,7 +238,7 @@ export default function Navbar() {
   const { user, userPhone, userName, signOut } = useAuth()
   const { lang } = useLanguage()
 
-  const displayName = userName || userPhone || 'My Account'
+  const displayName = userName || userPhone || tr(lang, 'My Account')
 
   const baseNavLinks = getNavLinks(lang)
   const navLinks = user
@@ -271,7 +273,7 @@ export default function Navbar() {
           </span>
           <span className="text-[#d1d5db] text-[11px] select-none">/</span>
           <span className="text-[13px] font-semibold text-[#374151] select-none">
-            {navLinks.find((l) => isActive(l.to))?.label ?? 'Home'}
+            {navLinks.find((l) => isActive(l.to))?.label ?? tr(lang, 'Home')}
           </span>
         </div>
 
@@ -297,7 +299,7 @@ export default function Navbar() {
               <Link
                 to="/dashboard"
                 className="flex items-center gap-2 px-3 h-[34px] bg-[#f0faf2] hover:bg-[#d4edda] border border-[#c8e6c9] rounded-[8px] text-[12.5px] font-semibold text-[#087f3e] transition-all duration-150"
-                title="Go to Dashboard"
+                title={tr(lang, 'Go to Dashboard')}
               >
                 <User size={13} strokeWidth={2.2} />
                 <span className="max-w-[110px] truncate">{displayName}</span>
@@ -305,8 +307,8 @@ export default function Navbar() {
               <button
                 onClick={() => signOut()}
                 className="flex items-center justify-center w-[34px] h-[34px] text-gray-400 hover:text-red-500 hover:bg-red-50 border border-gray-200 hover:border-red-200 rounded-[8px] transition-all duration-150"
-                title="Log Out"
-                aria-label="Log Out"
+                title={tr(lang, 'Log Out')}
+                aria-label={tr(lang, 'Log Out')}
               >
                 <LogOut size={14} />
               </button>
@@ -316,7 +318,7 @@ export default function Navbar() {
               to="/login"
               className="inline-flex items-center justify-center px-4 h-[34px] text-[12.5px] font-semibold text-white bg-[#087f3e] rounded-[8px] hover:bg-[#066832] transition-all duration-150 whitespace-nowrap"
             >
-              Sign In
+              {t(lang, 'nav_sign_in')}
             </Link>
           )}
         </div>
@@ -333,15 +335,15 @@ export default function Navbar() {
           >
             <img
               src={logo}
-              alt="SmartFarm AI"
+              alt={tr(lang, 'SmartFarm AI')}
               className="w-[34px] h-[34px] object-contain block shrink-0"
             />
             <div className="flex flex-col leading-none gap-[3px]">
               <span className="text-[17px] font-bold text-gray-900 tracking-tight leading-none group-hover:text-[#087f3e] transition-colors duration-200">
-                SmartFarm AI
+                {tr(lang, 'SmartFarm AI')}
               </span>
               <span className="text-[9.5px] font-medium text-[#087f3e] tracking-wide leading-none uppercase">
-                Smart Farming Assistant
+                {tr(lang, 'Smart Farming Assistant')}
               </span>
             </div>
           </Link>
@@ -350,7 +352,7 @@ export default function Navbar() {
           <button
             onClick={() => setMenuOpen((p) => !p)}
             className="ml-auto p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors duration-150"
-            aria-label="Toggle menu"
+            aria-label={tr(lang, 'Toggle menu')}
           >
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
@@ -381,7 +383,7 @@ export default function Navbar() {
               className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[14px] font-medium text-[#087f3e] bg-[#f0faf2] border border-[#c8e6c9] transition-colors duration-150"
             >
               <HelpCircle size={15} strokeWidth={1.8} />
-              How to Use
+              {t(lang, 'nav_how_to_use')}
             </Link>
 
             <div className="mt-2 pt-3 border-t border-gray-100 flex flex-col gap-2.5">
@@ -398,7 +400,7 @@ export default function Navbar() {
                       <span className="text-xs font-semibold text-gray-800">{displayName}</span>
                     </div>
                     <Link to="/dashboard" className="text-xs font-bold text-[#087f3e] hover:underline">
-                      Dashboard
+                      {t(lang, 'nav_dashboard')}
                     </Link>
                   </div>
                   <button
@@ -406,7 +408,7 @@ export default function Navbar() {
                     className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-[14px] font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-[9px] transition-colors"
                   >
                     <LogOut size={16} />
-                    <span>Log Out</span>
+                    <span>{t(lang, 'nav_log_out')}</span>
                   </button>
                 </div>
               ) : (
@@ -414,7 +416,7 @@ export default function Navbar() {
                   to="/login"
                   className="block text-center px-4 py-2.5 text-[14px] font-semibold text-white bg-[#087f3e] rounded-[9px] hover:bg-[#066832] transition-colors duration-150"
                 >
-                  Login
+                  {t(lang, 'nav_sign_in')}
                 </Link>
               )}
             </div>

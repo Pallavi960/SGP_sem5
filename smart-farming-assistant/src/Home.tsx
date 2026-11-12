@@ -9,6 +9,7 @@ import FarmingIllustration from './FarmingIllustration'
 import DashboardPreview from './DashboardPreview'
 import WhySmartFarming from './WhySmartFarming'
 import { useLanguage } from './context/LanguageContext'
+import { tr, pickLang } from './lib/i18n'
 
 const heroContainer = {
   hidden: {},
@@ -23,18 +24,18 @@ export default function Home() {
   const { lang } = useLanguage()
 
   const stats = [
-    { value: '10K+', label: lang === 'hi' ? 'किसान लाभान्वित' : lang === 'mr' ? 'शेतकरी लाभान्वित' : 'Farmers Helped' },
-    { value: '95%', label: lang === 'hi' ? 'सटीकता दर' : lang === 'mr' ? 'अचूकता दर' : 'Accuracy Rate' },
-    { value: '50+', label: lang === 'hi' ? 'फसल किस्में' : lang === 'mr' ? 'पिकांच्या जाती' : 'Crop Varieties' },
-    { value: '24/7', label: lang === 'hi' ? 'एआई सहायता' : lang === 'mr' ? 'एआय मदत' : 'AI Support' },
+    { value: '10K+', label: tr(lang, 'Farmers Helped', 'किसान लाभान्वित', 'शेतकरी लाभान्वित') },
+    { value: '95%', label: tr(lang, 'Accuracy Rate', 'सटीकता दर', 'अचूकता दर') },
+    { value: '50+', label: tr(lang, 'Crop Varieties', 'फसल किस्में', 'पिकांच्या जाती') },
+    { value: '24/7', label: tr(lang, 'AI Support', 'एआई सहायता', 'एआय मदत') },
   ]
 
   const howToSteps = [
     {
       step: 1,
       icon: Wheat,
-      title: lang === 'hi' ? 'अपनी फसल चुनें' : lang === 'mr' ? 'आपले पीक निवडा' : 'Select Your Crop',
-      desc: lang === 'hi' ? 'फसल अनुशंसा पेज से अपनी फसल का चयन करें।' : lang === 'mr' ? 'पीक शिफारस पृष्ठावरून आपल्या पिकाची निवड करा.' : 'Choose your crop from the Crop Recommendation page.',
+      title: tr(lang, 'Select Your Crop', 'अपनी फसल चुनें', 'आपले पीक निवडा'),
+      desc: tr(lang, 'Choose your crop from the Crop Recommendation page.', 'फसल अनुशंसा पेज से अपनी फसल का चयन करें।', 'पीक शिफारस पृष्ठावरून आपल्या पिकाची निवड करा.'),
       color: 'text-green-700',
       bg: 'bg-green-50',
       border: 'border-green-200',
@@ -43,8 +44,8 @@ export default function Home() {
     {
       step: 2,
       icon: CloudSun,
-      title: lang === 'hi' ? 'मौसम की जांच करें' : lang === 'mr' ? 'हवामान तपासा' : 'Check Your Weather',
-      desc: lang === 'hi' ? 'अपने खेत के स्थान के अनुसार वर्तमान मौसम देखें।' : lang === 'mr' ? 'आपल्या शेताच्या स्थानानुसार सध्याचे हवामान पहा.' : 'See current weather conditions for your farm location.',
+      title: tr(lang, 'Check Your Weather', 'मौसम की जांच करें', 'हवामान तपासा'),
+      desc: tr(lang, 'See current weather conditions for your farm location.', 'अपने खेत के स्थान के अनुसार वर्तमान मौसम देखें।', 'आपल्या शेताच्या स्थानानुसार सध्याचे हवामान पहा.'),
       color: 'text-sky-700',
       bg: 'bg-sky-50',
       border: 'border-sky-200',
@@ -53,8 +54,8 @@ export default function Home() {
     {
       step: 3,
       icon: Sprout,
-      title: lang === 'hi' ? 'सटीक सलाह प्राप्त करें' : lang === 'mr' ? 'अचूक सल्ला मिळवा' : 'Get Recommendations',
-      desc: lang === 'hi' ? 'अपने खेत के अनुकूल फसल और खाद की सिफारिशें पाएं।' : lang === 'mr' ? 'आपल्या शेतासाठी अनुकूल पीक आणि खतांच्या शिफारसी मिळवा.' : 'Receive crop and fertilizer advice tailored to your field.',
+      title: tr(lang, 'Get Recommendations', 'सटीक सलाह प्राप्त करें', 'अचूक सल्ला मिळवा'),
+      desc: tr(lang, 'Receive crop and fertilizer advice tailored to your field.', 'अपने खेत के अनुकूल फसल और खाद की सिफारिशें पाएं।', 'आपल्या शेतासाठी अनुकूल पीक आणि खतांच्या शिफारसी मिळवा.'),
       color: 'text-emerald-700',
       bg: 'bg-emerald-50',
       border: 'border-emerald-200',
@@ -63,8 +64,8 @@ export default function Home() {
     {
       step: 4,
       icon: Bot,
-      title: lang === 'hi' ? 'कृषि कार्य योजना बनाएं' : lang === 'mr' ? 'शेती कामांचे नियोजन करा' : 'Plan Farm Tasks',
-      desc: lang === 'hi' ? 'अपनी खेती का कार्यक्रम तैयार करने के लिए फार्म प्लानर का उपयोग करें।' : lang === 'mr' ? 'शेतीचे वेळापत्रक तयार करण्यासाठी फार्म प्लॅनर वापरा.' : 'Use the Farm Planner to create your farming schedule.',
+      title: tr(lang, 'Plan Farm Tasks', 'कृषि कार्य योजना बनाएं', 'शेती कामांचे नियोजन करा'),
+      desc: tr(lang, 'Use the Farm Planner to create your farming schedule.', 'अपनी खेती का कार्यक्रम तैयार करने के लिए फार्म प्लानर का उपयोग करें।', 'शेतीचे वेळापत्रक तयार करण्यासाठी फार्म प्लॅनर वापरा.'),
       color: 'text-amber-700',
       bg: 'bg-amber-50',
       border: 'border-amber-200',
@@ -73,8 +74,8 @@ export default function Home() {
     {
       step: 5,
       icon: CheckCircle2,
-      title: lang === 'hi' ? 'कार्यों को ट्रैक करें' : lang === 'mr' ? 'कामांचा मागोवा घ्या' : 'Track Your Tasks',
-      desc: lang === 'hi' ? 'दिन-प्रतिदिन पूरे किए गए कार्यों को मार्क करें।' : lang === 'mr' ? 'दररोज पूर्ण झालेली कामे पूर्ण म्हणून नोंदवा.' : 'Mark tasks done as you complete them day by day.',
+      title: tr(lang, 'Track Your Tasks', 'कार्यों को ट्रैक करें', 'कामांचा मागोवा घ्या'),
+      desc: tr(lang, 'Mark tasks done as you complete them day by day.', 'दिन-प्रतिदिन पूरे किए गए कार्यों को मार्क करें।', 'दररोज पूर्ण झालेली कामे पूर्ण म्हणून नोंदवा.'),
       color: 'text-teal-700',
       bg: 'bg-teal-50',
       border: 'border-teal-200',
@@ -83,22 +84,22 @@ export default function Home() {
   ]
 
   const featureItems = [
-    { icon: Bot, label: lang === 'hi' ? 'एआई सहायक' : lang === 'mr' ? 'एआय सहाय्यक' : 'AI Assistant', to: '/ai-assistant' },
-    { icon: Microscope, label: lang === 'hi' ? 'रोग पहचान' : lang === 'mr' ? 'रोग ओळख' : 'Disease Detection', to: '/disease-detection' },
-    { icon: Sprout, label: lang === 'hi' ? 'फसल अनुशंसा' : lang === 'mr' ? 'पीक शिफारस' : 'Crop Recommendation', to: '/crop-recommendation' },
-    { icon: CloudSun, label: lang === 'hi' ? 'मौसम अपडेट' : lang === 'mr' ? 'हवामान अंदाज' : 'Weather Updates', to: '/weather' },
-    { icon: TrendingUp, label: lang === 'hi' ? 'मंडी भाव' : lang === 'mr' ? 'बाजारभाव' : 'Market Prices', to: '/features' },
-    { icon: BookOpen, label: lang === 'hi' ? 'सरकारी योजनाएं' : lang === 'mr' ? 'सरकारी योजना' : 'Govt. Schemes', to: '/government-schemes' },
+    { icon: Bot, label: tr(lang, 'AI Assistant', 'एआई सहायक', 'एआय सहाय्यक'), to: '/ai-assistant' },
+    { icon: Microscope, label: tr(lang, 'Disease Detection', 'रोग पहचान', 'रोग ओळख'), to: '/disease-detection' },
+    { icon: Sprout, label: tr(lang, 'Crop Recommendation', 'फसल अनुशंसा', 'पीक शिफारस'), to: '/crop-recommendation' },
+    { icon: CloudSun, label: tr(lang, 'Weather Updates', 'मौसम अपडेट', 'हवामान अंदाज'), to: '/weather' },
+    { icon: TrendingUp, label: tr(lang, 'Market Prices', 'मंडी भाव', 'बाजारभाव'), to: '/features' },
+    { icon: BookOpen, label: tr(lang, 'Govt. Schemes', 'सरकारी योजनाएं', 'सरकारी योजना'), to: '/government-schemes' },
   ]
 
   const aboutFeatures = [
-    { icon: Microscope, label: lang === 'hi' ? 'रोग पहचान' : lang === 'mr' ? 'रोग ओळख' : 'Disease Detection', route: '/disease-detection', desc: lang === 'hi' ? 'पत्ती की फोटो अपलोड कर तुरंत बीमारी और उपचार जानें।' : lang === 'mr' ? 'पानाचा फोटो अपलोड करून रोग व उपाय त्वरित जाणून घ्या.' : 'Upload a crop photo to identify diseases and get treatment advice instantly.' },
-    { icon: Sprout, label: lang === 'hi' ? 'फसल अनुशंसा' : lang === 'mr' ? 'पीक शिफारस' : 'Crop Recommendation', route: '/crop-recommendation', desc: lang === 'hi' ? 'मिट्टी, मौसम और क्षेत्र के अनुसार अनुकूल फसल सुझाव।' : lang === 'mr' ? 'माती, हंगाम आणि क्षेत्रानुसार योग्य पिकांचे मार्गदर्शन.' : 'Get crop suggestions matched to your soil, season, and location.' },
-    { icon: CloudSun, label: lang === 'hi' ? 'मौसम पूर्वानुमान' : lang === 'mr' ? 'हवामान अंदाज' : 'Weather Forecast', route: '/weather', desc: lang === 'hi' ? 'खेत जाने से पहले सटीक मौसम स्थिति देखें।' : lang === 'mr' ? 'शेतात जाण्यापूर्वी अचूक हवामान स्थिती तपासा.' : 'Check real-time weather conditions before going to the field.' },
-    { icon: FlaskConical, label: lang === 'hi' ? 'खाद सलाहकार' : lang === 'mr' ? 'खत सल्लागार' : 'Fertilizer Advisor', route: '/fertilizer-advisor', desc: lang === 'hi' ? 'मिट्टी विवरण दर्ज करें और खाद का सही संतुलन पाएं।' : lang === 'mr' ? 'मातीची माहिती भरा आणि खतांचा योग्य डोस मिळवा.' : 'Enter your soil details and get the right fertilizer guidance.' },
-    { icon: CalendarRange, label: lang === 'hi' ? 'खेती योजनाकार' : lang === 'mr' ? 'शेती नियोजक' : 'Farm Planner', route: '/farm-planner', desc: lang === 'hi' ? 'बुवाई से कटाई तक हर कृषि गतिविधि की योजना बनाएं।' : lang === 'mr' ? 'पेरणीपासून कापणीपर्यंत प्रत्येक शेती कामाचे नियोजन करा.' : 'Plan and track every farm activity from sowing to harvest.' },
-    { icon: BookOpen, label: lang === 'hi' ? 'सरकारी योजनाएं' : lang === 'mr' ? 'सरकारी योजना' : 'Govt. Schemes', route: '/government-schemes', desc: lang === 'hi' ? 'किसानों के लिए उपलब्ध सरकारी योजनाओं की जानकारी।' : lang === 'mr' ? 'शेतकऱ्यांसाठी उपलब्ध शासकीय योजनांची माहिती.' : 'Explore government schemes and agricultural support available for farmers.' },
-    { icon: Bot, label: lang === 'hi' ? 'एआई सहायक' : lang === 'mr' ? 'एआय सहाय्यक' : 'AI Assistant', route: '/ai-assistant', desc: lang === 'hi' ? 'अपनी भाषा में कोई भी कृषि प्रश्न पूछें और मार्गदर्शन पाएं।' : lang === 'mr' ? 'आपल्या भाषेत कोणताही शेती प्रश्न विचारा आणि सल्ला मिळवा.' : 'Ask any farming question in your language and get practical guidance.' },
+    { icon: Microscope, label: tr(lang, 'Disease Detection', 'रोग पहचान', 'रोग ओळख'), route: '/disease-detection', desc: tr(lang, 'Upload a crop photo to identify diseases and get treatment advice instantly.', 'पत्ती की फोटो अपलोड कर तुरंत बीमारी और उपचार जानें।', 'पानाचा फोटो अपलोड करून रोग व उपाय त्वरित जाणून घ्या.') },
+    { icon: Sprout, label: tr(lang, 'Crop Recommendation', 'फसल अनुशंसा', 'पीक शिफारस'), route: '/crop-recommendation', desc: tr(lang, 'Get crop suggestions matched to your soil, season, and location.', 'मिट्टी, मौसम और क्षेत्र के अनुसार अनुकूल फसल सुझाव।', 'माती, हंगाम आणि क्षेत्रानुसार योग्य पिकांचे मार्गदर्शन.') },
+    { icon: CloudSun, label: tr(lang, 'Weather Forecast', 'मौसम पूर्वानुमान', 'हवामान अंदाज'), route: '/weather', desc: tr(lang, 'Check real-time weather conditions before going to the field.', 'खेत जाने से पहले सटीक मौसम स्थिति देखें।', 'शेतात जाण्यापूर्वी अचूक हवामान स्थिती तपासा.') },
+    { icon: FlaskConical, label: tr(lang, 'Fertilizer Advisor', 'खाद सलाहकार', 'खत सल्लागार'), route: '/fertilizer-advisor', desc: tr(lang, 'Enter your soil details and get the right fertilizer guidance.', 'मिट्टी विवरण दर्ज करें और खाद का सही संतुलन पाएं।', 'मातीची माहिती भरा आणि खतांचा योग्य डोस मिळवा.') },
+    { icon: CalendarRange, label: tr(lang, 'Farm Planner', 'खेती योजनाकार', 'शेती नियोजक'), route: '/farm-planner', desc: tr(lang, 'Plan and track every farm activity from sowing to harvest.', 'बुवाई से कटाई तक हर कृषि गतिविधि की योजना बनाएं।', 'पेरणीपासून कापणीपर्यंत प्रत्येक शेती कामाचे नियोजन करा.') },
+    { icon: BookOpen, label: tr(lang, 'Govt. Schemes', 'सरकारी योजनाएं', 'सरकारी योजना'), route: '/government-schemes', desc: tr(lang, 'Explore government schemes and agricultural support available for farmers.', 'किसानों के लिए उपलब्ध सरकारी योजनाओं की जानकारी।', 'शेतकऱ्यांसाठी उपलब्ध शासकीय योजनांची माहिती.') },
+    { icon: Bot, label: tr(lang, 'AI Assistant', 'एआई सहायक', 'एआय सहाय्यक'), route: '/ai-assistant', desc: tr(lang, 'Ask any farming question in your language and get practical guidance.', 'अपनी भाषा में कोई भी कृषि प्रश्न पूछें और मार्गदर्शन पाएं।', 'आपल्या भाषेत कोणताही शेती प्रश्न विचारा आणि सल्ला मिळवा.') },
   ]
   return (
     <div className="bg-white overflow-x-hidden">
@@ -132,7 +133,7 @@ export default function Home() {
               <motion.div variants={heroItem} className="self-start">
                 <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#E8F5E9] border border-[#A5D6A7] text-[#2E7D32] text-sm font-medium">
                   <span className="w-2 h-2 rounded-full bg-[#4CAF50] animate-pulse" />
-                  {lang === 'hi' ? 'एआई-संचालित कृषि मंच' : lang === 'mr' ? 'एआय-संचालित कृषी मंच' : 'AI-Powered Agriculture Platform'}
+                  {tr(lang, 'AI-Powered Agriculture Platform', 'एआई-संचालित कृषि मंच', 'एआय-संचालित कृषी मंच')}
                 </span>
               </motion.div>
 
@@ -141,10 +142,10 @@ export default function Home() {
                 variants={heroItem}
                 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#1F2937] leading-[1.1] tracking-tight"
               >
-                {lang === 'hi' ? 'एआई-आधारित ' : lang === 'mr' ? 'एआय-आधारित ' : 'AI-Based '}
+                {tr(lang, 'AI-Based ', 'एआई-आधारित ', 'एआय-आधारित ')}
                 <span className="relative inline-block">
                   <span className="relative z-10 text-[#2E7D32]">
-                    {lang === 'hi' ? 'स्मार्ट कृषि' : lang === 'mr' ? 'स्मार्ट शेती' : 'Smart Farming'}
+                    {tr(lang, 'Smart Farming', 'स्मार्ट कृषि', 'स्मार्ट शेती')}
                   </span>
                   <motion.span
                     initial={{ scaleX: 0 }}
@@ -153,26 +154,50 @@ export default function Home() {
                     className="absolute bottom-1 left-0 right-0 h-3 bg-[#E8F5E9] -z-0 origin-left rounded-sm"
                   />
                 </span>{' '}
-                {lang === 'hi' ? 'सहायक' : lang === 'mr' ? 'सहाय्यक' : 'Assistant'}
+                {tr(lang, 'Assistant', 'सहायक', 'सहाय्यक')}
               </motion.h1>
 
               {/* Subtitle */}
               <motion.p variants={heroItem} className="text-lg sm:text-xl text-gray-500 leading-relaxed max-w-lg">
-                {lang === 'hi' ? (
-                  <>
-                    <span className="text-[#2E7D32] font-semibold">कृत्रिम बुद्धिमत्ता (AI)</span> की सहायता से किसानों को बेहतर कृषि निर्णय लेने में सक्षम बनाना। फसल स्वास्थ्य से लेकर मौसम पूर्वानुमान तक — सब कुछ एक ही स्थान पर।
-                  </>
-                ) : lang === 'mr' ? (
-                  <>
-                    <span className="text-[#2E7D32] font-semibold">कृत्रिम बुद्धिमत्ता (AI)</span> च्या मदतीने शेतकऱ्यांना अधिक सक्षम शेती निर्णय घेण्यास मदत. पिकांच्या आरोग्यापासून हवामानाच्या अंदाजापर्यंत — सर्व एकाच ठिकाणी.
-                  </>
-                ) : (
-                  <>
-                    Helping farmers make smarter farming decisions using{' '}
-                    <span className="text-[#2E7D32] font-semibold">Artificial Intelligence</span>.
-                    From crop health to weather forecasts — all in one place.
-                  </>
-                )}
+                {pickLang(lang, {
+                  hi: (
+                    <>
+                      <span className="text-[#2E7D32] font-semibold">कृत्रिम बुद्धिमत्ता (AI)</span> की सहायता से किसानों को बेहतर कृषि निर्णय लेने में सक्षम बनाना। फसल स्वास्थ्य से लेकर मौसम पूर्वानुमान तक — सब कुछ एक ही स्थान पर।
+                    </>
+                  ),
+                  mr: (
+                    <>
+                      <span className="text-[#2E7D32] font-semibold">कृत्रिम बुद्धिमत्ता (AI)</span> च्या मदतीने शेतकऱ्यांना अधिक सक्षम शेती निर्णय घेण्यास मदत. पिकांच्या आरोग्यापासून हवामानाच्या अंदाजापर्यंत — सर्व एकाच ठिकाणी.
+                    </>
+                  ),
+                  gu: (
+                    <>
+                      <span className="text-[#2E7D32] font-semibold">કૃત્રિમ બુદ્ધિમત્તા (AI)</span> ની મદદથી ખેડૂતોને વધુ સારા ખેતી નિર્ણયો લેવા સક્ષમ બનાવવા. પાક આરોગ્યથી લઈને હવામાન આગાહી સુધી — બધું જ એક જ સ્થળે.
+                    </>
+                  ),
+                  pa: (
+                    <>
+                      <span className="text-[#2E7D32] font-semibold">ਬਣਾਵਟੀ ਬੁੱਧੀ (AI)</span> ਦੀ ਮਦਦ ਨਾਲ ਕਿਸਾਨਾਂ ਨੂੰ ਬਿਹਤਰ ਖੇਤੀ ਫੈਸਲੇ ਲੈਣ ਦੇ ਯੋਗ ਬਣਾਉਣਾ। ਫਸਲ ਸਿਹਤ ਤੋਂ ਲੈ ਕੇ ਮੌਸਮ ਭਵਿੱਖਬਾਣੀ ਤੱਕ — ਸਭ ਕੁਝ ਇੱਕੋ ਥਾਂ 'ਤੇ।
+                    </>
+                  ),
+                  ta: (
+                    <>
+                      <span className="text-[#2E7D32] font-semibold">செயற்கை நுண்ணறிவு (AI)</span> உதவியுடன் விவசாயிகள் சிறந்த விவசாய முடிவுகளை எடுக்க உதவுகிறது. பயிர் ஆரோக்கியம் முதல் வானிலை முன்னறிவிப்பு வரை — அனைத்தும் ஒரே இடத்தில்.
+                    </>
+                  ),
+                  te: (
+                    <>
+                      <span className="text-[#2E7D32] font-semibold">కృత్రిమ మేధస్సు (AI)</span> సహాయంతో రైతులు మెరుగైన వ్యవసాయ నిర్ణయాలు తీసుకోవడానికి సహాయపడుతుంది. పంట ఆరోగ్యం నుండి వాతావరణ అంచనా వరకు — అన్నీ ఒకే చోట.
+                    </>
+                  ),
+                  en: (
+                    <>
+                      Helping farmers make smarter farming decisions using{' '}
+                      <span className="text-[#2E7D32] font-semibold">Artificial Intelligence</span>.
+                      From crop health to weather forecasts — all in one place.
+                    </>
+                  ),
+                })}
               </motion.p>
 
               {/* Buttons */}
@@ -182,7 +207,7 @@ export default function Home() {
                     to="/features"
                     className="inline-flex items-center gap-2 px-7 py-3.5 bg-[#2E7D32] text-white text-sm font-semibold rounded-xl shadow-lg shadow-green-900/20 hover:bg-[#1B5E20] hover:shadow-xl hover:shadow-green-900/25 transition-all duration-200"
                   >
-                    {lang === 'hi' ? 'सुविधाएं देखें' : lang === 'mr' ? 'वैशिष्ट्ये पहा' : 'Explore Features'} <ArrowRight size={16} />
+                    {tr(lang, 'Explore Features', 'सुविधाएं देखें', 'वैशिष्ट्ये पहा')} <ArrowRight size={16} />
                   </Link>
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
@@ -190,7 +215,7 @@ export default function Home() {
                     href="#about"
                     className="inline-flex items-center gap-2 px-7 py-3.5 bg-white text-[#2E7D32] text-sm font-semibold rounded-xl border-2 border-[#A5D6A7] hover:bg-[#E8F5E9] hover:border-[#2E7D32] transition-all duration-200"
                   >
-                    {lang === 'hi' ? 'अधिक जानें' : lang === 'mr' ? 'अधिक जाणून घ्या' : 'Learn More'}
+                    {tr(lang, 'Learn More', 'अधिक जानें', 'अधिक जाणून घ्या')}
                   </a>
                 </motion.div>
               </motion.div>
@@ -234,7 +259,7 @@ export default function Home() {
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-gray-300 select-none"
         >
           <span className="text-[10px] tracking-[0.2em] uppercase font-medium">
-            {lang === 'hi' ? 'नीचे देखें' : lang === 'mr' ? 'खाली पहा' : 'Scroll'}
+            {tr(lang, 'Scroll', 'नीचे देखें', 'खाली पहा')}
           </span>
           <ChevronDown size={17} />
         </motion.div>
@@ -256,7 +281,7 @@ export default function Home() {
             transition={{ duration: 0.5 }}
             className="text-center text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-10"
           >
-            {lang === 'hi' ? 'आधुनिक किसान की हर आवश्यकता' : lang === 'mr' ? 'आधुनिक शेतकऱ्यांची प्रत्येक गरज' : 'Everything a modern farmer needs'}
+            {tr(lang, 'Everything a modern farmer needs', 'आधुनिक किसान की हर आवश्यकता', 'आधुनिक शेतकऱ्यांची प्रत्येक गरज')}
           </motion.p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             {featureItems.map((item, i) => {
@@ -302,24 +327,16 @@ export default function Home() {
           >
             <div className="space-y-4">
               <span className="inline-block text-xs font-bold text-[#15803D] uppercase tracking-[0.18em]">
-                {lang === 'hi' ? 'SmartFarm AI के बारे में' : lang === 'mr' ? 'SmartFarm AI बद्दल' : 'About SmartFarm AI'}
+                {tr(lang, 'About SmartFarm AI', 'SmartFarm AI के बारे में', 'SmartFarm AI बद्दल')}
               </span>
               <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 leading-tight">
-                {lang === 'hi' ? 'SmartFarm AI क्या है?' : lang === 'mr' ? 'SmartFarm AI काय आहे?' : 'What is SmartFarm AI?'}
+                {tr(lang, 'What is SmartFarm AI?', 'SmartFarm AI क्या है?', 'SmartFarm AI काय आहे?')}
               </h2>
               <p className="text-base text-gray-600 leading-relaxed">
-                {lang === 'hi'
-                  ? 'SmartFarm AI भारतीय किसानों के लिए विकसित एक कृत्रिम बुद्धिमत्ता (AI) डिजिटल सहायक है। यह फसल रोग पहचान, मौसम पूर्वानुमान, खाद सलाह, कृषि नियोजन और सरकारी योजनाओं को एक मंच पर लाता है।'
-                  : lang === 'mr'
-                  ? 'SmartFarm AI हे भारतीय शेतकऱ्यांसाठी तयार केलेले एआय-चालित डिजिटल सहाय्यक आहे. हे पीक रोग निदान, हवामान अंदाज, खत सल्ला, शेती नियोजन आणि शासकीय योजना एकाच सोप्या व्यासपीठावर आणते.'
-                  : 'SmartFarm AI is an AI-powered digital assistant built for Indian farmers. It brings together crop health detection, weather forecasts, fertilizer advice, farm planning, and government scheme information into one simple, easy-to-use platform.'}
+                {tr(lang, 'SmartFarm AI is an AI-powered digital assistant built for Indian farmers. It brings together crop health detection, weather forecasts, fertilizer advice, farm planning, and government scheme information into one simple, easy-to-use platform.', 'SmartFarm AI भारतीय किसानों के लिए विकसित एक कृत्रिम बुद्धिमत्ता (AI) डिजिटल सहायक है। यह फसल रोग पहचान, मौसम पूर्वानुमान, खाद सलाह, कृषि नियोजन और सरकारी योजनाओं को एक मंच पर लाता है।', 'SmartFarm AI हे भारतीय शेतकऱ्यांसाठी तयार केलेले एआय-चालित डिजिटल सहाय्यक आहे. हे पीक रोग निदान, हवामान अंदाज, खत सल्ला, शेती नियोजन आणि शासकीय योजना एकाच सोप्या व्यासपीठावर आणते.')}
               </p>
               <p className="text-base text-gray-600 leading-relaxed">
-                {lang === 'hi'
-                  ? 'चाहे आप छोटे किसान हों या बड़े खेत का प्रबंधन कर रहे हों, SmartFarm AI आपको सही समय पर सटीक जानकारी — आपकी अपनी भाषा में उपलब्ध कराता है।'
-                  : lang === 'mr'
-                  ? 'तुम्ही अल्पभूधारक शेतकरी असा किंवा मोठ्या शेतीचे व्यवस्थापन करत असा, SmartFarm AI तुम्हाला योग्य वेळी योग्य माहिती — तुमच्या स्वतःच्या भाषेत देते.'
-                  : 'Whether you are a smallholder farmer or managing a large farm, SmartFarm AI gives you the right information at the right time — in your own language.'}
+                {tr(lang, 'Whether you are a smallholder farmer or managing a large farm, SmartFarm AI gives you the right information at the right time — in your own language.', 'चाहे आप छोटे किसान हों या बड़े खेत का प्रबंधन कर रहे हों, SmartFarm AI आपको सही समय पर सटीक जानकारी — आपकी अपनी भाषा में उपलब्ध कराता है।', 'तुम्ही अल्पभूधारक शेतकरी असा किंवा मोठ्या शेतीचे व्यवस्थापन करत असा, SmartFarm AI तुम्हाला योग्य वेळी योग्य माहिती — तुमच्या स्वतःच्या भाषेत देते.')}
               </p>
             </div>
 
@@ -331,36 +348,24 @@ export default function Home() {
                   color: 'text-red-600',
                   bg: 'bg-red-50',
                   border: 'border-red-100',
-                  label: lang === 'hi' ? 'समस्या' : lang === 'mr' ? 'समस्या' : 'The Problem',
-                  text: lang === 'hi'
-                    ? 'किसानों को अक्सर विशेषज्ञ सलाह, रीयल-टाइम मौसम डेटा या फसल स्वास्थ्य जानकारी के अभाव में महत्वपूर्ण निर्णय लेने पड़ते हैं।'
-                    : lang === 'mr'
-                    ? 'शेतकऱ्यांना तज्ज्ञ सल्ला, रिअल-टाइम हवामान किंवा पीक आरोग्याच्या माहितीशिवाय महत्त्वाचे निर्णय घ्यावे लागतात.'
-                    : 'Farmers make critical decisions without access to expert advice, real-time weather data, or crop health information.',
+                  label: tr(lang, 'The Problem', 'समस्या', 'समस्या'),
+                  text: tr(lang, 'Farmers make critical decisions without access to expert advice, real-time weather data, or crop health information.', 'किसानों को अक्सर विशेषज्ञ सलाह, रीयल-टाइम मौसम डेटा या फसल स्वास्थ्य जानकारी के अभाव में महत्वपूर्ण निर्णय लेने पड़ते हैं।', 'शेतकऱ्यांना तज्ज्ञ सल्ला, रिअल-टाइम हवामान किंवा पीक आरोग्याच्या माहितीशिवाय महत्त्वाचे निर्णय घ्यावे लागतात.'),
                 },
                 {
                   icon: Lightbulb,
                   color: 'text-amber-600',
                   bg: 'bg-amber-50',
                   border: 'border-amber-100',
-                  label: lang === 'hi' ? 'समाधान' : lang === 'mr' ? 'उपाय' : 'The Solution',
-                  text: lang === 'hi'
-                    ? 'SmartFarm AI सीधे हर किसान के मोबाइल पर एआई-संचालित मार्गदर्शन लाता है — सरल, निःशुल्क और हमेशा उपलब्ध।'
-                    : lang === 'mr'
-                    ? 'SmartFarm AI थेट प्रत्येक शेतकऱ्याच्या मोबाईलवर एआय मार्गदर्शन पुरवते — सोपे, मोफत आणि सदैव उपलब्ध.'
-                    : "SmartFarm AI brings AI-powered guidance directly to every farmer's phone — simple, free, and available anytime.",
+                  label: tr(lang, 'The Solution', 'समाधान', 'उपाय'),
+                  text: tr(lang, "SmartFarm AI brings AI-powered guidance directly to every farmer's phone — simple, free, and available anytime.", 'SmartFarm AI सीधे हर किसान के मोबाइल पर एआई-संचालित मार्गदर्शन लाता है — सरल, निःशुल्क और हमेशा उपलब्ध।', 'SmartFarm AI थेट प्रत्येक शेतकऱ्याच्या मोबाईलवर एआय मार्गदर्शन पुरवते — सोपे, मोफत आणि सदैव उपलब्ध.'),
                 },
                 {
                   icon: ShieldCheck,
                   color: 'text-green-700',
                   bg: 'bg-green-50',
                   border: 'border-green-100',
-                  label: lang === 'hi' ? 'परिणाम' : lang === 'mr' ? 'परिणाम' : 'The Result',
-                  text: lang === 'hi'
-                    ? 'फसलों का बेहतर स्वास्थ्य, नुकसान में भारी कमी, संसाधनों का कुशल उपयोग और प्रत्येक मौसम में लाभप्रद निर्णय।'
-                    : lang === 'mr'
-                    ? 'उत्तम पीक आरोग्य, नुकसानीत मोठी घट, साधनांचा कार्यक्षम वापर आणि प्रत्येक हंगामात अधिक नफा.'
-                    : 'Better crop health, reduced losses, smarter resource use, and more informed farming decisions every season.',
+                  label: tr(lang, 'The Result', 'परिणाम', 'परिणाम'),
+                  text: tr(lang, 'Better crop health, reduced losses, smarter resource use, and more informed farming decisions every season.', 'फसलों का बेहतर स्वास्थ्य, नुकसान में भारी कमी, संसाधनों का कुशल उपयोग और प्रत्येक मौसम में लाभप्रद निर्णय।', 'उत्तम पीक आरोग्य, नुकसानीत मोठी घट, साधनांचा कार्यक्षम वापर आणि प्रत्येक हंगामात अधिक नफा.'),
                 },
               ].map((item) => {
                 const Icon = item.icon
@@ -387,17 +392,13 @@ export default function Home() {
               className="text-center mb-10"
             >
               <span className="inline-block text-xs font-bold text-[#15803D] uppercase tracking-[0.18em] mb-2">
-                {lang === 'hi' ? 'सुविधाएं' : lang === 'mr' ? 'वैशिष्ट्ये' : 'Features'}
+                {tr(lang, 'Features', 'सुविधाएं', 'वैशिष्ट्ये')}
               </span>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
-                {lang === 'hi' ? 'आपके खेत के लिए आवश्यक सब कुछ' : lang === 'mr' ? 'तुमच्या शेतासाठी आवश्यक सर्वकाही' : 'Everything your farm needs'}
+                {tr(lang, 'Everything your farm needs', 'आपके खेत के लिए आवश्यक सब कुछ', 'तुमच्या शेतासाठी आवश्यक सर्वकाही')}
               </h2>
               <p className="text-base text-gray-500 mt-2 max-w-xl mx-auto">
-                {lang === 'hi'
-                  ? 'SmartFarm AI सात शक्तिशाली कृषि टूल्स को एक सरल प्लेटफॉर्म में जोड़ता है।'
-                  : lang === 'mr'
-                  ? 'SmartFarm AI सात शक्तिशाली कृषी साधनांना एका सोप्या व्यासपीठावर एकत्र आणते.'
-                  : 'SmartFarm AI combines seven powerful tools into one simple platform.'}
+                {tr(lang, 'SmartFarm AI combines seven powerful tools into one simple platform.', 'SmartFarm AI सात शक्तिशाली कृषि टूल्स को एक सरल प्लेटफॉर्म में जोड़ता है।', 'SmartFarm AI सात शक्तिशाली कृषी साधनांना एका सोप्या व्यासपीठावर एकत्र आणते.')}
               </p>
             </motion.div>
 
@@ -443,21 +444,17 @@ export default function Home() {
             </div>
             <div className="flex-1">
               <h3 className="text-[15px] font-bold text-gray-900 mb-1">
-                {lang === 'hi' ? 'भारतीय किसानों के लिए निर्मित' : lang === 'mr' ? 'भारतीय शेतकऱ्यांसाठी विकसित' : 'Built for Indian Farmers'}
+                {tr(lang, 'Built for Indian Farmers', 'भारतीय किसानों के लिए निर्मित', 'भारतीय शेतकऱ्यांसाठी विकसित')}
               </h3>
               <p className="text-sm text-gray-600 leading-relaxed">
-                {lang === 'hi'
-                  ? 'SmartFarm AI एक विशेष छात्र परियोजना (SGP — Smart Farming Group Project) है जो भारतीय किसानों को एआई-संचालित कृषि मार्गदर्शन उपलब्ध कराने हेतु विकसित की गई है। यह प्लेटफ़ॉर्म बहुभाषी है और मोबाइल तथा कंप्यूटर दोनों पर सुगमता से कार्य करता है।'
-                  : lang === 'mr'
-                  ? 'SmartFarm AI हा एक विशेष विद्यार्थी प्रकल्प (SGP — Smart Farming Group Project) आहे, जो भारतीय शेतकऱ्यांना एआय-आधारित कृषी मार्गदर्शन मिळवून देण्यासाठी विकसित केला गेला आहे. हे व्यासपीठ बहुभाषिक असून मोबाईल व संगणकावर सहज वापरता येते.'
-                  : 'SmartFarm AI is a student project (SGP — Smart Farming Group Project) developed to help Indian farmers access AI-powered agricultural guidance. The platform supports multiple languages, works on mobile and desktop, and is designed to be simple enough for every farmer.'}
+                {tr(lang, 'SmartFarm AI is a student project (SGP — Smart Farming Group Project) developed to help Indian farmers access AI-powered agricultural guidance. The platform supports multiple languages, works on mobile and desktop, and is designed to be simple enough for every farmer.', 'SmartFarm AI एक विशेष छात्र परियोजना (SGP — Smart Farming Group Project) है जो भारतीय किसानों को एआई-संचालित कृषि मार्गदर्शन उपलब्ध कराने हेतु विकसित की गई है। यह प्लेटफ़ॉर्म बहुभाषी है और मोबाइल तथा कंप्यूटर दोनों पर सुगमता से कार्य करता है।', 'SmartFarm AI हा एक विशेष विद्यार्थी प्रकल्प (SGP — Smart Farming Group Project) आहे, जो भारतीय शेतकऱ्यांना एआय-आधारित कृषी मार्गदर्शन मिळवून देण्यासाठी विकसित केला गेला आहे. हे व्यासपीठ बहुभाषिक असून मोबाईल व संगणकावर सहज वापरता येते.')}
               </p>
             </div>
             <Link
               to="/how-to-use"
               className="shrink-0 inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#15803D] hover:bg-[#166534] text-white text-sm font-semibold transition-colors"
             >
-              {lang === 'hi' ? 'आरंभ करें' : lang === 'mr' ? 'सुरू करा' : 'Get Started'} <ArrowRight size={14} />
+              {tr(lang, 'Get Started', 'आरंभ करें', 'सुरू करा')} <ArrowRight size={14} />
             </Link>
           </motion.div>
 
@@ -477,17 +474,13 @@ export default function Home() {
             className="text-center mb-14"
           >
             <span className="inline-block text-xs font-bold text-[#15803D] uppercase tracking-[0.18em] mb-3">
-              {lang === 'hi' ? 'शुरुआत कैसे करें' : lang === 'mr' ? 'सुरुवात कशी करावी' : 'Getting Started'}
+              {tr(lang, 'Getting Started', 'शुरुआत कैसे करें', 'सुरुवात कशी करावी')}
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 leading-tight">
-              {lang === 'hi' ? 'SmartFarm AI का उपयोग कैसे करें' : lang === 'mr' ? 'SmartFarm AI कसे वापरावे' : 'How to Use SmartFarm AI'}
+              {tr(lang, 'How to Use SmartFarm AI', 'SmartFarm AI का उपयोग कैसे करें', 'SmartFarm AI कसे वापरावे')}
             </h2>
             <p className="text-base text-gray-500 mt-3 max-w-xl mx-auto">
-              {lang === 'hi'
-                ? 'आपका सरल कृषि सहायक — हर सुविधा का सर्वोत्तम लाभ उठाने के लिए इन चरणों का पालन करें।'
-                : lang === 'mr'
-                ? 'आपला सोपा शेती सहाय्यक — प्रत्येक वैशिष्ट्याचा पूर्ण फायदा घेण्यासाठी या पायऱ्यांचे अनुसरण करा.'
-                : 'Your simple farming assistant — follow these five steps to get the most out of every feature.'}
+              {tr(lang, 'Your simple farming assistant — follow these five steps to get the most out of every feature.', 'आपका सरल कृषि सहायक — हर सुविधा का सर्वोत्तम लाभ उठाने के लिए इन चरणों का पालन करें।', 'आपला सोपा शेती सहाय्यक — प्रत्येक वैशिष्ट्याचा पूर्ण फायदा घेण्यासाठी या पायऱ्यांचे अनुसरण करा.')}
             </p>
           </motion.div>
 
@@ -545,7 +538,7 @@ export default function Home() {
               to="/crop-recommendation"
               className="inline-flex items-center gap-2 px-7 py-3.5 bg-[#15803D] hover:bg-[#166534] text-white text-sm font-semibold rounded-xl shadow-md shadow-green-900/15 transition-colors"
             >
-              {lang === 'hi' ? 'आरंभ करें' : lang === 'mr' ? 'सुरू करा' : 'Get Started'} <ArrowRight size={15} />
+              {tr(lang, 'Get Started', 'आरंभ करें', 'सुरू करा')} <ArrowRight size={15} />
             </Link>
           </motion.div>
         </div>

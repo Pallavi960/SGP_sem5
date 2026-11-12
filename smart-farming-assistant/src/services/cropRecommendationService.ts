@@ -1,4 +1,6 @@
 import axios from 'axios'
+import type { LangCode } from '../context/LanguageContext'
+import { tr, trFormat } from '../lib/i18n'
 
 const API_BASE = `${import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000'}/api/crop`
 
@@ -72,6 +74,7 @@ export interface FarmerInput {
   farmingPreference: string
   budget: string
   mainGoal: string
+  lang?: LangCode
 }
 
 export interface CropRecommendation {
@@ -114,4 +117,71 @@ export async function getCropRecommendations(
 // API object for compatibility
 export const cropRecommendationAPI = {
   getRecommendations: getCropRecommendations
+}
+
+function capitalizePhrase(s: string): string {
+  const trimmed = s.trim()
+  if (!trimmed) return trimmed
+  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1)
+}
+
+export function translateSoilSuitability(lang: LangCode, text: string): string {
+  if (!text || lang === 'en') return text
+  const m = text.match(/^Suitable for (.+)$/)
+  if (!m) return tr(lang, text)
+  const translatedSoils = m[1]
+    .split(',')
+    .map((part) => tr(lang, capitalizePhrase(part)))
+    .join(', ')
+  return trFormat(lang, 'Suitable for {soils}', { soils: translatedSoils })
+}
+
+export function translateWhySuitable(lang: LangCode, text: string): string {
+  if (!text || lang === 'en') return text
+  const m = text.match(
+    /^(.+?) is highly suitable for (.+?) season in (.+?)\.\s*(.*?)\.\s*Your (.+?) and (.+?) conditions are favorable\.$/
+  )
+  if (!m) return tr(lang, text)
+
+  const [, rawCrop, rawSeason, rawState, rawReasons, rawSoil, rawWater] = m
+  const knownReasons = [
+    {
+      regex: /Perfect for (Kharif|Rabi|Zaid|Year-round) season/g,
+      fn: (s: string) => trFormat(lang, 'Perfect for {season} season', { season: tr(lang, s) }),
+    },
+    {
+      regex: /Excellent soil compatibility/g,
+      fn: () => tr(lang, 'Excellent soil compatibility'),
+    },
+    {
+      regex: /Low water requirement suits your condition/g,
+      fn: () => tr(lang, 'Low water requirement suits your condition'),
+    },
+    {
+      regex: /High profit potential/g,
+      fn: () => tr(lang, 'High profit potential'),
+    },
+    {
+      regex: /Minimal water needs/g,
+      fn: () => tr(lang, 'Minimal water needs'),
+    },
+  ]
+
+  let translatedReasons = rawReasons
+  for (const kr of knownReasons) {
+    translatedReasons = translatedReasons.replace(kr.regex, (_, g1) => kr.fn(g1 || ''))
+  }
+
+  return trFormat(
+    lang,
+    '{crop} is highly suitable for {season} season in {state}. {reasons}. Your {soil} and {water} conditions are favorable.',
+    {
+      crop: tr(lang, rawCrop),
+      season: tr(lang, rawSeason),
+      state: tr(lang, rawState),
+      reasons: translatedReasons.trim() || trFormat(lang, 'Perfect for {season} season', { season: tr(lang, rawSeason) }),
+      soil: tr(lang, capitalizePhrase(rawSoil)),
+      water: tr(lang, capitalizePhrase(rawWater)),
+    }
+  )
 }

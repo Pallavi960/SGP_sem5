@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, type ReactNode } from 'react'
 
-export type LangCode = 'en' | 'hi' | 'mr'
+export type LangCode = 'en' | 'hi' | 'mr' | 'gu' | 'pa' | 'ta' | 'te'
+
+const VALID_LANGS: readonly LangCode[] = ['en', 'hi', 'mr', 'gu', 'pa', 'ta', 'te']
 
 export interface LanguageContextType {
   lang: LangCode
@@ -13,8 +15,8 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<LangCode>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    if (saved === 'en' || saved === 'hi' || saved === 'mr') return saved
+    const saved = localStorage.getItem(STORAGE_KEY) as LangCode | null
+    if (saved && VALID_LANGS.includes(saved)) return saved
     return 'en'
   })
 

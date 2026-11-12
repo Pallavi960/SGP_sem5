@@ -23,7 +23,11 @@ Rules:
 - Current message in Hinglish (mixed Hindi + English) → respond in Hinglish.
 - Current message in Marathi → respond in Marathi.
 - Current message in Gujarati → respond in Gujarati.
+- Current message in Punjabi → respond in Punjabi.
+- Current message in Tamil → respond in Tamil.
+- Current message in Telugu → respond in Telugu.
 - Any other Indian regional language → respond in that language.
+- If the message starts with an explicit bracketed language instruction (e.g. `[કૃપા કરીને ગુજરાતી ભાષામાં જવાબ આપો...]`), respond in that exact requested language.
 - NEVER default to Hindi. NEVER switch languages on your own.
 - If you are unsure of the language, default to English — NOT Hindi.
 
